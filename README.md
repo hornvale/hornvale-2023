@@ -19,3 +19,18 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
   - [Lasthearth](https://github.com/ndouglas/lasthearth/): Embedded programming language and domain-specific library
   - [Breakwater](https://github.com/ndouglas/breakwater/): Environmental procedural content generation and tools
   - [Brownhollow](https://github.com/ndouglas/brownhollow/): Artificial life/social/factional/economic procedural content generation and tools
+
+## FAQ
+
+#### Why is this project structured this way?
+Because I'm an idiot, most likely.  Don't look for a method here.  I like over-structuring things.  
+
+If at some point I think this is worth having other people contribute, I'll fix it so that the dependency graph is sane.  
+
+Right now it's optimized for my current workflow, which is tweaking package A and having the build fail, then tweaking package B to fix the problem and breaking the build in a different way, then tweaking package C to fix that and breaking it in a still different way, and then me collapsing and sobbing.  
+
+When this stabilizes a bit, and becomes more about adding features and less about figuring out really basic concepts, then the dependency graph should become a little more normal.
+
+Or I might just merge it all into a single repo.  I don't know.
+
+If you're reading this, I just haven't gotten far enough to where anyone but me should care about any of this.
