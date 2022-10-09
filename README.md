@@ -19,6 +19,9 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
   - [Lasthearth](https://github.com/ndouglas/lasthearth/): Embedded programming language and domain-specific library
   - [Breakwater](https://github.com/ndouglas/breakwater/): Environmental procedural content generation and tools
   - [Brownhollow](https://github.com/ndouglas/brownhollow/): Artificial life/social/factional/economic procedural content generation and tools
+  - [Honeyholt](https://github.com/ndouglas/honeyholt/): Tool for humanizing numbers, concepts, etc.
+  - [Lemonwood](https://github.com/ndouglas/lemonwood/): Flexible and powerful test harness for roguelike projects.
+  - [Volmark](https://github.com/ndouglas/volmark/): Debugging and other macros.
 
 ## FAQ
 
@@ -34,3 +37,4 @@ When this stabilizes a bit, and becomes more about adding features and less abou
 Or I might just merge it all into a single repo.  I don't know.
 
 If you're reading this, I just haven't gotten far enough to where anyone but me should care about any of this.
+
