@@ -1,5 +1,5 @@
 # Hornvale
-Hornvale is an experimental, idiosyncratic game written in Rust.  I was referring to it as a "prose-based roguelike", but now I'm thinking it might be more like "open-world interactive fiction".  
+Hornvale[📖](https://ndouglas.github.io/hornvale/)  is an experimental, idiosyncratic game written in Rust.  I was referring to it as a "prose-based roguelike", but now I'm thinking it might be more like "open-world interactive fiction".  
 
 I don't know if this is stupid or not.  It's a more personal project than I typically throw on GitHub, and I'm making it up as I go.
 
