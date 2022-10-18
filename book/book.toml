@@ -1,0 +1,11 @@
+[book]
+authors = ["Nathan Douglas"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Hornvale"
+description = "A full usage guide for Hornvale."
+
+[output.html]
+git-repository-url = "https://github.com/ndouglas/hornvale"
+git-repository-icon = "fa-github"
