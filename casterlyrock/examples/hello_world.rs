@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 #![allow(unused_macros)]
 
-use lasthearth::*;
+use casterlyrock::*;
 
 #[named]
 fn main() {

@@ -1,4 +1,4 @@
-use lasthearth::*;
+use dreadfort::*;
 
 fn main() {
   println!("Hello, world!");

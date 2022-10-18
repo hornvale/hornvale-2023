@@ -1,2 +1,2 @@
 # Ramsgate
-My linguistic system.
+Supernatural and metaphysical concepts, the thermodynamics of spirit.

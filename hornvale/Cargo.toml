@@ -17,11 +17,15 @@ function_name = "0.3.0"
 log = { version = "0.4.17", features= ["max_level_trace", "release_max_level_warn"] }
 pretty_env_logger = "0.4.0"
 appleton = { path = "../appleton" }
+blackpool = { path = "../blackpool" }
+casterlyrock = { path = "../casterlyrock" }
+dreadfort = { path = "../dreadfort" }
 goldengrove = { path = "../goldengrove" }
 honeyholt = { path = "../honeyholt" }
-lasthearth = { path = "../lasthearth" }
+kingsgrave = { path = "../kingsgrave" }
 lemonwood = { path = "../lemonwood" }
 ramsgate = { path = "../ramsgate" }
 starfall = { path = "../starfall" }
 stonedance = { path = "../stonedance" }
 volmark = { path = "../volmark" }
+weepingtown = { path = "../weepingtown" }

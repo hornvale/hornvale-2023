@@ -1,15 +1,15 @@
 [package]
-name = "lasthearth"
+name = "dreadfort"
 version = "0.1.0"
 edition = "2021"
 authors = ["Nathan Douglas <github@darkdell.net>"]
 
 [lib]
-name = "lasthearth"
+name = "dreadfort"
 path = "src/lib.rs"
 
 [[bin]]
-name = "lasthearth"
+name = "dreadfort"
 path = "src/main.rs"
 
 [dependencies]
