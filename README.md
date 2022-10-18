@@ -14,14 +14,20 @@ But maybe this will be something that grows over time into something worth looki
 A previous iteration, purely exploratory, can be found [here](https://github.com/ndouglas/hornvale-rust/).  It was/is mostly just investigatory, figuring out what was possible, and whether I could bear to do it in Rust.
 
 ## Hornvale Project
-- [Hornvale](https://github.com/ndouglas/hornvale/): Frontend and connective logic
-  - [Goldengrove](https://github.com/ndouglas/goldengrove/): Narrative/mythopoetic procedural content generation and tools
-  - [Lasthearth](https://github.com/ndouglas/lasthearth/): Embedded programming language and domain-specific library
-  - [Breakwater](https://github.com/ndouglas/breakwater/): Environmental procedural content generation and tools
-  - [Brownhollow](https://github.com/ndouglas/brownhollow/): Artificial life/social/factional/economic procedural content generation and tools
-  - [Honeyholt](https://github.com/ndouglas/honeyholt/): Tool for humanizing numbers, concepts, etc.
-  - [Lemonwood](https://github.com/ndouglas/lemonwood/): Flexible and powerful test harness for roguelike projects.
-  - [Volmark](https://github.com/ndouglas/volmark/): Debugging and other macros.
+I know these names are somewhat opaque, but my thinking is that I decouple the name from a concrete name like "astronomy" and gain some flexibility with the borders.
+
+- [📯 Hornvale](https://github.com/ndouglas/hornvale/): Frontend and connective logic
+  - [💫 Starfall](./starfall/README.md): Astronomical sciences, from the galaxy to the moon.
+  - [🪨 Stonedance](./stonedance/README.md): Geology and physical geography.
+  - [🐏 Ramsgate](./ramsgate/README.md): Supernatural and metaphysical concepts, the thermodynamics of spirit.
+  - [🍎 Appleton](./appleton/README.md): Biological/psychological, up to Maslow's hierarchy of needs stuff.
+  - [🗼 Threetowers](./threetowers/README.md): Sociological/economical, individual and group behavior.
+  - [🌿 Goldengrove](./goldengrove/README.md): Narrative/mythopoetic procedural content generation and tools.
+  - [🍋 Lemonwood](./lemonwood/README.md): Linguistics system permitting communication, bidirectional translation, etc.
+  - [🪖 Stonehelm](./stonehelm/README.md): Combat system, physiology, metabolism, health, regeneration, etc.
+  - [🔥 Lasthearth](./lasthearth/README.md): Embedded programming language and domain-specific library.
+  - [🍯 Honeyholt](./honeyholt/README.md): Tool for humanizing numbers, concepts, etc.
+  - [🐋 Volmark](./volmark/README.md): Debugging and other macros.
 
 ## FAQ
 

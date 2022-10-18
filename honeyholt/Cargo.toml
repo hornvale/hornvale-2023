@@ -1,0 +1,19 @@
+[package]
+name = "honeyholt"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nathan Douglas <github@darkdell.net>"]
+
+[lib]
+name = "honeyholt"
+path = "src/lib.rs"
+
+[[bin]]
+name = "honeyholt"
+path = "src/main.rs"
+
+[dependencies]
+volmark = { path = "../volmark" }
+function_name = "0.3.0"
+log = { version = "0.4.17", features= ["max_level_trace", "release_max_level_warn"] }
+pretty_env_logger = "0.4.0"

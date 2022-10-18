@@ -1,0 +1,27 @@
+[package]
+name = "hornvale"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nathan Douglas <github@darkdell.net>"]
+
+[lib]
+name = "hornvale"
+path = "src/lib.rs"
+
+[[bin]]
+name = "hornvale"
+path = "src/main.rs"
+
+[dependencies]
+function_name = "0.3.0"
+log = { version = "0.4.17", features= ["max_level_trace", "release_max_level_warn"] }
+pretty_env_logger = "0.4.0"
+appleton = { path = "../appleton" }
+goldengrove = { path = "../goldengrove" }
+honeyholt = { path = "../honeyholt" }
+lasthearth = { path = "../lasthearth" }
+lemonwood = { path = "../lemonwood" }
+ramsgate = { path = "../ramsgate" }
+starfall = { path = "../starfall" }
+stonedance = { path = "../stonedance" }
+volmark = { path = "../volmark" }
