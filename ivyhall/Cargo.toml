@@ -1,15 +1,15 @@
 [package]
-name = "hornvale"
+name = "ivyhall"
 version = "0.1.0"
 edition = "2021"
 authors = ["Nathan Douglas <github@darkdell.net>"]
 
 [lib]
-name = "hornvale"
+name = "ivyhall"
 path = "src/lib.rs"
 
 [[bin]]
-name = "hornvale"
+name = "ivyhall"
 path = "src/main.rs"
 
 [dependencies]
