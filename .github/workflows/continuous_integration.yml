@@ -23,18 +23,15 @@ jobs:
 
       - name: Lint
         run: |
-          cd hornvale;
           cargo fmt -- --check;
           cargo clippy -- -D warnings;         
 
       - name: Test
         run: |
-          cd hornvale;
           cargo check;
           cargo test --all;
 
       - name: Build
         run: |
-          cd hornvale;
           cargo build --release;
         
