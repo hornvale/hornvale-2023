@@ -23,6 +23,7 @@ jobs:
 
       - name: Lint
         run: |
+          ls;
           cargo fmt -- --check;
           cargo clippy -- -D warnings;         
 
