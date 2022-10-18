@@ -1,10 +1,10 @@
 #![allow(unused_imports)]
+use rand::prelude::*;
 ///! Generates a star system and prints a little report on it.
 use starfall::astronomy::star::constraints::Constraints;
 use starfall::astronomy::star::error::Error;
 use starfall::astronomy::star::Star;
 use starfall::*;
-use rand::prelude::*;
 
 pub struct StarReporter {}
 

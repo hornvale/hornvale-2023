@@ -1,8 +1,8 @@
 #![allow(unused_imports)]
 
+use rand::prelude::*;
 use starfall::astronomy::star::name::{generate_star_name, INFIX, PREFIX, SUFFIX};
 use starfall::*;
-use rand::prelude::*;
 
 #[named]
 fn main() {

@@ -5,11 +5,11 @@ use bevy::prelude::*;
 use bevy_egui::{egui, EguiContext, EguiPlugin};
 use bevy_fly_camera::{FlyCamera2d, FlyCameraPlugin};
 use bevy_prototype_lyon::prelude::*;
+use derive_more::Deref;
 use starfall::astronomy::star::Star;
 use starfall::astronomy::star_subsystem::StarSubsystem;
 use starfall::astronomy::star_system::constraints::Constraints;
 use starfall::astronomy::star_system::StarSystem;
-use derive_more::Deref;
 use std::collections::HashMap;
 use std::f32::consts::PI;
 /* REWRITE
