@@ -8,6 +8,8 @@ on:
 jobs:
   continuous_integration:
     runs-on: ubuntu-latest
+    steps:
+
       - name: Update local toolchain
         run: |
           rustup update;
