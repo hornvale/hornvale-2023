@@ -24,6 +24,7 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 - [🏦 Casterlyrock](./casterlyrock/README.md): Economic system, merchants, resources, scarcity.
 - [🧍‍♂️ Dreadfort](./dreadfort/README.md): Anatomy and physiology, health, damage, poison, and regeneration.
 - [📜 Goldengrove](./goldengrove/README.md): Narrative/mythopoetic procedural content generation and tools.
+- [📖 Harlaw](./harlaw/README.md): The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
 - [🍯 Honeyholt](./honeyholt/README.md): Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
 - [🌿 Ivyhall](./ivyhall/README.md): Frontend and connective logic.  As little as possible.
 - [🪦 Kingsgrave](./kingsgrave/README.md): Combat system, some closely related topics.
