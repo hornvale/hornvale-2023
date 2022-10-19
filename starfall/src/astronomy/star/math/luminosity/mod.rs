@@ -39,17 +39,17 @@ pub fn lsol_to_watts(lsol: f64) -> f64 {
 pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
   trace_enter!();
   trace_var!(mass);
-  if mass <= MINIMUM_MASS {
+  if mass < MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
-  if mass >= MAXIMUM_MASS {
+  if mass > MAXIMUM_MASS {
     return Err(Error::MassTooHighForMainSequence);
   }
   let result = match mass {
     mass if mass < 0.43 => 0.23 * mass.powf(2.3),
     mass if mass < 2.0 => mass.powf(4.0),
     mass if mass < 55.0 => 1.4 * mass.powf(3.5),
-    mass if mass < MAXIMUM_MASS => 32_000.0 * mass,
+    mass if mass <= MAXIMUM_MASS => 32_000.0 * mass,
     _ => unreachable!(),
   };
   trace_var!(result);
@@ -62,6 +62,65 @@ pub mod test {
 
   use super::*;
   use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_ergs_to_lsol() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(ergs_to_lsol(lsol_to_ergs(1.0)), 1.0);
+    assert_approx_eq!(lsol_to_ergs(1.0), ERGS_PER_SEC_PER_LSOL);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_joules_to_lsol() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(joules_to_lsol(lsol_to_joules(1.0)), 1.0);
+    assert_approx_eq!(lsol_to_joules(1.0), JOULES_PER_SEC_PER_LSOL);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_watts_to_lsol() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(watts_to_lsol(lsol_to_watts(1.0)), 1.0);
+    assert_approx_eq!(lsol_to_watts(1.0), JOULES_PER_SEC_PER_LSOL);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  #[should_panic]
+  pub fn test_star_mass_to_luminosity1() -> () {
+    init();
+    trace_enter!();
+    star_mass_to_luminosity(0.0000001).unwrap();
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  #[should_panic]
+  pub fn test_star_mass_to_luminosity2() -> () {
+    init();
+    trace_enter!();
+    star_mass_to_luminosity(350.0).unwrap();
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_star_mass_to_luminosity3() -> () {
+    init();
+    trace_enter!();
+    star_mass_to_luminosity(MAXIMUM_MASS).unwrap();
+    trace_exit!();
+  }
 
   #[named]
   #[test]
