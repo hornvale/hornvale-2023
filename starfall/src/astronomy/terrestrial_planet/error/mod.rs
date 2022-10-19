@@ -1,49 +1,33 @@
 use crate::astronomy::host_star::error::Error as HostStarError;
 
 /// TerrestrialPlanet errors.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Error, Hash, PartialEq)]
 pub enum Error {
   /// Host Star.
-  HostStarError(HostStarError),
+  #[error("an error occurred in the host star ({0})")]
+  HostStarError(#[from] HostStarError),
   /// Pluto, also Minnesota.
+  #[error("not habitable because it is too cold")]
   TooColdToSupportConventionalLife,
   /// Hell, or Las Vegas.
+  #[error("not habitable because it is too hot")]
   TooHotToSupportConventionalLife,
   /// Hard to fight when people keep floating off into space.
+  #[error("not habitable because its gravity is too low")]
   GravityTooLowToSupportConventionalLife,
   /// Just sounds kinda lame.
+  #[error("not habitable because its gravity is too high")]
   GravityTooHighToSupportConventionalLife,
   /// Oxygen unstable in this atmosphere.
+  #[error("not habitable because it cannot retain oxygen")]
   AtmosphereUnstableForOxygen,
   /// Carbon Dioxide unstable in this atmosphere.
+  #[error("not habitable because it cannot retain carbon dioxide")]
   AtmosphereUnstableForCarbonDioxide,
   /// Argon unstable in this atmosphere.
+  #[error("not habitable because it cannot retain argon")]
   AtmosphereUnstableForArgon,
   /// Nitrogen unstable in this atmosphere.
+  #[error("not habitable because it cannot retain nitrogen")]
   AtmosphereUnstableForNitrogen,
-}
-
-honeyholt_define_brief!(Error, |error: &Error| {
-  use Error::*;
-  match error {
-    HostStarError(host_star_error) => format!(
-      "an error occurred in the host star ({})",
-      honeyholt_brief!(host_star_error)
-    ),
-    TooColdToSupportConventionalLife => "not habitable because it is too cold".to_string(),
-    TooHotToSupportConventionalLife => "not habitable because it is too hot".to_string(),
-    GravityTooLowToSupportConventionalLife => "not habitable because its gravity is too low".to_string(),
-    GravityTooHighToSupportConventionalLife => "not habitable because its gravity is too high".to_string(),
-    AtmosphereUnstableForOxygen => "not habitable because it cannot retain oxygen".to_string(),
-    AtmosphereUnstableForCarbonDioxide => "not habitable because it cannot retain carbon dioxide".to_string(),
-    AtmosphereUnstableForArgon => "not habitable because it cannot retain argon".to_string(),
-    AtmosphereUnstableForNitrogen => "not habitable because it cannot retain nitrogen".to_string(),
-  }
-});
-
-impl From<HostStarError> for Error {
-  #[named]
-  fn from(error: HostStarError) -> Self {
-    Error::HostStarError(error)
-  }
 }

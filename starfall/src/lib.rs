@@ -3,6 +3,8 @@
 #[allow(unused_imports)]
 #[macro_use]
 extern crate assert_approx_eq;
+#[macro_use]
+extern crate thiserror;
 
 #[macro_use]
 extern crate honeyholt;

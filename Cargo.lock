@@ -3579,6 +3579,7 @@ dependencies = [
  "pretty_env_logger",
  "rand",
  "rand_distr",
+ "thiserror",
  "volmark",
 ]
 
