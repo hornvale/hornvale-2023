@@ -120,4 +120,60 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star_system = &Constraints::habitable().generate(&mut rng)?;
+    trace_var!(star_system);
+    print_var!(star_system);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable_close_binary() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star_system = &Constraints::habitable_close_binary().generate(&mut rng)?;
+    trace_var!(star_system);
+    print_var!(star_system);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable_distant_binary() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star_system = &Constraints::habitable_distant_binary().generate(&mut rng)?;
+    trace_var!(star_system);
+    print_var!(star_system);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_main_sequence() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star_system = &Constraints::main_sequence().generate(&mut rng)?;
+    trace_var!(star_system);
+    print_var!(star_system);
+    trace_exit!();
+    Ok(())
+  }
 }

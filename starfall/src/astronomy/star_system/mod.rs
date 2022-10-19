@@ -90,6 +90,8 @@ pub mod test {
     let star_system = Constraints::habitable().generate(&mut rng)?;
     info_var!(star_system);
     print_var!(star_system);
+    star_system.get_stellar_mass();
+    star_system.is_habitable();
     trace_exit!();
     Ok(())
   }
