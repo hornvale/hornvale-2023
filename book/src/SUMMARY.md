@@ -1,7 +1,7 @@
 # Summary
 
-[Front Matter](./front_matter.md)
-- [Epigraph](./epigraph.md)
-- [Introduction](./introduction.md)
-- [The Goblin Village](./goblin_village.md)
-- ["Hello, Sailor!"](./hello_sailor.md)
+# Front Matter
+- [Epigraph](./front_matter/epigraph.md)
+- [Introduction](./front_matter/introduction.md)
+- [The Goblin Village](./front_matter/goblin_village.md)
+- ["Hello, Sailor!"](./front_matter/hello_sailor.md)
