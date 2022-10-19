@@ -7,5 +7,7 @@ title = "Hornvale"
 description = "A full usage guide for Hornvale."
 
 [output.html]
+mathjax-support = true
+site-url = "/hornvale/"
 git-repository-url = "https://github.com/ndouglas/hornvale"
 git-repository-icon = "fa-github"
