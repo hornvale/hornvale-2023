@@ -20,6 +20,7 @@ jobs:
             build-essential \
             libpulse-dev \
             libdbus-1-dev \
+            libudev-dev \
             ;
 
       - name: Update local toolchain
@@ -62,6 +63,7 @@ jobs:
             build-essential \
             libpulse-dev \
             libdbus-1-dev \
+            libudev-dev \
             ;
 
       - name: Update toolchain
