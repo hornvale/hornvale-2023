@@ -88,4 +88,20 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let distant_binary_star = Constraints::default().generate(&mut rng)?;
+    trace_var!(distant_binary_star);
+    print_var!(distant_binary_star);
+    distant_binary_star.get_stellar_mass();
+    distant_binary_star.is_habitable();
+    trace_exit!();
+    Ok(())
+  }
 }
