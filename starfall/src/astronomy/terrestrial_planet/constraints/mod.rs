@@ -156,6 +156,7 @@ impl Default for Constraints {
 pub mod test {
 
   use crate::astronomy::host_star::constraints::Constraints as HostStarConstraints;
+  use crate::astronomy::terrestrial_planet::math::atmospheric_stability::*;
   use rand::prelude::*;
 
   use super::*;
@@ -185,6 +186,100 @@ pub mod test {
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
     trace_var!(planet);
     print_var!(planet);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let host_star_constraints = HostStarConstraints::habitable();
+    let mut host_star = host_star_constraints.generate(&mut rng)?;
+    trace_var!(host_star);
+    let mut is_habitable = !host_star.is_habitable();
+    let mut counter = 0;
+    while !is_habitable && counter < 50 {
+      host_star = host_star_constraints.generate(&mut rng)?;
+      is_habitable = !host_star.is_habitable();
+      counter += 1;
+    }
+    let habitable_zone = host_star.get_habitable_zone();
+    trace_var!(habitable_zone);
+    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    trace_var!(distance);
+    let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
+    trace_var!(planet);
+    print_var!(planet);
+    planet.is_habitable();
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable2() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let host_star_constraints = HostStarConstraints::habitable();
+    let mut host_star = host_star_constraints.generate(&mut rng)?;
+    trace_var!(host_star);
+    let mut is_habitable = !host_star.is_habitable();
+    let mut counter = 0;
+    while !is_habitable && counter < 50 {
+      host_star = host_star_constraints.generate(&mut rng)?;
+      is_habitable = !host_star.is_habitable();
+      counter += 1;
+    }
+    let habitable_zone = host_star.get_habitable_zone();
+    trace_var!(habitable_zone);
+    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    trace_var!(distance);
+    let mut planet = Constraints::habitable().generate(&mut rng, &host_star, distance)?;
+    trace_var!(planet);
+    print_var!(planet);
+    planet.is_habitable();
+    let old_gravity = planet.gravity;
+    planet.gravity = 0.00000;
+    planet.is_habitable();
+    planet.gravity = 10.0 + MAXIMUM_HABITABLE_GRAVITY;
+    planet.is_habitable();
+    planet.gravity = old_gravity;
+    planet.escape_velocity = 1.0;
+    planet.equilibrium_temperature = 288.0;
+    // Check carbon dioxide stability.
+    planet.escape_velocity = (20_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
+    trace_var!(get_nitrogen_stability(
+      planet.equilibrium_temperature,
+      planet.escape_velocity
+    ));
+    trace_var!(get_oxygen_stability(
+      planet.equilibrium_temperature,
+      planet.escape_velocity
+    ));
+    trace_var!(get_argon_stability(
+      planet.equilibrium_temperature,
+      planet.escape_velocity
+    ));
+    trace_var!(get_carbon_dioxide_stability(
+      planet.equilibrium_temperature,
+      planet.escape_velocity
+    ));
+    assert_eq!(planet.check_habitable(), Err(Error::AtmosphereUnstableForCarbonDioxide));
+    // Check argon stability.
+    planet.escape_velocity = (24_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
+    assert_eq!(planet.check_habitable(), Err(Error::AtmosphereUnstableForArgon));
+    // Check oxygen stability.
+    planet.escape_velocity = (28_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
+    assert_eq!(planet.check_habitable(), Err(Error::AtmosphereUnstableForOxygen));
+    // Check nitrogen stability.
+    planet.escape_velocity = (34_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
+    assert_eq!(planet.check_habitable(), Err(Error::AtmosphereUnstableForNitrogen));
     trace_exit!();
     Ok(())
   }

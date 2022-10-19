@@ -4,9 +4,7 @@ pub mod constraints;
 pub mod error;
 use error::Error;
 pub mod math;
-use math::atmospheric_stability::{
-  is_argon_stable, is_atmospherically_stable, is_carbon_dioxide_stable, is_nitrogen_stable, is_oxygen_stable,
-};
+use math::atmospheric_stability::*;
 use math::density::get_density;
 use math::escape_velocity::get_escape_velocity;
 use math::gravity::get_gravity;
@@ -149,14 +147,14 @@ impl TerrestrialPlanet {
       if self.gravity >= MAXIMUM_HABITABLE_GRAVITY {
         return Err(Error::GravityTooHighToSupportConventionalLife);
       }
-      if !is_oxygen_stable(self.equilibrium_temperature, self.escape_velocity) {
-        return Err(Error::AtmosphereUnstableForOxygen);
-      }
       if !is_carbon_dioxide_stable(self.equilibrium_temperature, self.escape_velocity) {
         return Err(Error::AtmosphereUnstableForCarbonDioxide);
       }
       if !is_argon_stable(self.equilibrium_temperature, self.escape_velocity) {
         return Err(Error::AtmosphereUnstableForArgon);
+      }
+      if !is_oxygen_stable(self.equilibrium_temperature, self.escape_velocity) {
+        return Err(Error::AtmosphereUnstableForOxygen);
       }
       if !is_nitrogen_stable(self.equilibrium_temperature, self.escape_velocity) {
         return Err(Error::AtmosphereUnstableForNitrogen);
