@@ -12,6 +12,16 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y \
+            libasound2-dev \
+            portaudio19-dev \
+            build-essential \
+            libpulse-dev \
+            libdbus-1-dev \
+            ;
+
       - name: Update local toolchain
         run: |
           rustup update;
@@ -44,6 +54,16 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y \
+            libasound2-dev \
+            portaudio19-dev \
+            build-essential \
+            libpulse-dev \
+            libdbus-1-dev \
+            ;
+
       - name: Update toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -65,9 +85,6 @@ jobs:
           RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
 
-      - name: Record coverage
-        uses: actions-rs/grcov@v0.1.5
-
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
 
@@ -77,6 +94,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
           fail_ci_if_error: true
