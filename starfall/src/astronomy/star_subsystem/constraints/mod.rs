@@ -90,7 +90,7 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
-  
+
   #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
@@ -105,5 +105,4 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
-
 }
