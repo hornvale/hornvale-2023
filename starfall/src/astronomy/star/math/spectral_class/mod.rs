@@ -99,13 +99,13 @@ pub fn star_mass_to_spectral_class(mass: f64) -> Result<String, Error> {
     _ => unreachable!(),
   };
   let decile = match temperature {
-    temperature if temperature < 3_700.0 => (10.0 * (1.0 - ((temperature - 2_000.0) / 1_700.0))),
-    temperature if temperature < 5_200.0 => (10.0 * (1.0 - ((temperature - 3_700.0) / 1_500.0))),
-    temperature if temperature < 6_000.0 => (10.0 * (1.0 - ((temperature - 5_200.0) / 800.0))),
-    temperature if temperature < 7_500.0 => (10.0 * (1.0 - ((temperature - 6_000.0) / 1_500.0))),
-    temperature if temperature < 10_000.0 => (10.0 * (1.0 - ((temperature - 7_500.0) / 2_500.0))),
-    temperature if temperature < 33_000.0 => (10.0 * (1.0 - ((temperature - 10_000.0) / 23_000.0))),
-    temperature if temperature < 95_000.0 => (10.0 * (1.0 - ((temperature - 33_000.0) / 62_000.0))),
+    temperature if temperature < 3_700.0 => 10.0 * (1.0 - ((temperature - 2_000.0) / 1_700.0)),
+    temperature if temperature < 5_200.0 => 10.0 * (1.0 - ((temperature - 3_700.0) / 1_500.0)),
+    temperature if temperature < 6_000.0 => 10.0 * (1.0 - ((temperature - 5_200.0) / 800.0)),
+    temperature if temperature < 7_500.0 => 10.0 * (1.0 - ((temperature - 6_000.0) / 1_500.0)),
+    temperature if temperature < 10_000.0 => 10.0 * (1.0 - ((temperature - 7_500.0) / 2_500.0)),
+    temperature if temperature < 33_000.0 => 10.0 * (1.0 - ((temperature - 10_000.0) / 23_000.0)),
+    temperature if temperature < 95_000.0 => 10.0 * (1.0 - ((temperature - 33_000.0) / 62_000.0)),
     _ => unreachable!(),
   };
   let result = format!("{}{:.0}V", spectral_type, decile);
