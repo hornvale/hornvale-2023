@@ -26,8 +26,6 @@ pub enum Error {
 #[cfg(test)]
 pub mod test {
 
-  use rand::prelude::*;
-
   use super::*;
   use crate::test::*;
 

@@ -38,3 +38,5 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 
 #### Why are you generating stellar neighborhoods for an interactive fiction project?
 Because I'm an idiot, most likely.
+
+![Code Coverage Graph](https://codecov.io/gh/ndouglas/hornvale/branch/main/graphs/icicle.svg?token=YP8GDSHG73)
