@@ -98,4 +98,18 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let stellar_neighbor = &Constraints::habitable().generate(&mut rng)?;
+    trace_var!(stellar_neighbor);
+    print_var!(stellar_neighbor);
+    trace_exit!();
+    Ok(())
+  }
 }

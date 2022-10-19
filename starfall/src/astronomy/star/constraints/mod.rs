@@ -90,4 +90,20 @@ pub mod test {
     trace_exit!();
     Ok(())
   }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star = Constraints::habitable().generate(&mut rng)?;
+    trace_var!(star);
+    print_var!(star);
+    assert!(star.is_habitable());
+    trace_exit!();
+    Ok(())
+  }
+
 }
