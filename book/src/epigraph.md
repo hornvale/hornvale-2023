@@ -17,3 +17,5 @@ TROUBLE-FREE OPERATION. PLEASE CHECK
 WITH YOUR DEALER FOR PART II AND OTHER
 ALTERNATE UNIVERSES.
 ```
+
+I quite liked the idea of a self-contained and self-maintaining universe, as well as alternate universes, and thought I might try to create a system for creating them.
