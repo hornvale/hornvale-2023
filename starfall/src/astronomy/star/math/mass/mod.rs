@@ -43,3 +43,20 @@ pub fn get_random_habitable_stellar_mass<R: Rng + ?Sized>(rng: &mut R) -> f64 {
   trace_exit!();
   result
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_msol_to_kg() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(kg_to_msol(msol_to_kg(1.0)), 1.0);
+    assert_approx_eq!(msol_to_kg(1.0), KG_PER_SOLAR_MASS);
+    trace_exit!();
+  }
+}

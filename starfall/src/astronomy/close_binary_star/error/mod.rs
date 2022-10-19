@@ -1,36 +1,53 @@
 use crate::astronomy::star::error::Error as StarError;
 
 /// Close binary star-related errors.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Error, Hash, PartialEq)]
 pub enum Error {
   /// Star Error.
-  StarError(StarError),
+  #[error("an error occurred in the star ({0})")]
+  StarError(#[from] StarError),
   /// Lower than MINIMUM_SEPARATION.
+  #[error("the stars are too close together to be stable")]
   BinaryStarsTooCloseForComfort,
   /// The habitable zone is contained within the forbidden zone.
+  #[error("the stars' habitable zone is contained within their forbidden zone")]
   HabitableZoneContainedWithinForbiddenZone,
   /// The habitable zone isn't sufficiently far from the host stars.
+  #[error("the stars' habitable zone is too close to the host stars")]
   HabitableZoneContainedWithinDangerZone,
   /// No habitable conditions found anywhere in StarSubsystem.
+  #[error("the stars do not have a habitable zone")]
   NoHabitableZoneFound,
+  /// An unknown error occurred.
+  #[error("an unknown error occurred")]
+  UnknownError,
 }
 
-honeyholt_define_brief!(Error, |error: &Error| {
-  use Error::*;
-  match error {
-    BinaryStarsTooCloseForComfort => "the stars are too close together to be stable".to_string(),
-    HabitableZoneContainedWithinForbiddenZone => {
-      "the stars' habitable zone is contained within their forbidden zone".to_string()
-    },
-    HabitableZoneContainedWithinDangerZone => "the stars' habitable zone is too close to the host stars".to_string(),
-    NoHabitableZoneFound => "the stars do not have a habitable zone".to_string(),
-    StarError(star_error) => format!("an error occurred in the star ({})", honeyholt_brief!(star_error)),
-  }
-});
+#[cfg(test)]
+pub mod test {
 
-impl From<StarError> for Error {
+  use super::*;
+  use crate::test::*;
+
   #[named]
-  fn from(error: StarError) -> Self {
-    Error::StarError(error)
+  #[test]
+  pub fn test_errors() {
+    init();
+    trace_enter!();
+    let mut error = Error::BinaryStarsTooCloseForComfort;
+    print_var!(error);
+    error = Error::HabitableZoneContainedWithinForbiddenZone;
+    print_var!(error);
+    error = Error::HabitableZoneContainedWithinDangerZone;
+    print_var!(error);
+    error = Error::NoHabitableZoneFound;
+    print_var!(error);
+    error = Error::UnknownError;
+    print_var!(error);
+    error = Error::StarError(StarError::UnknownError);
+    print_var!(error);
+    error = StarError::UnknownError.into();
+    print_var!(error);
+    trace_exit!();
   }
 }

@@ -98,7 +98,22 @@ pub mod test {
 
   #[named]
   #[test]
-  pub fn get_random() -> Result<(), Error> {
+  pub fn test_generate() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let constraints = Constraints::default();
+    let stellar_neighborhood = constraints.generate(&mut rng)?;
+    info_var!(stellar_neighborhood);
+    print_var!(stellar_neighborhood);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
     init();
     trace_enter!();
     let mut rng = thread_rng();

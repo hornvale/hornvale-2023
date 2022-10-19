@@ -25,7 +25,7 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 - [🧍‍♂️ Dreadfort](./dreadfort/README.md): Anatomy and physiology, health, damage, poison, and regeneration.
 - [📜 Goldengrove](./goldengrove/README.md): Narrative/mythopoetic procedural content generation and tools.
 - [🍯 Honeyholt](./honeyholt/README.md): Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
-- [📯 Ivyhall](./ivyhall/README.md): Frontend and connective logic.  As little as possible.
+- [🌿 Ivyhall](./ivyhall/README.md): Frontend and connective logic.  As little as possible.
 - [🪦 Kingsgrave](./kingsgrave/README.md): Combat system, some closely related topics.
 - [💬 Lemonwood](./lemonwood/README.md): Linguistics system permitting communication, bidirectional translation, etc.
 - [👻 Ramsgate](./ramsgate/README.md): Supernatural and metaphysical concepts, the thermodynamics of spirit.
@@ -38,3 +38,5 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 
 #### Why are you generating stellar neighborhoods for an interactive fiction project?
 Because I'm an idiot, most likely.
+
+![Code Coverage Graph](https://codecov.io/gh/ndouglas/hornvale/branch/main/graphs/icicle.svg?token=YP8GDSHG73)

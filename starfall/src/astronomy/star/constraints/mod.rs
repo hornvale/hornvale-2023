@@ -3,7 +3,7 @@ use std::default::Default;
 
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
-use crate::astronomy::star::math::spectral_class::*;
+use crate::astronomy::star::math::mass::*;
 use crate::astronomy::star::Star;
 
 /// Constraints for creating a main-sequence star.
@@ -34,22 +34,9 @@ impl Constraints {
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Star, Error> {
     trace_enter!();
-    let mass = {
-      let random_spectral_class = match self.make_habitable {
-        false => get_random_spectral_class(rng),
-        true => get_random_habitable_spectral_class(rng),
-      };
-      trace_var!(random_spectral_class);
-      let random_range = match self.make_habitable {
-        false => spectral_class_to_mass_range(random_spectral_class),
-        true => spectral_class_to_habitable_mass_range(random_spectral_class),
-      };
-      trace_var!(random_range);
-      let lower_bound_mass = random_range.start;
-      trace_var!(lower_bound_mass);
-      let upper_bound_mass = random_range.end;
-      trace_var!(upper_bound_mass);
-      rng.gen_range(lower_bound_mass..upper_bound_mass)
+    let mass = match self.make_habitable {
+      true => get_random_habitable_stellar_mass(rng),
+      false => get_random_stellar_mass(rng),
     };
     trace_var!(mass);
     let mut result = Star::from_mass(rng, mass)?;
@@ -100,6 +87,21 @@ pub mod test {
     let star = Constraints::default().generate(&mut rng)?;
     trace_var!(star);
     print_var!(star);
+    trace_exit!();
+    Ok(())
+  }
+
+  #[named]
+  #[test]
+  pub fn test_habitable() -> Result<(), Error> {
+    init();
+    trace_enter!();
+    let mut rng = thread_rng();
+    trace_var!(rng);
+    let star = Constraints::habitable().generate(&mut rng)?;
+    trace_var!(star);
+    print_var!(star);
+    assert!(star.is_habitable());
     trace_exit!();
     Ok(())
   }

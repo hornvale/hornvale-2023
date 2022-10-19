@@ -4,55 +4,18 @@ use crate::astronomy::moons::error::Error as MoonsError;
 use crate::astronomy::planet::error::Error as PlanetError;
 
 /// Moon-related errors.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Error, Hash, PartialEq)]
 pub enum Error {
   /// Host Star Error.
-  HostStarError(HostStarError),
+  #[error("an error occurred in the host star ({0})")]
+  HostStarError(#[from] HostStarError),
   /// Moon Error.
-  MoonError(MoonError),
+  #[error("an error occurred in the moon ({0})")]
+  MoonError(#[from] MoonError),
   /// Moons Error.
-  MoonsError(MoonsError),
+  #[error("an error occurred in the moons ({0})")]
+  MoonsError(#[from] MoonsError),
   /// Planet Error.
-  PlanetError(PlanetError),
-}
-
-honeyholt_define_brief!(Error, |error: &Error| {
-  use Error::*;
-  match error {
-    HostStarError(host_star_error) => format!(
-      "an error occurred in the host star ({})",
-      honeyholt_brief!(host_star_error)
-    ),
-    MoonError(moon_error) => format!("an error occurred in the moon ({})", honeyholt_brief!(moon_error)),
-    MoonsError(moons_error) => format!("an error occurred in the moons ({})", honeyholt_brief!(moons_error)),
-    PlanetError(planet_error) => format!("an error occurred in the planet ({})", honeyholt_brief!(planet_error)),
-  }
-});
-
-impl From<MoonError> for Error {
-  #[named]
-  fn from(error: MoonError) -> Self {
-    Error::MoonError(error)
-  }
-}
-
-impl From<HostStarError> for Error {
-  #[named]
-  fn from(error: HostStarError) -> Self {
-    Error::HostStarError(error)
-  }
-}
-
-impl From<MoonsError> for Error {
-  #[named]
-  fn from(error: MoonsError) -> Self {
-    Error::MoonsError(error)
-  }
-}
-
-impl From<PlanetError> for Error {
-  #[named]
-  fn from(error: PlanetError) -> Self {
-    Error::PlanetError(error)
-  }
+  #[error("an error occurred in the planet ({0})")]
+  PlanetError(#[from] PlanetError),
 }

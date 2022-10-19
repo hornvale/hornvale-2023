@@ -98,6 +98,7 @@ pub mod test {
     let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
     trace_var!(planet);
     print_var!(planet);
+    planet.is_habitable();
     trace_exit!();
     Ok(())
   }
