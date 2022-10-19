@@ -20,3 +20,30 @@ pub fn au_to_meters(au: f64) -> f64 {
 pub fn meters_to_au(meters: f64) -> f64 {
   meters / METERS_PER_AU
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_meters_to_rsol() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(meters_to_rsol(rsol_to_meters(1.0)), 1.0);
+    assert_approx_eq!(rsol_to_meters(1.0), METERS_PER_SOLAR_RADIUS);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_meters_to_au() {
+    init();
+    trace_enter!();
+    assert_approx_eq!(meters_to_au(au_to_meters(1.0)), 1.0);
+    assert_approx_eq!(au_to_meters(1.0), METERS_PER_AU);
+    trace_exit!();
+  }
+}
