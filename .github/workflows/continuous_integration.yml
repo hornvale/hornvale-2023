@@ -12,6 +12,15 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
 
+      - name: Update local toolchain
+        run: |
+          rustup toolchain install stable --profile minimal;
+          rustup update;
+          rustup component add clippy;
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+
       - name: Install dependencies
         run: |
           sudo apt-get install -y \
@@ -22,11 +31,6 @@ jobs:
             libdbus-1-dev \
             libudev-dev \
             ;
-
-      - name: Update local toolchain
-        run: |
-          rustup update;
-          rustup component add clippy;
 
       - name: Toolchain info
         run: |
