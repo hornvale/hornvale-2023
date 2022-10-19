@@ -1,3 +1,6 @@
+
+![CI](https://github.com/ndouglas/hornvale/actions/workflows/continuous_integration.yml/badge.svg?branch=main) [![codecov](https://codecov.io/gh/ndouglas/hornvale/branch/main/graph/badge.svg?token=YP8GDSHG73)](https://codecov.io/gh/ndouglas/hornvale)
+
 # Hornvale
 Hornvale[📖](https://ndouglas.github.io/hornvale/)  is an experimental, idiosyncratic game written in Rust.  I was referring to it as a "prose-based roguelike", but now I'm thinking it might be more like "open-world interactive fiction".  
 
