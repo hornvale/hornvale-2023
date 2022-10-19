@@ -17,9 +17,9 @@ use error::Error;
 #[derive(Clone, Debug, PartialEq)]
 pub enum HostStar {
   /// A single star.
-  Star(Star),
+  Star(Box<Star>),
   /// A close binary star.
-  CloseBinaryStar(CloseBinaryStar),
+  CloseBinaryStar(Box<CloseBinaryStar>),
 }
 
 impl HostStar {

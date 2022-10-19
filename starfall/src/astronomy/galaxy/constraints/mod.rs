@@ -17,7 +17,6 @@ impl Constraints {
     let stellar_neighborhood_constraints = Some(StellarNeighborhoodConstraints::habitable());
     Self {
       stellar_neighborhood_constraints,
-      ..Constraints::default()
     }
   }
 
@@ -27,9 +26,7 @@ impl Constraints {
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Galaxy, Error> {
     trace_enter!();
-    let stellar_neighborhood_constraints = self
-      .stellar_neighborhood_constraints
-      .unwrap_or(StellarNeighborhoodConstraints::default());
+    let stellar_neighborhood_constraints = self.stellar_neighborhood_constraints.unwrap_or_default();
     trace_var!(stellar_neighborhood_constraints);
     let stellar_neighborhood = stellar_neighborhood_constraints.generate(rng)?;
     let result = Galaxy { stellar_neighborhood };

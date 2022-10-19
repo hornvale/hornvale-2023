@@ -49,7 +49,7 @@ impl Constraints {
     let coordinates = (x, y, z);
     trace_var!(coordinates);
     let distance = (x.powf(2.0) + y.powf(2.0) + z.powf(2.0)).sqrt();
-    let system_constraints = self.system_constraints.unwrap_or(StarSystemConstraints::default());
+    let system_constraints = self.system_constraints.unwrap_or_default();
     let star_system = system_constraints.generate(rng)?;
     trace_var!(star_system);
     let name = star_system.name.clone();

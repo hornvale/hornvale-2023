@@ -49,9 +49,7 @@ impl Constraints {
     trace_var!(minimum_count);
     let maximum_count = self.maximum_count.unwrap_or(MAXIMUM_SATELLITE_SYSTEMS);
     trace_var!(maximum_count);
-    let satellite_system_constraints = self
-      .satellite_system_constraints
-      .unwrap_or(SatelliteSystemConstraints::default());
+    let satellite_system_constraints = self.satellite_system_constraints.unwrap_or_default();
     trace_var!(satellite_system_constraints);
     let mut satellite_systems = Vec::new();
     let orbits = self.generate_orbits(rng, host_star)?;
@@ -112,7 +110,7 @@ impl Constraints {
         break;
       }
     }
-    result.sort_by(|a, b| a.partial_cmp(&b).unwrap());
+    result.sort_by(|a, b| a.partial_cmp(b).unwrap());
     trace_var!(result);
     trace_exit!();
     Ok(result)

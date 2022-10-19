@@ -117,11 +117,11 @@ impl Constraints {
       if minimum_combined_mass < bare_minimum {
         minimum_combined_mass = 1.1 * bare_minimum;
       }
-      primary_constraints = self.star_constraints.unwrap_or(StarConstraints::habitable());
-      secondary_constraints = self.star_constraints.unwrap_or(StarConstraints::habitable());
+      primary_constraints = self.star_constraints.unwrap_or_else(StarConstraints::habitable);
+      secondary_constraints = self.star_constraints.unwrap_or_else(StarConstraints::habitable);
     } else {
-      primary_constraints = self.star_constraints.unwrap_or(StarConstraints::default());
-      secondary_constraints = self.star_constraints.unwrap_or(StarConstraints::default());
+      primary_constraints = self.star_constraints.unwrap_or_default();
+      secondary_constraints = self.star_constraints.unwrap_or_default();
     }
     let (primary, secondary) = {
       combined_mass = rng.gen_range(minimum_combined_mass..maximum_combined_mass);

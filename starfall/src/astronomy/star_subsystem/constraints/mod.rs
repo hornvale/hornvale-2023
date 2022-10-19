@@ -40,20 +40,15 @@ impl Constraints {
     trace_var!(distant_binary_probability);
     let generate_planetary_system: bool = rng.gen_range(0.0..1.0) > distant_binary_probability;
     trace_var!(generate_planetary_system);
-    let result;
-    if generate_planetary_system {
-      let planetary_system_constraints = self
-        .planetary_system_constraints
-        .unwrap_or(PlanetarySystemConstraints::default());
+    let result = if generate_planetary_system {
+      let planetary_system_constraints = self.planetary_system_constraints.unwrap_or_default();
       trace_var!(planetary_system_constraints);
-      result = PlanetarySystem(planetary_system_constraints.generate(rng)?);
+      PlanetarySystem(planetary_system_constraints.generate(rng)?)
     } else {
-      let distant_binary_star_constraints = self
-        .distant_binary_star_constraints
-        .unwrap_or(DistantBinaryStarConstraints::default());
+      let distant_binary_star_constraints = self.distant_binary_star_constraints.unwrap_or_default();
       trace_var!(distant_binary_star_constraints);
-      result = DistantBinaryStar(distant_binary_star_constraints.generate(rng)?);
-    }
+      DistantBinaryStar(distant_binary_star_constraints.generate(rng)?)
+    };
     trace_var!(result);
     trace_exit!();
     Ok(result)

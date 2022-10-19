@@ -24,7 +24,7 @@ pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
   let temperature = star_mass_to_temperature(mass)?;
   trace_var!(temperature);
   let x = match temperature {
-    temperature if temperature >= 1_667.0 && temperature <= 4_000.0 => {
+    temperature if (1_667.0..=4_000.0).contains(&temperature) => {
       ((-0.2661239 * (10.0_f64).powf(9.0)) / temperature.powf(3.0))
         + ((-0.2343580 * (10.0_f64).powf(6.0)) / temperature.powf(2.0))
         + ((0.8776956 * (10.0_f64).powf(3.0)) / temperature)
@@ -40,10 +40,10 @@ pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
   };
   trace_var!(x);
   let y = match temperature {
-    temperature if temperature >= 1_667.0 && temperature <= 2_222.0 => {
+    temperature if (1_667.0..2_222.0).contains(&temperature) => {
       -1.1063814 * x.powf(3.0) - 1.34811020 * x.powf(2.0) + 2.18555832 * x - 0.20219683
     },
-    temperature if temperature >= 2_222.0 && temperature <= 4_000.0 => {
+    temperature if (2_222.0..4_000.0).contains(&temperature) => {
       -0.9549476 * x.powf(3.0) - 1.37418593 * x.powf(2.0) + 2.09137015 * x - 0.16748867
     },
     temperature if temperature >= 4_000.0 => {

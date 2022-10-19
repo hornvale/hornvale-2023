@@ -60,9 +60,7 @@ impl Constraints {
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSystem, Error> {
     trace_enter!();
-    let star_subsystem_constraints = self
-      .star_subsystem_constraints
-      .unwrap_or(StarSubsystemConstraints::default());
+    let star_subsystem_constraints = self.star_subsystem_constraints.unwrap_or_default();
     let star_subsystem = {
       let mut retries = self.retries.unwrap_or(10);
       let star_subsystem;

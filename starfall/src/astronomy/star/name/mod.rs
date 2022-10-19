@@ -1,7 +1,7 @@
 use inflector::cases::sentencecase::to_sentence_case;
 use rand::prelude::*;
 
-pub const PREFIX: &'static [&'static str] = &[
+pub const PREFIX: &[&str] = &[
   "", "aga", "allo", "an", "andro", "anti", "ap", "aqui", "ar", "ara", "ba", "bacty", "bal", "baltara", "bali", "bara",
   "bas", "bona", "cael", "can", "cap", "cas", "cella", "cen", "cepha", "cer", "ceta", "char", "cir", "co", "coil",
   "col", "cor", "cra", "da", "del", "dor", "dra", "elda", "erra", "esse", "equi", "fel", "for", "fre", "ge", "glo",
@@ -10,13 +10,13 @@ pub const PREFIX: &'static [&'static str] = &[
   "scepta", "scoro", "ser", "sol", "speci", "specu", "tar", "tau", "tele", "tria", "ty", "tza", "uralo", "ur", "val",
   "vir", "xer", "yetra",
 ];
-pub const INFIX: &'static [&'static str] = &[
+pub const INFIX: &[&str] = &[
   "", "a", "alla", "arra", "attra", "bas", "bella", "beta", "boro", "calla", "cla", "cly", "cres", "cul", "cylandr",
   "cylor", "dyro", "dro", "elter", "escher", "esther", "fenne", "for", "fra", "gelt", "got", "hela", "hera", "irra",
   "is", "kry", "logi", "mely", "mekry", "mes", "met", "metro", "min", "nat", "net", "pat", "pet", "pret", "riota",
   "ser", "sus", "syr", "tar", "tem", "ter", "tin", "tli", "tol",
 ];
-pub const SUFFIX: &'static [&'static str] = &[
+pub const SUFFIX: &[&str] = &[
   "", "a", "an", "aura", "aurus", "eda", "elius", "eon", "eontia", "ese", "eti", "etius", "i", "ion", "lon", "meda",
   "neda", "nia", "olia", "oloria", "on", "ontia", "opia", "or", "oria", "orious", "ous", "os", "tor", "um", "us", "ux",
   "yria",

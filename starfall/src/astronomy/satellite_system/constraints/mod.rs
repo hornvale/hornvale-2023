@@ -36,9 +36,9 @@ impl Constraints {
     trace_enter!();
     trace_var!(host_star);
     trace_var!(star_distance);
-    let planet_constraints = self.planet_constraints.unwrap_or(PlanetConstraints::default());
+    let planet_constraints = self.planet_constraints.unwrap_or_default();
     trace_var!(planet_constraints);
-    let moons_constraints = self.moons_constraints.unwrap_or(MoonsConstraints::default());
+    let moons_constraints = self.moons_constraints.unwrap_or_default();
     trace_var!(moons_constraints);
     let planet = planet_constraints.generate(rng, host_star, star_distance)?;
     trace_var!(planet);

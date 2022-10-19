@@ -25,7 +25,6 @@ impl Constraints {
     let result = Self {
       host_star_constraints,
       satellite_systems_constraints,
-      ..Constraints::default()
     };
     trace_var!(result);
     trace_exit!();
@@ -36,11 +35,9 @@ impl Constraints {
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<PlanetarySystem, Error> {
     trace_enter!();
-    let host_star_constraints = self.host_star_constraints.unwrap_or(HostStarConstraints::default());
+    let host_star_constraints = self.host_star_constraints.unwrap_or_default();
     trace_var!(host_star_constraints);
-    let satellite_systems_constraints = self
-      .satellite_systems_constraints
-      .unwrap_or(SatelliteSystemsConstraints::default());
+    let satellite_systems_constraints = self.satellite_systems_constraints.unwrap_or_default();
     trace_var!(satellite_systems_constraints);
     let host_star = host_star_constraints.generate(rng)?;
     trace_var!(host_star);

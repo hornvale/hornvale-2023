@@ -133,12 +133,7 @@ impl Moon {
     trace_var!(is_planet_tidally_locked);
     let is_moon_tidally_locked = is_moon_tidally_locked(solar_tide, planetary_tide, host_star.get_current_age(), mass);
     trace_var!(is_moon_tidally_locked);
-    let rotation_period;
-    if is_moon_tidally_locked {
-      rotation_period = orbital_period;
-    } else {
-      rotation_period = 3.0;
-    }
+    let rotation_period = if is_moon_tidally_locked { orbital_period } else { 3.0 };
     trace_var!(rotation_period);
     let result = Moon {
       mass,

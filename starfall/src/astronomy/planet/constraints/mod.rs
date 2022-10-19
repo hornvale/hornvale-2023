@@ -32,15 +32,11 @@ impl Constraints {
     use Planet::*;
     let result = {
       if distance >= host_star.get_frost_line() {
-        let constraints = self
-          .gas_giant_planet_constraints
-          .unwrap_or(GasGiantPlanetConstraints::default());
+        let constraints = self.gas_giant_planet_constraints.unwrap_or_default();
         trace_var!(constraints);
         GasGiantPlanet(constraints.generate(rng, host_star, distance)?)
       } else {
-        let constraints = self
-          .terrestrial_planet_constraints
-          .unwrap_or(TerrestrialPlanetConstraints::default());
+        let constraints = self.terrestrial_planet_constraints.unwrap_or_default();
         trace_var!(constraints);
         TerrestrialPlanet(constraints.generate(rng, host_star, distance)?)
       }

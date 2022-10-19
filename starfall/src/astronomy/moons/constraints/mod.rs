@@ -43,7 +43,7 @@ impl Constraints {
     }
     trace_var!(minimum_count);
     trace_var!(maximum_count);
-    let moon_constraints = self.moon_constraints.unwrap_or(MoonConstraints::default());
+    let moon_constraints = self.moon_constraints.unwrap_or_default();
     trace_var!(moon_constraints);
     let rocky_moon_density = 3.35;
     trace_var!(rocky_moon_density);

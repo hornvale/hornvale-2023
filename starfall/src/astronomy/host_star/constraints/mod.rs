@@ -26,7 +26,6 @@ impl Constraints {
     let result = Self {
       star_constraints,
       close_binary_star_constraints,
-      ..Constraints::default()
     };
     trace_var!(result);
     trace_exit!();
@@ -39,16 +38,13 @@ impl Constraints {
     trace_enter!();
     use HostStar::*;
     let is_solitary: bool = rng.gen_range(0.0..=1.0) > BINARY_STAR_PROBABILITY;
-    let result;
-    if is_solitary {
-      let constraints = self.star_constraints.unwrap_or(StarConstraints::default());
-      result = Star(constraints.generate(rng)?);
+    let result = if is_solitary {
+      let constraints = self.star_constraints.unwrap_or_default();
+      Star(Box::new(constraints.generate(rng)?))
     } else {
-      let constraints = self
-        .close_binary_star_constraints
-        .unwrap_or(CloseBinaryStarConstraints::default());
-      result = CloseBinaryStar(constraints.generate(rng)?);
-    }
+      let constraints = self.close_binary_star_constraints.unwrap_or_default();
+      CloseBinaryStar(Box::new(constraints.generate(rng)?))
+    };
     trace_var!(result);
     trace_exit!();
     Ok(result)

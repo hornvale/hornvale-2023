@@ -27,7 +27,6 @@ impl Constraints {
       minimum_mass,
       maximum_mass,
       make_habitable,
-      ..Constraints::default()
     }
   }
 
@@ -50,8 +49,7 @@ impl Constraints {
       trace_var!(lower_bound_mass);
       let upper_bound_mass = random_range.end;
       trace_var!(upper_bound_mass);
-      let mass = rng.gen_range(lower_bound_mass..upper_bound_mass);
-      mass
+      rng.gen_range(lower_bound_mass..upper_bound_mass)
     };
     trace_var!(mass);
     let mut result = Star::from_mass(rng, mass)?;
