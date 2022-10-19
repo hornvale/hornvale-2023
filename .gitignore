@@ -8,4 +8,4 @@
 **/*.rs.bk
 
 # mdBook
-harlaw/build
+harlaw/book
