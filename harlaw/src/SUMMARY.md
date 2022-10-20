@@ -1,6 +1,30 @@
 # Summary
 
-[Epigraph](front_matter/epigraph.md)
 [Introduction](front_matter/introduction.md)
-[The Goblin Village](front_matter/goblin_village.md)
-["Hello, Sailor!"](front_matter/hello_sailor.md)
+
+# 📜 Goldengrove
+
+- ["Hello, Sailor!"](goldengrove/hello_sailor.md)
+
+# 💫 Starfall
+
+- [_Cosmos_ and Tatooine](starfall/cosmos_and_tatooine.md)
+
+# 👻 Ramsgate
+
+- [_The Golden Bough_](ramsgate/the_golden_bough.md)
+
+# 🧑‍🤝‍🧑 Weepingtown
+
+- [The Goblin Village](weepingtown/goblin_village.md)
+
+<!--
+# 🧬 Appleton
+# 💻 Blackpool
+# 🏦 Casterlyrock
+# 🧍‍♂️ Dreadfort
+# 🌿 Ivyhall
+# 🪦 Kingsgrave
+# 💬 Lemonwood
+# 🌋 Stonedance
+-->
