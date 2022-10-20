@@ -12,4 +12,8 @@ What might the religions of goblins look like?
 
 What might the religions of goblins look like if they are traditionally dominated by hobgoblins?  If that domination looks more like paternalism or hegemony?  Or brutal enslavement?
 
+What might religions look like in fantasy worlds with actual deities?  If believing makes a deity real, what deities form?
+
+How might the stars be divided into constellations?  Can the stars along the ecliptic form a zodiac?
+
 I think these are interesting questions, and I'd like to try to create some interesting systems for answering them.
