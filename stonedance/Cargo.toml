@@ -1,8 +1,15 @@
 [package]
 name = "stonedance"
+description = "Geology and physical geography for my Hornvale project."
 version = "0.1.0"
 edition = "2021"
 authors = ["Nathan Douglas <github@darkdell.net>"]
+license = "Unlicense"
+homepage = "https://ndouglas.github.io/hornvale/"
+repository = "https://github.com/ndouglas/hornvale/"
+documentation = "https://ndouglas.github.io/hornvale/"
+readme = "README.md"
+keywords = ["hornvale"]
 
 [lib]
 name = "stonedance"
