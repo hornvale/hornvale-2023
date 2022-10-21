@@ -3,7 +3,7 @@ use super::world::World;
 /// A simple test perceptual receiver.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct PerceptualReceiver {
-  world: World,
+  pub world: World,
 }
 
 impl PerceptualReceiver {
