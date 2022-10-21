@@ -2201,6 +2201,7 @@ dependencies = [
  "lemonwood",
  "log",
  "pretty_env_logger",
+ "pyke",
  "ramsgate",
  "starfall",
  "stonedance",
@@ -3180,6 +3181,16 @@ name = "profiling"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74605f360ce573babfe43964cbe520294dcb081afbf8c108fc6e23036b4da2df"
+
+[[package]]
+name = "pyke"
+version = "0.1.0"
+dependencies = [
+ "function_name",
+ "log",
+ "pretty_env_logger",
+ "volmark",
+]
 
 [[package]]
 name = "quick-error"

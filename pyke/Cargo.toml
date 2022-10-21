@@ -1,0 +1,26 @@
+[package]
+name = "pyke"
+description = "Psychology and artificial intelligence for my Hornvale project."
+version = "0.1.0"
+edition = "2021"
+authors = ["Nathan Douglas <github@darkdell.net>"]
+license = "Unlicense"
+homepage = "https://ndouglas.github.io/hornvale/"
+repository = "https://github.com/ndouglas/hornvale/"
+documentation = "https://ndouglas.github.io/hornvale/"
+readme = "README.md"
+keywords = ["hornvale"]
+
+[lib]
+name = "pyke"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pyke"
+path = "src/main.rs"
+
+[dependencies]
+function_name = { workspace = true }
+log = { workspace = true }
+pretty_env_logger = { workspace = true }
+volmark = { workspace = true }

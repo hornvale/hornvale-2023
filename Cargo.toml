@@ -36,6 +36,7 @@ goldengrove = { version = "0.1.0", path = "./goldengrove" }
 honeyholt = { version = "0.1.0", path = "./honeyholt" }
 kingsgrave = { version = "0.1.0", path = "./kingsgrave" }
 lemonwood = { version = "0.1.0", path = "./lemonwood" }
+pyke = { version = "0.1.0", path = "./pyke" }
 ramsgate = { version = "0.1.0", path = "./ramsgate" }
 starfall = { version = "0.1.0", path = "./starfall" }
 stonedance = { version = "0.1.0", path = "./stonedance" }

@@ -21,7 +21,7 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
 ## Hornvale Subprojects
 I know these names are somewhat opaque, but my thinking is that I decouple the name from a concrete name like "astronomy" and gain some flexibility with the borders.
 
-- [🧬 Appleton](./appleton/README.md): Biological/psychological, up to Maslow's hierarchy of needs stuff.
+- [🧬 Appleton](./appleton/README.md): Biological, taxonomy and related subjects.
 - [💻 Blackpool](./blackpool/README.md): Embedded programming language and domain-specific library.
 - [🏦 Casterlyrock](./casterlyrock/README.md): Economic system, merchants, resources, scarcity.
 - [🧍‍♂️ Dreadfort](./dreadfort/README.md): Anatomy and physiology, health, damage, poison, and regeneration.
@@ -31,6 +31,7 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 - [🌿 Ivyhall](./ivyhall/README.md): Frontend and connective logic.  As little as possible.
 - [🪦 Kingsgrave](./kingsgrave/README.md): Combat system, some closely related topics.
 - [💬 Lemonwood](./lemonwood/README.md): Linguistics system permitting communication, bidirectional translation, etc.
+- [🧠 Pyke](./pyke/README.md): Psychology and Artificial Intelligence.
 - [👻 Ramsgate](./ramsgate/README.md): Supernatural and metaphysical concepts, the thermodynamics of spirit.
 - [💫 Starfall](./starfall/README.md): Astronomical sciences, from the galaxy to the moon.
 - [🌋 Stonedance](./stonedance/README.md): Geology and physical geography.
