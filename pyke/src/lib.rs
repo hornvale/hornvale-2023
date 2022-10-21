@@ -1,6 +1,10 @@
 #![allow(unused_macros)]
 
+#[macro_use]
+extern crate volmark;
 pub use volmark::*;
+
+pub mod planning;
 
 #[cfg(test)]
 pub mod test {
@@ -8,7 +12,7 @@ pub mod test {
   use pretty_env_logger::env_logger::builder;
   use std::env::set_var;
 
-  use super::*;
+  pub use super::*;
 
   #[named]
   pub fn init() {
