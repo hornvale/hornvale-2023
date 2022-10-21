@@ -23,4 +23,4 @@ path = "src/main.rs"
 function_name = { workspace = true }
 log = { workspace = true }
 pretty_env_logger = { workspace = true }
-volmark = { path = "../volmark" }
+volmark = { workspace = true }
