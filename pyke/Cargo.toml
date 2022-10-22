@@ -20,7 +20,9 @@ name = "pyke"
 path = "src/main.rs"
 
 [dependencies]
+bitfield = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }
 pretty_env_logger = { workspace = true }
+thiserror = { workspace = true }
 volmark = { workspace = true }
