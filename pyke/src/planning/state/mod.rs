@@ -1,4 +1,4 @@
-/// The `State` trait.
+/// The `State` struct.
 ///
 /// This represents some description of the world that an actor might use.
 ///
@@ -6,4 +6,30 @@
 /// State object.  Then they might specify that they do not want to be hungry.
 /// The resulting discrepancy can be used in planning to navigate the critter
 /// to some food and eat it.
-pub trait State {}
+///
+/// After sleeping on it, I've decided that I'm going to make this as simple
+/// as possible: just a bitfield, basically.
+#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
+pub struct State {
+  /// The actual values managed in this struct.
+  pub values: u64,
+  /// A mask indicating which atoms do not matter.
+  pub mask: u64,
+}
+
+impl State {
+  /// Calculate meaningful distance.
+  #[named]
+  pub fn get_distance(&self, other: &State) -> usize {
+    trace_enter!();
+    trace_var!(other);
+    let matter = self.mask ^ u64::MAX;
+    trace_var!(matter);
+    let difference = (self.values & matter) ^ (other.values & matter);
+    trace_var!(difference);
+    let result = difference.count_ones() as usize;
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+}

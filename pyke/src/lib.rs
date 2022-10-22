@@ -1,6 +1,9 @@
 #![allow(unused_macros)]
 
 #[macro_use]
+extern crate thiserror;
+
+#[macro_use]
 extern crate volmark;
 pub use volmark::*;
 
