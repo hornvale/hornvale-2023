@@ -5,7 +5,7 @@ use crate::planning::state::State;
 /// The `Nodes` type.
 ///
 /// This wraps a list of `Node` objects.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Nodes {
   /// The list of nodes.
   pub nodes: Vec<Node>,
@@ -73,8 +73,43 @@ impl Nodes {
   }
 }
 
-impl Default for Nodes {
-  fn default() -> Self {
-    Self::new()
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test1() {
+    init();
+    trace_enter!();
+    let start = State::default();
+    let mut nodes = Nodes::default();
+    assert_eq!(nodes.find_node_matching_state(&start), Err(Error::NotFound));
+    assert_eq!(nodes.find_cheapest_node(), Err(Error::NotFound));
+    assert_eq!(nodes.take_cheapest_node(), Err(Error::NotFound));
+    print_var!(nodes);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test2() {
+    init();
+    trace_enter!();
+    let start = State::default();
+    let goal = State::default();
+    let node = Node::new_start(start, goal);
+    let mut nodes = Nodes::default();
+    assert_eq!(nodes.find_node_matching_state(&start), Err(Error::NotFound));
+    assert_eq!(nodes.find_cheapest_node(), Err(Error::NotFound));
+    assert_eq!(nodes.take_cheapest_node(), Err(Error::NotFound));
+    nodes.nodes.push(node.clone());
+    assert_eq!(nodes.find_node_matching_state(&start), Ok(0));
+    assert_eq!(nodes.find_cheapest_node(), Ok(0));
+    assert_eq!(nodes.take_cheapest_node(), Ok(node));
+    print_var!(nodes);
+    trace_exit!();
   }
 }

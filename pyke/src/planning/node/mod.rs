@@ -61,3 +61,34 @@ impl Node {
     result
   }
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_new_start() {
+    init();
+    trace_enter!();
+    let start = State::default();
+    let goal = State::default();
+    let node = Node::new_start(start, goal);
+    print_var!(node);
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_new() {
+    init();
+    trace_enter!();
+    let start = State::default();
+    let goal = State::default();
+    let node = Node::new(start, None, goal, None, 0);
+    print_var!(node);
+    trace_exit!();
+  }
+}
