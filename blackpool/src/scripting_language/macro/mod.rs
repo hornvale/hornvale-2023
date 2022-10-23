@@ -32,7 +32,7 @@ macro_rules! test_instructions {
       $(start_stack.push($start_stack);)*
       start_stack.reverse();
       vm.stack = start_stack;
-      let result = vm.interpret(&program);
+      let result = vm.run(&program);
       print_var!(result);
       result.unwrap();
       let mut end_stack = vm.stack.clone();

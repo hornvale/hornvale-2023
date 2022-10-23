@@ -1,3 +1,4 @@
+use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::program::Program;
 use crate::scripting_language::value::Value;
@@ -36,12 +37,26 @@ impl VirtualMachine {
     result
   }
 
-  /// Interpret a program.
+  /// Interpret some source code.
   #[named]
-  pub fn interpret(&mut self, program: &Program) -> Result<(), Error> {
+  pub fn interpret(&mut self, source: &String) -> Result<(), Error> {
     trace_enter!();
+    trace_var!(source);
+    self.compile(source)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Compile the source code.
+  #[named]
+  pub fn compile(&mut self, source: &String) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(source);
+    let compiler = Compiler::default();
+    trace_var!(compiler);
+    let program = compiler.compile(source)?;
     trace_var!(program);
-    self.run(program)?;
+    self.run(&program)?;
     trace_exit!();
     Ok(())
   }
