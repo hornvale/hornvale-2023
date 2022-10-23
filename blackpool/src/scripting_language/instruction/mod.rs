@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter, Result as FmtResult, Write};
 /// The `Instruction` type.
 ///
 /// An instruction consists of an opcode and its arguments.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Instruction {
   Return,
 }
@@ -14,11 +14,7 @@ impl Instruction {
   #[named]
   pub fn dump<W: Write>(&self, index: usize, offset: usize, out: &mut W) -> Result<usize, Box<dyn StdError>> {
     trace_enter!();
-    let arguments = 0;
-    use Instruction::*;
-    let result = match &self {
-      _ => 0,
-    };
+    let result = 0;
     write!(
       out,
       "{:>5}   {:#06X}  {:>16}  {:>4}",

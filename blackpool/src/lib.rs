@@ -7,7 +7,7 @@ extern crate serde;
 extern crate volmark;
 pub use volmark::*;
 
-pub mod language;
+pub mod scripting_language;
 
 #[cfg(test)]
 pub mod test {

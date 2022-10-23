@@ -1,18 +1,31 @@
 use std::error::Error as StdError;
 use std::fmt::Write;
 
-use crate::language::instruction::Instruction;
+use crate::scripting_language::instruction::Instruction;
 
 /// The `Instructions` collection.
-#[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct Instructions {
   pub instructions: Vec<Instruction>,
 }
 
 impl Instructions {
+  /// Constructor.
+  #[named]
+  pub fn new() -> Self {
+    trace_enter!();
+    let instructions = Vec::new();
+    trace_var!(instructions);
+    let result = Self { instructions };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
   /// Dump the disassembled memory.
   #[named]
   pub fn dump<W: Write>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
+    trace_enter!();
     writeln!(out)?;
     writeln!(
       out,
