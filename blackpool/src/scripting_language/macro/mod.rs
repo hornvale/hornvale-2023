@@ -24,7 +24,7 @@ macro_rules! test_program {
       print_var!(line);
       print_var!(program);
       program.instructions.dump(&mut dump).unwrap();
-      print_var!(dump);
+      println!("{}", dump);
       let mut vm = VirtualMachine::default();
       // We want the first values listed above to be the top of the stack, so
       // we have to create a vector, then reverse it.

@@ -72,6 +72,26 @@ impl VirtualMachine {
           let pop = self.pop()?;
           self.push(-pop)?;
         },
+        Add => {
+          let addend = self.pop()?;
+          let augend = self.pop()?;
+          self.push(augend + addend)?;
+        },
+        Subtract => {
+          let subtrahend = self.pop()?;
+          let minuend = self.pop()?;
+          self.push(minuend - subtrahend)?;
+        },
+        Multiply => {
+          let multiplier = self.pop()?;
+          let multiplicand = self.pop()?;
+          self.push(multiplicand * multiplier)?;
+        },
+        Divide => {
+          let divisor = self.pop()?;
+          let dividend = self.pop()?;
+          self.push(dividend / divisor)?;
+        },
         Return => break,
       }
       self.instruction_pointer += 1;
@@ -127,6 +147,8 @@ pub mod test {
     test_program!([Return], [Number(53.0)] => [Number(53.0)]);
     test_program!([Negate], [Number(53.0)] => [Number(-53.0)]);
     test_program!([Negate], [Number(-53.0)] => [Number(53.0)]);
+    test_program!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
+    test_program!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
     trace_exit!();
   }
 }

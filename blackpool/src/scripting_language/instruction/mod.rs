@@ -12,6 +12,14 @@ pub enum Instruction {
   LongConstant(u16),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
+  /// Add the two values on the top of the stack.
+  Add,
+  /// Subtract the two values on the top of the stack.
+  Subtract,
+  /// Multiply the two values on the top of the stack.
+  Multiply,
+  /// Divide the two values on the top of the stack.
+  Divide,
   /// Return whence we came!
   Return,
 }
