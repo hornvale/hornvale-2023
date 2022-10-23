@@ -33,10 +33,15 @@ impl Instruction {
       Constant(_) => 1,
       _ => 0,
     };
+    #[allow(clippy::to_string_in_format_args)]
     write!(
       out,
-      "{:>5}   {:#06X}  {:>6}  {:>16}  {:>4}",
-      index, offset, line, self, result,
+      "{:5}   {:#06X}  {:>6}  {:>16}  {:>4}",
+      index,
+      offset,
+      line,
+      self.to_string(),
+      result,
     )?;
     trace_var!(result);
     trace_exit!();

@@ -52,7 +52,7 @@ impl Instructions {
       "{:6}  {:>6}  {:>6}  {:>16}  {:>4}",
       "Index", "Offset", "Line", "Instruction", "Args"
     )?;
-    writeln!(out, "--------------------------------------")?;
+    writeln!(out, "----------------------------------------------")?;
     let mut offset = 0;
     for (index, instruction) in self.instructions.iter().enumerate() {
       // Add one for the byte width of the operand.
@@ -81,7 +81,12 @@ pub mod test {
     instructions.append(instruction, 1);
     let result = instructions.dump(&mut string).unwrap();
     assert_eq!(result, ());
-    assert_eq!(string, "\nIndex   Offset    Line       Instruction  Args\n--------------------------------------\n    0   0x0000       1            Return     0\n");
+    println!("{}", string);
+    let lines: Vec<&str> = string.split("\n").collect();
+    assert_eq!(lines[0], "");
+    assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
+    assert_eq!(lines[2], "----------------------------------------------");
+    assert_eq!(lines[3], "    0   0x0000       1            Return     0");
     trace_exit!();
   }
 }
