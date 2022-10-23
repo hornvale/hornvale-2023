@@ -63,34 +63,55 @@ impl VirtualMachine {
         Constant(index) => {
           let constant = program.constants.constants[index as usize];
           trace_var!(constant);
+          self.push(constant)?;
         },
         LongConstant(index) => {
           let constant = program.constants.constants[index as usize];
           trace_var!(constant);
+          self.push(constant)?;
         },
         Negate => {
           let pop = self.pop()?;
-          self.push(-pop)?;
+          trace_var!(pop);
+          let answer = -pop;
+          trace_var!(answer);
+          self.push(answer)?;
         },
         Add => {
           let addend = self.pop()?;
+          trace_var!(addend);
           let augend = self.pop()?;
-          self.push(augend + addend)?;
+          trace_var!(augend);
+          let answer = augend + addend;
+          trace_var!(answer);
+          self.push(answer)?;
         },
         Subtract => {
           let subtrahend = self.pop()?;
+          trace_var!(subtrahend);
           let minuend = self.pop()?;
-          self.push(minuend - subtrahend)?;
+          trace_var!(minuend);
+          let answer = minuend - subtrahend;
+          trace_var!(answer);
+          self.push(answer)?;
         },
         Multiply => {
           let multiplier = self.pop()?;
+          trace_var!(multiplier);
           let multiplicand = self.pop()?;
-          self.push(multiplicand * multiplier)?;
+          trace_var!(multiplicand);
+          let answer = multiplicand * multiplier;
+          trace_var!(answer);
+          self.push(answer)?;
         },
         Divide => {
           let divisor = self.pop()?;
+          trace_var!(divisor);
           let dividend = self.pop()?;
-          self.push(dividend / divisor)?;
+          trace_var!(dividend);
+          let answer = dividend / divisor;
+          trace_var!(answer);
+          self.push(answer)?;
         },
         Return => break,
       }

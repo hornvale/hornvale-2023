@@ -91,6 +91,11 @@ pub mod test {
     test_program!([Subtract], [Number(4.0), Number(-53.0)] => [Number(-57.0)]);
     test_program!([Subtract], [Number(-3.0), Number(4.0)] => [Number(7.0)]);
     test_program!([Subtract], [Number(4.0), Number(3.0)] => [Number(-1.0)]);
+    test_program!([Multiply], [Number(4.0), Number(5.0)] => [Number(20.0)]);
+    test_program!([Multiply], [Number(2.0), Number(-5.0)] => [Number(-10.0)]);
+    test_program!([Divide], [Number(4.0), Number(5.0)] => [Number(1.25)]);
+    test_program!([Divide], [Number(32.0), Number(-128.0)] => [Number(-4.0)]);
+    test_program!([Add, Divide, Negate], [Number(1.2), Number(3.4), Number(5.6)] => [Number(-1.2173)]);
     trace_exit!();
   }
 }
