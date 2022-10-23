@@ -4,12 +4,14 @@ use std::fmt::{Display, Formatter, Result as FmtResult, Write};
 /// The `Instruction` type.
 ///
 /// An instruction consists of an opcode and its arguments.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Instruction {
   /// Produce a particular constant (8-bit operand length).
   Constant(u8),
   /// Produce a particular constant (16-bit operand length).
   LongConstant(u16),
+  /// Unary negate operation, performed on the top of the stack.
+  Negate,
   /// Return whence we came!
   Return,
 }
@@ -71,6 +73,7 @@ pub mod test {
   pub fn test_fmt() {
     init();
     trace_enter!();
+    assert_eq!(Instruction::Negate.to_string(), "Negate");
     assert_eq!(Instruction::Return.to_string(), "Return");
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");
     assert_eq!(Instruction::LongConstant(5).to_string(), "LongConstant(5)");

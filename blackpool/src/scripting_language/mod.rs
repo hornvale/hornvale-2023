@@ -8,3 +8,4 @@ pub mod instruction;
 pub mod instructions;
 pub mod program;
 pub mod value;
+pub mod virtual_machine;
