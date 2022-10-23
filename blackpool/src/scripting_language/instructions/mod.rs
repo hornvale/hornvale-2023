@@ -56,7 +56,9 @@ impl Instructions {
     let mut offset = 0;
     for (index, instruction) in self.instructions.iter().enumerate() {
       // Add one for the byte width of the operand.
-      offset += instruction.dump(index, offset, self.line_numbers[index], out)? + 1;
+      let line = self.line_numbers[index];
+      let same_line = index > 0 && self.line_numbers[index] == self.line_numbers[index - 1];
+      offset += instruction.dump(index, offset, line, same_line, out)? + 1;
     }
     writeln!(out)?;
     trace_exit!();

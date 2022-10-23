@@ -22,6 +22,7 @@ impl Instruction {
     index: usize,
     offset: usize,
     line: usize,
+    same_line: bool,
     out: &mut W,
   ) -> Result<usize, Box<dyn StdError>> {
     trace_enter!();
@@ -33,13 +34,17 @@ impl Instruction {
       Constant(_) => 1,
       _ => 0,
     };
+    let line_string = match same_line {
+      true => "|".to_string(),
+      false => line.to_string(),
+    };
     #[allow(clippy::to_string_in_format_args)]
     write!(
       out,
       "{:5}   {:#06X}  {:>6}  {:>16}  {:>4}",
       index,
       offset,
-      line,
+      line_string,
       self.to_string(),
       result,
     )?;
@@ -77,7 +82,7 @@ pub mod test {
     init();
     trace_enter!();
     let mut string = String::new();
-    let result = Instruction::Return.dump(0, 0, 0, &mut string).unwrap();
+    let result = Instruction::Return.dump(0, 0, 0, false, &mut string).unwrap();
     assert_eq!(result, 0);
     assert_eq!(string, "    0   0x0000       0            Return     0");
     trace_exit!();
@@ -89,9 +94,21 @@ pub mod test {
     init();
     trace_enter!();
     let mut string = String::new();
-    let result = Instruction::Return.dump(16, 23, 72, &mut string).unwrap();
+    let result = Instruction::Return.dump(16, 23, 72, false, &mut string).unwrap();
     assert_eq!(result, 0);
     assert_eq!(string, "   16   0x0017      72            Return     0");
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test3() {
+    init();
+    trace_enter!();
+    let mut string = String::new();
+    let result = Instruction::Return.dump(16, 23, 72, true, &mut string).unwrap();
+    assert_eq!(result, 0);
+    assert_eq!(string, "   16   0x0017       |            Return     0");
     trace_exit!();
   }
 }
