@@ -4,7 +4,7 @@ pub mod error;
 use error::Error;
 
 /// The `GasGiantPlanet` type.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GasGiantPlanet {
   /// Mass, in Mjupiter.
   pub mass: f64,

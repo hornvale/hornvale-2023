@@ -16,7 +16,7 @@ use error::Error;
 /// And let's not get started on how disappointing it is to call something a
 /// planetary system when it may not actually have any planets.  But I don't
 /// think we have a better word or phrase for the idea.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct DistantBinaryStar {
   /// The primary planetary system is the one with greater mass.
   pub primary: PlanetarySystem,

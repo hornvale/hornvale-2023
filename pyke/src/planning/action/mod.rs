@@ -1,7 +1,7 @@
 use crate::planning::state::State;
 
 /// An action.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Action {
   /// The name of this action.
   pub name: String,

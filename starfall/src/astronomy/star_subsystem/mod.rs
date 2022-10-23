@@ -9,7 +9,7 @@ use error::*;
 /// The `StarSubsystem` type.
 ///
 /// A StarSubsystem is either one star with a planetary system or a distant binary.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum StarSubsystem {
   /// A distant binary system.
   DistantBinaryStar(DistantBinaryStar),

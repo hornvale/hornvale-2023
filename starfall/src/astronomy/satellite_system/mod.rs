@@ -7,7 +7,7 @@ pub mod error;
 use error::Error;
 
 /// A `SatelliteSystem` is a collection of a `Planet` and `Moons`.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SatelliteSystem {
   /// The planet.
   pub planet: Planet,

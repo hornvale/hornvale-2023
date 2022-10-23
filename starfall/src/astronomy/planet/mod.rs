@@ -8,7 +8,7 @@ use error::Error;
 pub mod math;
 
 /// The `Planet` class.  This will get complicated.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum Planet {
   /// Gas Giant Planet.
   GasGiantPlanet(GasGiantPlanet),

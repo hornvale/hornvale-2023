@@ -13,7 +13,7 @@ pub mod error;
 /// stars, possibly with planets of their own.
 ///
 /// Why?  Well, just to add a little color to the night sky.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StellarNeighborhood {
   /// The radius of this neighborhood, measured in light years.
   pub radius: f64,

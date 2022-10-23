@@ -1,7 +1,7 @@
 use crate::planning::state::State;
 
 /// An individual A* node.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, Deserialize, Serialize)]
 pub struct Node {
   /// The state represented by this node.
   pub state: State,

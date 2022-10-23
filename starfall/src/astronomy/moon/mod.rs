@@ -21,7 +21,7 @@ use rotation_direction::RotationDirection;
 ///
 /// But for now, we're just staying with terrestrial planets, and we'll assume
 /// that moons are just celestial features.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Moon {
   /// The mass of this moon, in Mmoon.
   pub mass: f64,

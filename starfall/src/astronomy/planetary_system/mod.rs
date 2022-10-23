@@ -10,7 +10,7 @@ use error::Error;
 /// So a `PlanetarySystem` does not necessarily include planets.  This is
 /// confusing and I don't really like it, but I don't have a better name
 /// for it.  Yet.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PlanetarySystem {
   pub host_star: HostStar,
   pub satellite_systems: SatelliteSystems,

@@ -14,7 +14,7 @@ use error::Error;
 /// `CloseBinaryStar`, but can only be in an orbit around one member of a
 /// `DistantBinaryStar`.  As a result, we handle `DistantBinaryStar` objects
 /// with a distinct class.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum HostStar {
   /// A single star.
   Star(Box<Star>),

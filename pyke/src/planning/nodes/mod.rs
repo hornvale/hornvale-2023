@@ -5,7 +5,7 @@ use crate::planning::state::State;
 /// The `Nodes` type.
 ///
 /// This wraps a list of `Node` objects.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Nodes {
   /// The list of nodes.
   pub nodes: Vec<Node>,

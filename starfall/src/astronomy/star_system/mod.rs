@@ -16,7 +16,7 @@ use error::*;
 /// bound to those stars in some interesting way.
 ///
 /// And I use "solar system" only to refer to our (your and my) star system.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StarSystem {
   /// The basic configuration of the host star(s).
   pub star_subsystem: StarSubsystem,

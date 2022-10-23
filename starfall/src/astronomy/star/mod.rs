@@ -23,7 +23,7 @@ use name::generate_star_name;
 /// about main-sequence stars.  Other types will use different structs; it's
 /// useful to view and treat these as the default sense of "star", given their
 /// centrality to our purpose.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Star {
   /// Type, Decile, Luminosity class.
   pub class: String,

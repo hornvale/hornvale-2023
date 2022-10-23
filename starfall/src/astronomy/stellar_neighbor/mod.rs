@@ -10,7 +10,7 @@ pub mod math;
 ///
 /// This is just a combination of a fully-fledged star system and a set of 3-D
 /// coordinates so that we can place it relative to our primary star system.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StellarNeighbor {
   /// Each coordinate (x,y,z) is a distance (in light years) from the origin.
   pub coordinates: (f64, f64, f64),

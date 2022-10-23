@@ -1,5 +1,5 @@
 /// Star-related errors.
-#[derive(Clone, Copy, Debug, Eq, Error, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Error, Hash, PartialEq, Serialize)]
 pub enum Error {
   /// Lower than MAIN_SEQUENCE_STAR_MASS_LOWER_BOUND.
   #[error("its mass is too low to be a main-sequence star")]

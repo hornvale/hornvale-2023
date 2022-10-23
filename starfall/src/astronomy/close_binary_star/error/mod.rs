@@ -1,7 +1,7 @@
 use crate::astronomy::star::error::Error as StarError;
 
 /// Close binary star-related errors.
-#[derive(Clone, Copy, Debug, Eq, Error, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Error, Hash, PartialEq, Serialize)]
 pub enum Error {
   /// Star Error.
   #[error("an error occurred in the star ({0})")]

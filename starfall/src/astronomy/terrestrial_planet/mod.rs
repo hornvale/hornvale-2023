@@ -14,7 +14,7 @@ pub mod rotation_direction;
 use rotation_direction::RotationDirection;
 
 /// The `TerrestrialPlanet` type.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TerrestrialPlanet {
   /// Mass in Mearth.
   pub mass: f64,

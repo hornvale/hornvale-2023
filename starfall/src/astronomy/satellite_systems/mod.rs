@@ -6,7 +6,7 @@ pub mod error;
 use error::Error;
 
 /// The `SatelliteSystems` object wraps a vector of `SatelliteSystem` objects.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SatelliteSystems {
   /// SatelliteSystem objects.
   pub satellite_systems: Vec<SatelliteSystem>,

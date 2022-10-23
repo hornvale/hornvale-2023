@@ -25,7 +25,7 @@ use math::separation::get_minimum_separation;
 /// `CloseBinaryStar`, but can only be in an orbit around one member of a
 /// `DistantBinaryStar`.  As a result, we handle `DistantBinaryStar` objects
 /// with a different class.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct CloseBinaryStar {
   /// The primary star is the one with greater mass.
   pub primary: Star,

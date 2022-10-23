@@ -4,6 +4,8 @@
 #[macro_use]
 extern crate assert_approx_eq;
 #[macro_use]
+extern crate serde;
+#[macro_use]
 extern crate thiserror;
 
 #[macro_use]

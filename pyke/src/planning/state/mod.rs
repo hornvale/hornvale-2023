@@ -9,7 +9,7 @@
 ///
 /// After sleeping on it, I've decided that I'm going to make this as simple
 /// as possible: just a bitfield, basically.
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct State {
   /// The actual values managed in this struct.
   pub values: u64,

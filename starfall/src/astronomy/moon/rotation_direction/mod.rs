@@ -1,5 +1,5 @@
 /// The RotationDirection
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum RotationDirection {
   /// Forwards.
   Prograde,

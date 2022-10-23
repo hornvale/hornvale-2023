@@ -2,7 +2,7 @@ use crate::astronomy::distant_binary_star::error::Error as DistantBinaryStarErro
 use crate::astronomy::planetary_system::error::Error as PlanetarySystemError;
 
 /// Star system errors.
-#[derive(Clone, Debug, Eq, Error, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Error, Hash, PartialEq, Serialize)]
 pub enum Error {
   /// Wrap a Distant Binary Star error.
   #[error("an error occurred in the distant binary star ({0})")]
