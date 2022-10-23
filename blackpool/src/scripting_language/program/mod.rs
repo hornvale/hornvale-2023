@@ -3,6 +3,7 @@ use std::fmt::Write as FmtWrite;
 use std::io::Write as IoWrite;
 
 use crate::scripting_language::constants::Constants;
+use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::instructions::Instructions;
 
 /// A program consisting of bytecode.
@@ -28,6 +29,16 @@ impl Program {
     trace_var!(result);
     trace_exit!();
     result
+  }
+
+  /// Append an instruction to the program.
+  #[named]
+  pub fn append_instruction(&mut self, instruction: Instruction, line_number: usize) {
+    trace_enter!();
+    trace_var!(instruction);
+    trace_var!(line_number);
+    self.instructions.append(instruction, line_number);
+    trace_exit!();
   }
 
   /// Dump the disassembled program to a std::fmt::Write object.

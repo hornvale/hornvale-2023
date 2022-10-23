@@ -1,5 +1,7 @@
 use crate::scripting_language::value::Value;
 
+pub type ConstantsIndexType = u8;
+
 /// The `Constants` type.
 ///
 /// This represents a constant pool.
