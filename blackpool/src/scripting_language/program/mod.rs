@@ -3,7 +3,6 @@ use std::fmt::Write as FmtWrite;
 use std::io::Write as IoWrite;
 
 use crate::scripting_language::constants::Constants;
-use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::instructions::Instructions;
 
 /// A program consisting of bytecode.
@@ -29,16 +28,6 @@ impl Program {
     trace_var!(result);
     trace_exit!();
     result
-  }
-
-  /// Append an instruction to the program.
-  #[named]
-  pub fn append_instruction(&mut self, instruction: Instruction, line_number: usize) {
-    trace_enter!();
-    trace_var!(instruction);
-    trace_var!(line_number);
-    self.instructions.append(instruction, line_number);
-    trace_exit!();
   }
 
   /// Dump the disassembled program to a std::fmt::Write object.
@@ -68,13 +57,28 @@ impl Program {
 pub mod test {
 
   use super::*;
+  use crate::scripting_language::instruction::Instruction;
+  use crate::scripting_language::value::Value;
   use crate::test::*;
 
   #[named]
   #[test]
-  pub fn test_default() {
+  pub fn test() {
     init();
     trace_enter!();
+    let mut string = String::new();
+    let mut program = Program::default();
+    let const_inst = program.constants.push(Value::Number(1.2)).unwrap();
+    program.instructions.append(const_inst, 1);
+    program.instructions.append(Instruction::Return, 2);
+    let result = program.instructions.dump(&mut string).unwrap();
+    assert_eq!(result, ());
+    let lines: Vec<&str> = string.split("\n").collect();
+    assert_eq!(lines[0], "");
+    assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
+    assert_eq!(lines[2], "----------------------------------------------");
+    assert_eq!(lines[3], "    0   0x0000       1       Constant(0)     1");
+    assert_eq!(lines[4], "    1   0x0002       2            Return     0");
     trace_exit!();
   }
 }

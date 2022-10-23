@@ -897,6 +897,7 @@ dependencies = [
  "log",
  "pretty_env_logger",
  "serde",
+ "thiserror",
  "volmark",
 ]
 
