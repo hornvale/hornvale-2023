@@ -359,6 +359,72 @@ pub mod test {
 
   #[test]
   #[named]
+  fn test_3_action_plan_2() {
+    init();
+    trace_enter!();
+    let setbit0_action = Action {
+      name: "Set Bit 0".to_string(),
+      cost: 1,
+      preconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+      },
+      postconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+      },
+    };
+    trace_var!(setbit0_action);
+    let setbit1_action = Action {
+      name: "Set Bit 1".to_string(),
+      cost: 1,
+      preconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+      },
+      postconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
+      },
+    };
+    trace_var!(setbit1_action);
+    let setbit2_action = Action {
+      name: "Set Bit 2".to_string(),
+      cost: 1,
+      preconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
+      },
+      postconditions: State {
+        values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
+        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+      },
+    };
+    trace_var!(setbit2_action);
+    let start = State {
+      values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
+      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+    };
+    trace_var!(start);
+    let goal = State {
+      values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
+      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+    };
+    trace_var!(goal);
+    let actions = vec![setbit0_action.clone(), setbit1_action.clone(), setbit2_action.clone()];
+    trace_var!(actions);
+    let mut planner = Planner::new(start, goal, actions);
+    trace_var!(planner);
+    let plan = planner.plan().unwrap();
+    print_var!(plan);
+    assert_eq!(plan.start, start);
+    assert_eq!(plan.goal, goal);
+    assert_eq!(plan.plan.len(), 5);
+    assert_eq!(plan.states.len(), plan.plan.len() + 1);
+  }
+
+  #[test]
+  #[named]
   fn test_4_action_plan() {
     init();
     trace_enter!();
