@@ -164,12 +164,12 @@ pub mod test {
     init();
     trace_enter!();
     use crate::scripting_language::value::Value::*;
-    test_program!([Return], [] => []);
-    test_program!([Return], [Number(53.0)] => [Number(53.0)]);
-    test_program!([Negate], [Number(53.0)] => [Number(-53.0)]);
-    test_program!([Negate], [Number(-53.0)] => [Number(53.0)]);
-    test_program!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
-    test_program!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
+    test_instructions!([Return], [] => []);
+    test_instructions!([Return], [Number(53.0)] => [Number(53.0)]);
+    test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
+    test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
+    test_instructions!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
+    test_instructions!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
     trace_exit!();
   }
 }

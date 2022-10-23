@@ -69,33 +69,33 @@ pub mod test {
     init();
     trace_enter!();
     use crate::scripting_language::value::Value::*;
-    test_program!([Negate], [Number(53.0)] => [Number(-53.0)]);
-    test_program!([Negate], [Number(-53.0)] => [Number(53.0)]);
+    test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
+    test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
     // The order of the following binary operations can be a bit counterintuitive.
     // With a binary operation, this follows the pattern:
     //
-    // test_program!([operation], [a, b] => [b operation a]);
+    // test_instructions!([operation], [a, b] => [b operation a]);
     //
     // So for subtraction:
     //
-    // test_program!([-], [a, b] => [b - a]);
+    // test_instructions!([-], [a, b] => [b - a]);
     //
     // As a concrete example:
     //
-    // test_program!([-], [10, 1] => [1 - 10 = -9]);
-    test_program!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
-    test_program!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
-    test_program!([Add], [Number(-3.0), Number(4.0)] => [Number(1.0)]);
-    test_program!([Add], [Number(4.0), Number(3.0)] => [Number(7.0)]);
-    test_program!([Subtract], [Number(-53.0), Number(4.0)] => [Number(57.0)]);
-    test_program!([Subtract], [Number(4.0), Number(-53.0)] => [Number(-57.0)]);
-    test_program!([Subtract], [Number(-3.0), Number(4.0)] => [Number(7.0)]);
-    test_program!([Subtract], [Number(4.0), Number(3.0)] => [Number(-1.0)]);
-    test_program!([Multiply], [Number(4.0), Number(5.0)] => [Number(20.0)]);
-    test_program!([Multiply], [Number(2.0), Number(-5.0)] => [Number(-10.0)]);
-    test_program!([Divide], [Number(4.0), Number(5.0)] => [Number(1.25)]);
-    test_program!([Divide], [Number(32.0), Number(-128.0)] => [Number(-4.0)]);
-    test_program!([Add, Divide, Negate], [Number(1.2), Number(3.4), Number(5.6)] => [Number(-1.2173)]);
+    // test_instructions!([-], [10, 1] => [1 - 10 = -9]);
+    test_instructions!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
+    test_instructions!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
+    test_instructions!([Add], [Number(-3.0), Number(4.0)] => [Number(1.0)]);
+    test_instructions!([Add], [Number(4.0), Number(3.0)] => [Number(7.0)]);
+    test_instructions!([Subtract], [Number(-53.0), Number(4.0)] => [Number(57.0)]);
+    test_instructions!([Subtract], [Number(4.0), Number(-53.0)] => [Number(-57.0)]);
+    test_instructions!([Subtract], [Number(-3.0), Number(4.0)] => [Number(7.0)]);
+    test_instructions!([Subtract], [Number(4.0), Number(3.0)] => [Number(-1.0)]);
+    test_instructions!([Multiply], [Number(4.0), Number(5.0)] => [Number(20.0)]);
+    test_instructions!([Multiply], [Number(2.0), Number(-5.0)] => [Number(-10.0)]);
+    test_instructions!([Divide], [Number(4.0), Number(5.0)] => [Number(1.25)]);
+    test_instructions!([Divide], [Number(32.0), Number(-128.0)] => [Number(-4.0)]);
+    test_instructions!([Add, Divide, Negate], [Number(1.2), Number(3.4), Number(5.6)] => [Number(-1.2173)]);
     trace_exit!();
   }
 }

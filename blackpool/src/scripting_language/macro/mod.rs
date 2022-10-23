@@ -6,7 +6,7 @@ macro_rules! format_nullary_opcode {
   }};
 }
 
-macro_rules! test_program {
+macro_rules! test_instructions {
   ([$($instruction:expr),*], [$($start_stack:expr),*] => [$($end_stack:expr),*]) => {{
     #[allow(unreachable_patterns)]
     #[allow(unused_mut)]
