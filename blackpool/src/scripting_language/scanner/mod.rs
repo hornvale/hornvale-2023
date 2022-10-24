@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
 
@@ -52,6 +54,7 @@ impl Scanner {
   #[named]
   pub fn scan_token(&mut self) -> Result<Token, Error> {
     trace_enter!();
+    self.skip_whitespace();
     self.start = self.current;
     use TokenType::*;
     if self.is_at_end() {
@@ -69,51 +72,32 @@ impl Scanner {
       '+' => self.make_token(Plus),
       ';' => self.make_token(Semicolon),
       '*' => self.make_token(Star),
+      '/' => self.make_token(Slash),
+      '!' => match self.match_current('=') {
+        true => self.make_token(BangEqual),
+        false => self.make_token(Bang),
+      },
+      '=' => match self.match_current('=') {
+        true => self.make_token(EqualEqual),
+        false => self.make_token(Equal),
+      },
+      '>' => match self.match_current('=') {
+        true => self.make_token(GreaterThanOrEqual),
+        false => self.make_token(GreaterThan),
+      },
+      '<' => match self.match_current('=') {
+        true => self.make_token(LessThanOrEqual),
+        false => self.make_token(LessThan),
+      },
+      '"' => self.match_string()?,
+      char if self.is_digit(char) => self.match_number()?,
+      char if self.is_alpha(char) => self.match_identifier()?,
       _ => return Err(Error::UnexpectedCharacter(char)),
     };
     trace_var!(result);
     trace_exit!();
     Ok(result)
   }
-  /*
-    #[named]
-    pub fn scan_token(&mut self) -> Result<(), ScriptError> {
-        '!' => match self.match_current('=') {
-          true => self.add_token(BangEqual, None),
-          false => self.add_token(Bang, None),
-        },
-        '=' => match self.match_current('=') {
-          true => self.add_token(EqualEqual, None),
-          false => self.add_token(Equal, None),
-        },
-        '>' => match self.match_current('=') {
-          true => self.add_token(GreaterThanOrEqual, None),
-          false => self.add_token(GreaterThan, None),
-        },
-        '<' => match self.match_current('=') {
-          true => self.add_token(LessThanOrEqual, None),
-          false => self.add_token(LessThan, None),
-        },
-        '/' => match self.peek() {
-          '/' => self.match_line_comment(),
-          '*' => self.match_multiline_comment(),
-          _ => self.add_token(Slash, None),
-        },
-        ' ' | '\r' | '\t' => {},
-        '\n' => self.line_number += 1,
-        '"' => self.match_string()?,
-        char if self.is_digit(char) => self.match_number(),
-        char if self.is_alpha(char) => self.match_identifier(),
-        _ => {
-          return Err(ScriptError::Error {
-            token: None,
-            message: format!("Unexpected character: {}", char),
-          })
-        },
-      }
-      Ok(())
-    }
-  */
 
   /// Advance one character through the source and return it.
   #[named]
@@ -159,6 +143,192 @@ impl Scanner {
     trace_var!(result);
     trace_exit!();
     result
+  }
+
+  /// Does the current character match the one specified?
+  #[named]
+  pub fn match_current(&mut self, char: char) -> bool {
+    trace_enter!();
+    trace_var!(char);
+    if self.is_at_end() {
+      return false;
+    }
+    if self.source_bytes[self.current] as char != char {
+      return false;
+    }
+    self.current += 1;
+    trace_exit!();
+    true
+  }
+
+  /// Try to match and create a token out of a number.
+  #[named]
+  pub fn match_number(&mut self) -> Result<Token, Error> {
+    trace_enter!();
+    while self.is_digit(self.peek()) {
+      self.advance();
+    }
+    if self.peek() == '.' && self.is_digit(self.peek_next()) {
+      self.advance();
+      while self.is_digit(self.peek()) {
+        self.advance();
+      }
+    }
+    let value = &self.source[self.start..self.current];
+    trace_var!(value);
+    let result = self.make_token(TokenType::Number);
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Try to match and create a token out of a string.
+  #[named]
+  pub fn match_string(&mut self) -> Result<Token, Error> {
+    trace_enter!();
+    while self.peek() != '"' && !self.is_at_end() {
+      if self.peek() == '\n' {
+        self.line_number += 1;
+      }
+      self.advance();
+    }
+    if self.is_at_end() {
+      return Err(Error::UnterminatedString);
+    }
+    self.advance();
+    let result = self.make_token(TokenType::String);
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  #[named]
+  pub fn match_identifier(&mut self) -> Result<Token, Error> {
+    trace_enter!();
+    while self.is_alpha_numeric(self.peek()) {
+      self.advance();
+    }
+    let value = &self.source[self.start..self.current];
+    trace_var!(value);
+    let value_type = match TokenType::from_str(value) {
+      Ok(token_type) => token_type,
+      Err(_) => TokenType::Identifier,
+    };
+    trace_var!(value_type);
+    let result = self.make_token(value_type);
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  #[named]
+  pub fn is_digit(&self, char: char) -> bool {
+    trace_enter!();
+    trace_var!(char);
+    let result = ('0'..='9').contains(&char);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  #[named]
+  pub fn is_alpha(&self, char: char) -> bool {
+    trace_enter!();
+    trace_var!(char);
+    let result = ('a'..='z').contains(&char) || ('A'..='Z').contains(&char) || char == '_';
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  #[named]
+  pub fn is_alpha_numeric(&self, char: char) -> bool {
+    trace_enter!();
+    trace_var!(char);
+    let result = self.is_digit(char) || self.is_alpha(char);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Match a single-line comment.
+  #[named]
+  pub fn match_line_comment(&mut self) {
+    trace_enter!();
+    while self.peek() != '\n' && !self.is_at_end() {
+      self.advance();
+    }
+    trace_exit!();
+  }
+
+  /// Match a multi-line comment.
+  #[named]
+  pub fn match_multiline_comment(&mut self) {
+    trace_enter!();
+    while self.peek_next() != '*' && self.peek_at_offset(2) != '/' && !self.is_at_end() {
+      self.advance();
+    }
+    // Last trailing non-asterisk, non-forward-slash character.
+    self.advance();
+    // Trailing asterisk.
+    self.advance();
+    // Trailing forward slash.
+    self.advance();
+    trace_exit!();
+  }
+
+  /// Peek at the current character, but don't advance.
+  #[named]
+  pub fn peek(&self) -> char {
+    trace_enter!();
+    let result = self.peek_at_offset(0);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Peek at the next character.
+  #[named]
+  pub fn peek_next(&self) -> char {
+    trace_enter!();
+    let result = self.peek_at_offset(1);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Peek at a character at a specified offset.
+  #[named]
+  pub fn peek_at_offset(&self, offset: usize) -> char {
+    trace_enter!();
+    let result = match self.current + offset >= self.source.len() {
+      true => '\0',
+      false => self.source_bytes[self.current + offset] as char,
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Skip all the whitespace!
+  #[named]
+  pub fn skip_whitespace(&mut self) {
+    trace_enter!();
+    loop {
+      match self.peek() {
+        '\n' => {
+          self.line_number += 1;
+          self.advance();
+        },
+        ' ' | '\r' | '\t' => {
+          self.advance();
+        },
+        '/' if self.peek_next() == '/' => self.match_line_comment(),
+        '/' if self.peek_next() == '*' => self.match_multiline_comment(),
+        _ => break,
+      }
+    }
+    trace_exit!();
   }
 }
 

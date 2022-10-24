@@ -4,4 +4,7 @@ pub enum Error {
   /// Encountered an unexpected character.
   #[error("encountered an unexpected character ({0})")]
   UnexpectedCharacter(char),
+  /// Encountered an unterminated string.
+  #[error("encountered an unterminated string")]
+  UnterminatedString,
 }
