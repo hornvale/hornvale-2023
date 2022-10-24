@@ -127,3 +127,20 @@ impl FromStr for Type {
     }
   }
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test() {
+    init();
+    trace_enter!();
+    let all = Type::get_all();
+    print_var!(all);
+    trace_exit!();
+  }
+}
