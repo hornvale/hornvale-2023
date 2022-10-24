@@ -54,7 +54,7 @@ pub mod test {
 
   #[named]
   #[test]
-  pub fn test_scanner() {
+  pub fn test_compiler() {
     init();
     trace_enter!();
     let compiler = Compiler::default();

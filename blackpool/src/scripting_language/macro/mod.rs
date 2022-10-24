@@ -50,3 +50,15 @@ macro_rules! test_instructions {
     }
   }};
 }
+
+macro_rules! test_scanner_tokens {
+  ($string: expr, [$($token:expr),*]) => {{
+    { // Begin test scope.
+      use crate::scripting_language::scanner::Scanner;
+      use crate::scripting_language::token::Token;
+      info!("\n\n------------------ Starting test! ------------------\n");
+      let mut scanner = Scanner::new($string);
+      $(assert_eq!(scanner.scan_token(), $token);)*
+    }
+  }};
+}

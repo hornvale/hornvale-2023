@@ -265,7 +265,7 @@ impl Scanner {
   #[named]
   pub fn match_multiline_comment(&mut self) {
     trace_enter!();
-    while self.peek_next() != '*' && self.peek_at_offset(2) != '/' && !self.is_at_end() {
+    while !(self.is_at_end() || self.peek_next() == '*' && self.peek_at_offset(2) == '/') {
       self.advance();
     }
     // Last trailing non-asterisk, non-forward-slash character.
@@ -323,8 +323,11 @@ impl Scanner {
         ' ' | '\r' | '\t' => {
           self.advance();
         },
-        '/' if self.peek_next() == '/' => self.match_line_comment(),
-        '/' if self.peek_next() == '*' => self.match_multiline_comment(),
+        '/' => match self.peek_next() {
+          '/' => self.match_line_comment(),
+          '*' => self.match_multiline_comment(),
+          _ => break,
+        },
         _ => break,
       }
     }
@@ -343,8 +346,87 @@ pub mod test {
   pub fn test_scanner() {
     init();
     trace_enter!();
-    let scanner = Scanner::default();
-    print_var!(scanner);
+    test_scanner_tokens!(
+      "".into(),
+      [Ok(Token {
+        r#type: TokenType::Eof,
+        start: 0,
+        length: 0,
+        line_number: 1,
+      })]
+    );
+    use TokenType::*;
+    let test_cases = vec![
+      ("(", LeftParenthesis),
+      (")", RightParenthesis),
+      ("{", LeftBrace),
+      ("}", RightBrace),
+      (",", Comma),
+      (".", Dot),
+      ("-", Minus),
+      ("+", Plus),
+      (";", Semicolon),
+      ("*", Star),
+      ("/", Slash),
+      ("/a", Slash),
+      ("!s", Bang),
+      ("<q", LessThan),
+      (">q", GreaterThan),
+    ];
+    for (string, r#type) in test_cases.iter() {
+      test_scanner_tokens!(
+        string,
+        [Ok(Token {
+          r#type: *r#type,
+          start: 0,
+          length: 1,
+          line_number: 1,
+        })]
+      );
+    }
+    let test_cases2 = vec![
+      ("!=", BangEqual),
+      ("==", EqualEqual),
+      (">=", GreaterThanOrEqual),
+      ("<=", LessThanOrEqual),
+    ];
+    for (string, r#type) in test_cases2.iter() {
+      test_scanner_tokens!(
+        string,
+        [Ok(Token {
+          r#type: *r#type,
+          start: 0,
+          length: 2,
+          line_number: 1,
+        })]
+      );
+    }
+    test_scanner_tokens!(
+      "/a",
+      [
+        Ok(Token {
+          r#type: Slash,
+          start: 0,
+          length: 1,
+          line_number: 1,
+        }),
+        Ok(Token {
+          r#type: Identifier,
+          start: 1,
+          length: 1,
+          line_number: 1,
+        })
+      ]
+    );
+    test_scanner_tokens!(
+      "/* TEST */",
+      [Ok(Token {
+        r#type: Eof,
+        start: 10,
+        length: 0,
+        line_number: 1,
+      })]
+    );
     trace_exit!();
   }
 }
