@@ -245,4 +245,16 @@ pub mod test {
     test_instructions!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
     trace_exit!();
   }
+
+  #[named]
+  #[test]
+  pub fn test_vm2() {
+    init();
+    trace_enter!();
+    let mut vm = VirtualMachine::default();
+    let line = "!(5 - 4 > 3 * 2 == !nil)".to_string();
+    vm.interpret(&line).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    trace_exit!();
+  }
 }
