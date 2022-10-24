@@ -1,6 +1,6 @@
 use std::env::args;
 use std::fs::read_to_string;
-use std::io::{stdin, stdout, Error as IoError, Write};
+use std::io::{self, BufRead, Error as IoError, Write};
 use std::process::exit;
 
 #[macro_use]
@@ -22,13 +22,17 @@ pub enum Error {
 }
 
 #[named]
-fn repl(vm: &mut VirtualMachine) -> Result<(), Error> {
+pub fn repl<R, W>(vm: &mut VirtualMachine, mut input: R, mut output: W) -> Result<(), Error>
+where
+  R: BufRead,
+  W: Write,
+{
   trace_enter!();
   loop {
-    print!("> ");
-    stdout().flush().unwrap();
+    write!(&mut output, "> ")?;
+    output.flush()?;
     let mut line = String::new();
-    stdin().read_line(&mut line).expect("failed to read input");
+    input.read_line(&mut line)?;
     if line.is_empty() {
       break;
     }
@@ -37,11 +41,11 @@ fn repl(vm: &mut VirtualMachine) -> Result<(), Error> {
       Ok(_) => {
         let value_option = vm.pop().ok();
         match value_option {
-          Some(value) => println!("OK: {}", value),
-          None => println!("OK"),
+          Some(value) => writeln!(&mut output, "OK: {}", value)?,
+          None => writeln!(&mut output, "OK")?,
         }
       },
-      Err(error) => println!("Error: {}", error),
+      Err(error) => writeln!(&mut output, "Error: {}", error)?,
     }
   }
   trace_exit!();
@@ -49,7 +53,7 @@ fn repl(vm: &mut VirtualMachine) -> Result<(), Error> {
 }
 
 #[named]
-fn run_file(vm: &mut VirtualMachine, path: &str) -> Result<(), Error> {
+pub fn run_file(vm: &mut VirtualMachine, path: &str) -> Result<(), Error> {
   trace_enter!();
   trace_var!(path);
   let source = read_to_string(path)?;
@@ -63,8 +67,51 @@ fn main() -> Result<(), Error> {
   let args: Vec<String> = args().collect();
   let mut vm = VirtualMachine::new();
   match args.len() {
-    1 => repl(&mut vm),
+    1 => {
+      let stdio = io::stdin();
+      let input = stdio.lock();
+      let output = io::stdout();
+      repl(&mut vm, input, output)
+    },
     2 => run_file(&mut vm, &args[1]),
     _ => exit(-1),
+  }
+}
+
+#[cfg(test)]
+pub mod test {
+
+  use pretty_env_logger::env_logger::builder;
+  use std::env::set_var;
+
+  use super::*;
+
+  #[named]
+  pub fn init() {
+    let _ = builder().is_test(true).try_init();
+    set_var("RUST_BACKTRACE", "1");
+  }
+
+  #[named]
+  #[test]
+  #[should_panic]
+  pub fn test() {
+    init();
+    trace_enter!();
+    let mut vm = VirtualMachine::default();
+    run_file(&mut vm, "nonexistent file.txt").unwrap();
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test2() {
+    init();
+    trace_enter!();
+    let mut vm = VirtualMachine::default();
+    let mut output = Vec::new();
+    let input = b"3 + 4";
+    repl(&mut vm, &input[..], output).unwrap();
+    trace_exit!();
   }
 }

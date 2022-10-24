@@ -71,7 +71,7 @@ pub mod test {
     let const_inst = program.constants.push(Value::Number(1.2)).unwrap();
     program.instructions.append(const_inst, 1);
     program.instructions.append(Instruction::Return, 2);
-    let result = program.instructions.dump(&mut string).unwrap();
+    let result = program.dump_fmt(&mut string).unwrap();
     assert_eq!(result, ());
     let lines: Vec<&str> = string.split("\n").collect();
     assert_eq!(lines[0], "");
