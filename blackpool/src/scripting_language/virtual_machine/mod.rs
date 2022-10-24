@@ -58,6 +58,7 @@ impl VirtualMachine {
     compiler.compile(source, &mut program)?;
     trace_var!(program);
     self.run(&program)?;
+    println!("{:#?}", program);
     trace_exit!();
     Ok(())
   }

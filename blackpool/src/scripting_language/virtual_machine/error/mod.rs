@@ -6,7 +6,7 @@ pub mod runtime;
 use runtime::RuntimeError;
 
 /// Errors encountered in compiling or executing a script.
-#[derive(Clone, Debug, Deserialize, Eq, Error, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Eq, Error, PartialEq)]
 pub enum Error {
   /// A compilation error occurred.
   #[error("a compilation error occurred ({0})")]

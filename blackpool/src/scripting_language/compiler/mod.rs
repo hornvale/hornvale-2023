@@ -26,13 +26,13 @@ impl Compiler {
   pub fn compile(&mut self, source: &String, program: &mut Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
-    let mut scanner = Scanner::new(source);
+    let scanner = Scanner::new(source);
     trace_var!(scanner);
-    let mut parser = Parser::default();
+    let mut parser = Parser::new(scanner);
     trace_var!(parser);
-    parser.advance(&mut scanner)?;
-    parser.expression()?;
-    parser.consume(&mut scanner, TokenType::Eof, "expected end of expression")?;
+    parser.advance()?;
+    parser.parse_expression(program)?;
+    parser.consume(TokenType::Eof, "expected end of expression")?;
     self.finalize(&mut parser, program)?;
     trace_exit!();
     Ok(())

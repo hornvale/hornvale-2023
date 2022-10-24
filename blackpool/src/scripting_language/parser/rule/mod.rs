@@ -1,0 +1,38 @@
+use std::fmt::{Debug, Formatter, Result as FmtResult};
+
+use crate::scripting_language::parser::error::Error;
+use crate::scripting_language::parser::precedence::Precedence;
+use crate::scripting_language::parser::Parser;
+use crate::scripting_language::program::Program;
+
+pub type ParseFn = fn(&mut Parser, &mut Program) -> Result<(), Error>;
+
+/// The `Rule` type.
+#[derive(Clone, Display)]
+#[display(fmt = "prefix: <fn>, infix: <fn>, precedence: {}", precedence)]
+pub struct Rule {
+  /// Prefix function.
+  pub prefix: Option<ParseFn>,
+  /// Infix function.
+  pub infix: Option<ParseFn>,
+  /// Precedence.
+  pub precedence: Precedence,
+}
+
+impl Debug for Rule {
+  fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+    let prefix = match self.prefix {
+      Some(_) => "Some(<fn>)",
+      None => "None",
+    };
+    let infix = match self.infix {
+      Some(_) => "Some(<fn>)",
+      None => "None",
+    };
+    write!(
+      f,
+      "Rule {{ prefix: {}, infix: {}, precedence: {} }}",
+      prefix, infix, self.precedence
+    )
+  }
+}

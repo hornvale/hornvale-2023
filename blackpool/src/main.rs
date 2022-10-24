@@ -52,6 +52,8 @@ fn run_file(vm: &mut VirtualMachine, path: &str) -> Result<(), Error> {
 }
 
 fn main() -> Result<(), Error> {
+  use pretty_env_logger::env_logger::builder;
+  let _ = builder().is_test(true).try_init();
   let args: Vec<String> = args().collect();
   let mut vm = VirtualMachine::new();
   match args.len() {

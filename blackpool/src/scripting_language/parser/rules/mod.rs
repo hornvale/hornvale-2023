@@ -1,0 +1,115 @@
+use std::collections::HashMap;
+
+use crate::scripting_language::parser::rule::ParseFn;
+use crate::scripting_language::parser::rule::Rule;
+use crate::scripting_language::parser::Parser;
+use crate::scripting_language::parser::Precedence;
+use crate::scripting_language::token::r#type::Type as TokenType;
+
+/// The `Rules` type.
+#[derive(Clone, Debug, Display)]
+#[display(fmt = "rules: {:#?}", rules)]
+pub struct Rules {
+  /// The individual rules.
+  pub rules: HashMap<TokenType, Rule>,
+}
+
+impl Rules {
+  /// Constructor.
+  #[named]
+  pub fn new() -> Self {
+    trace_enter!();
+    let rules = HashMap::new();
+    trace_var!(rules);
+    let result = Self { rules };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Add a new rule.
+  #[named]
+  pub fn add_rule(
+    &mut self,
+    token_type: TokenType,
+    prefix: Option<ParseFn>,
+    infix: Option<ParseFn>,
+    precedence: Precedence,
+  ) {
+    trace_enter!();
+    trace_var!(token_type);
+    trace_var!(precedence);
+    self.rules.insert(
+      token_type,
+      Rule {
+        prefix,
+        infix,
+        precedence,
+      },
+    );
+    trace_exit!();
+  }
+}
+
+impl Default for Rules {
+  /// No constraints, just let it all hang out.
+  #[named]
+  fn default() -> Self {
+    trace_enter!();
+    let mut result = Rules::new();
+    trace_var!(result);
+    use TokenType::*;
+    result.add_rule(LeftParenthesis, Some(Parser::parse_grouping), None, Precedence::None);
+    result.add_rule(RightParenthesis, None, None, Precedence::None);
+    result.add_rule(LeftBrace, None, None, Precedence::None);
+    result.add_rule(RightBrace, None, None, Precedence::None);
+    result.add_rule(Comma, None, None, Precedence::None);
+    result.add_rule(Dot, None, None, Precedence::None);
+    result.add_rule(
+      Minus,
+      Some(Parser::parse_unary),
+      Some(Parser::parse_binary),
+      Precedence::Term,
+    );
+    result.add_rule(
+      Plus,
+      Some(Parser::parse_unary),
+      Some(Parser::parse_binary),
+      Precedence::Term,
+    );
+    result.add_rule(Semicolon, None, None, Precedence::None);
+    result.add_rule(Slash, None, Some(Parser::parse_binary), Precedence::Factor);
+    result.add_rule(Star, None, Some(Parser::parse_binary), Precedence::Factor);
+    result.add_rule(Bang, None, None, Precedence::None);
+    result.add_rule(BangEqual, None, None, Precedence::None);
+    result.add_rule(Equal, None, None, Precedence::None);
+    result.add_rule(EqualEqual, None, None, Precedence::None);
+    result.add_rule(GreaterThan, None, None, Precedence::None);
+    result.add_rule(GreaterThanOrEqual, None, None, Precedence::None);
+    result.add_rule(LessThan, None, None, Precedence::None);
+    result.add_rule(LessThanOrEqual, None, None, Precedence::None);
+    result.add_rule(Identifier, None, None, Precedence::None);
+    result.add_rule(String, None, None, Precedence::None);
+    result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
+    result.add_rule(And, None, None, Precedence::None);
+    result.add_rule(Class, None, None, Precedence::None);
+    result.add_rule(Else, None, None, Precedence::None);
+    result.add_rule(False, None, None, Precedence::None);
+    result.add_rule(For, None, None, Precedence::None);
+    result.add_rule(Function, None, None, Precedence::None);
+    result.add_rule(If, None, None, Precedence::None);
+    result.add_rule(Nil, None, None, Precedence::None);
+    result.add_rule(Or, None, None, Precedence::None);
+    result.add_rule(Print, None, None, Precedence::None);
+    result.add_rule(Return, None, None, Precedence::None);
+    result.add_rule(Super, None, None, Precedence::None);
+    result.add_rule(This, None, None, Precedence::None);
+    result.add_rule(True, None, None, Precedence::None);
+    result.add_rule(Var, None, None, Precedence::None);
+    result.add_rule(While, None, None, Precedence::None);
+    result.add_rule(Eof, None, None, Precedence::None);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+}
