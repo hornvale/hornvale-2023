@@ -22,6 +22,26 @@ pub enum Instruction {
   Divide,
   /// Return whence we came!
   Return,
+  /// Push Nil onto the stack.
+  Nil,
+  /// Push True onto the stack.
+  True,
+  /// Push False onto the stack.
+  False,
+  /// Boolean opposite of the top of the stack.
+  Not,
+  /// Equality for the top two values of the stack.
+  Equal,
+  /// Not-Equality for the top two values of the stack.
+  NotEqual,
+  /// GreaterThan for the top two values of the stack.
+  GreaterThan,
+  /// LessThan for the top two values of the stack.
+  LessThan,
+  /// GreaterThanOrEqual for the top two values of the stack.
+  GreaterThanOrEqual,
+  /// LessThanOrEqual for the top two values of the stack.
+  LessThanOrEqual,
 }
 
 impl Instruction {

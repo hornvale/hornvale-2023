@@ -71,40 +71,45 @@ impl Default for Rules {
       Some(Parser::parse_binary),
       Precedence::Term,
     );
-    result.add_rule(
-      Plus,
-      Some(Parser::parse_unary),
-      Some(Parser::parse_binary),
-      Precedence::Term,
-    );
+    result.add_rule(Plus, None, Some(Parser::parse_binary), Precedence::Term);
     result.add_rule(Semicolon, None, None, Precedence::None);
     result.add_rule(Slash, None, Some(Parser::parse_binary), Precedence::Factor);
     result.add_rule(Star, None, Some(Parser::parse_binary), Precedence::Factor);
-    result.add_rule(Bang, None, None, Precedence::None);
-    result.add_rule(BangEqual, None, None, Precedence::None);
+    result.add_rule(Bang, Some(Parser::parse_unary), None, Precedence::None);
+    result.add_rule(BangEqual, None, Some(Parser::parse_binary), Precedence::Equality);
     result.add_rule(Equal, None, None, Precedence::None);
-    result.add_rule(EqualEqual, None, None, Precedence::None);
-    result.add_rule(GreaterThan, None, None, Precedence::None);
-    result.add_rule(GreaterThanOrEqual, None, None, Precedence::None);
-    result.add_rule(LessThan, None, None, Precedence::None);
-    result.add_rule(LessThanOrEqual, None, None, Precedence::None);
+    result.add_rule(EqualEqual, None, Some(Parser::parse_binary), Precedence::Equality);
+    result.add_rule(GreaterThan, None, Some(Parser::parse_binary), Precedence::Comparison);
+    result.add_rule(
+      GreaterThanOrEqual,
+      None,
+      Some(Parser::parse_binary),
+      Precedence::Comparison,
+    );
+    result.add_rule(LessThan, None, Some(Parser::parse_binary), Precedence::Comparison);
+    result.add_rule(
+      LessThanOrEqual,
+      None,
+      Some(Parser::parse_binary),
+      Precedence::Comparison,
+    );
     result.add_rule(Identifier, None, None, Precedence::None);
     result.add_rule(String, None, None, Precedence::None);
     result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
     result.add_rule(And, None, None, Precedence::None);
     result.add_rule(Class, None, None, Precedence::None);
     result.add_rule(Else, None, None, Precedence::None);
-    result.add_rule(False, None, None, Precedence::None);
+    result.add_rule(False, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(For, None, None, Precedence::None);
     result.add_rule(Function, None, None, Precedence::None);
     result.add_rule(If, None, None, Precedence::None);
-    result.add_rule(Nil, None, None, Precedence::None);
+    result.add_rule(Nil, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(Or, None, None, Precedence::None);
     result.add_rule(Print, None, None, Precedence::None);
     result.add_rule(Return, None, None, Precedence::None);
     result.add_rule(Super, None, None, Precedence::None);
     result.add_rule(This, None, None, Precedence::None);
-    result.add_rule(True, None, None, Precedence::None);
+    result.add_rule(True, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(Var, None, None, Precedence::None);
     result.add_rule(While, None, None, Precedence::None);
     result.add_rule(Eof, None, None, Precedence::None);

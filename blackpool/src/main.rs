@@ -34,7 +34,10 @@ fn repl(vm: &mut VirtualMachine) -> Result<(), Error> {
     }
     trace_var!(line);
     match vm.interpret(&line) {
-      Ok(()) => println!("OK"),
+      Ok(value_option) => match value_option {
+        Some(value) => println!("OK: {}", value),
+        None => println!("OK"),
+      },
       Err(error) => println!("Error: {}", error),
     }
   }

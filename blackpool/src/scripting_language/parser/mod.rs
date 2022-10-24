@@ -172,6 +172,12 @@ impl Parser {
     self.parse_precedence(&rule.unwrap().precedence.next().unwrap(), program)?;
     use TokenType::*;
     match operator_type {
+      BangEqual => self.emit_instruction(program, Instruction::NotEqual)?,
+      EqualEqual => self.emit_instruction(program, Instruction::Equal)?,
+      GreaterThan => self.emit_instruction(program, Instruction::GreaterThan)?,
+      GreaterThanOrEqual => self.emit_instruction(program, Instruction::GreaterThanOrEqual)?,
+      LessThan => self.emit_instruction(program, Instruction::LessThan)?,
+      LessThanOrEqual => self.emit_instruction(program, Instruction::LessThanOrEqual)?,
       Plus => self.emit_instruction(program, Instruction::Add)?,
       Minus => self.emit_instruction(program, Instruction::Subtract)?,
       Star => self.emit_instruction(program, Instruction::Multiply)?,
@@ -190,8 +196,27 @@ impl Parser {
     let operator_type = self.previous.unwrap().r#type;
     self.parse_expression(program)?;
     use TokenType::*;
-    if operator_type == Minus {
-      self.emit_instruction(program, Instruction::Negate)?;
+    match operator_type {
+      Minus => self.emit_instruction(program, Instruction::Negate)?,
+      Bang => self.emit_instruction(program, Instruction::Not)?,
+      _ => {},
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Literal.
+  #[named]
+  pub fn parse_literal(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    let token_type = self.previous.unwrap().r#type;
+    use TokenType::*;
+    match token_type {
+      True => self.emit_instruction(program, Instruction::True)?,
+      False => self.emit_instruction(program, Instruction::False)?,
+      Nil => self.emit_instruction(program, Instruction::Nil)?,
+      _ => {},
     }
     trace_exit!();
     Ok(())
@@ -266,6 +291,7 @@ impl Parser {
     prefix(self, program)?;
     while precedence <= &self.get_current_rule().unwrap().precedence {
       self.advance()?;
+      let previous_rule = self.get_previous_rule().unwrap();
       if previous_rule.infix.is_none() {
         return Err(Error::ExpectedExpression(self.previous));
       }

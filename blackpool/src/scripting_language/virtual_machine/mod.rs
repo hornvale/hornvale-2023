@@ -38,33 +38,37 @@ impl VirtualMachine {
 
   /// Interpret some source code.
   #[named]
-  pub fn interpret(&mut self, source: &String) -> Result<(), Error> {
+  pub fn interpret(&mut self, source: &String) -> Result<Option<Value>, Error> {
     trace_enter!();
     trace_var!(source);
-    self.compile(source)?;
+    self.instruction_pointer = 0;
+    self.stack = Vec::with_capacity(STACK_SIZE_MAX);
+    let program = self.compile(source)?;
+    let result = self.run(&program)?;
+    println!("{:#?}", program);
+    println!("{:#?}", result);
+    trace_var!(result);
     trace_exit!();
-    Ok(())
+    Ok(result)
   }
 
   /// Compile the source code.
   #[named]
-  pub fn compile(&mut self, source: &String) -> Result<(), Error> {
+  pub fn compile(&mut self, source: &String) -> Result<Program, Error> {
     trace_enter!();
     trace_var!(source);
     let mut compiler = Compiler::default();
     trace_var!(compiler);
-    let mut program = Program::default();
-    compiler.compile(source, &mut program)?;
-    trace_var!(program);
-    self.run(&program)?;
-    println!("{:#?}", program);
+    let mut result = Program::default();
+    compiler.compile(source, &mut result)?;
+    trace_var!(result);
     trace_exit!();
-    Ok(())
+    Ok(result)
   }
 
   /// Run the program.
   #[named]
-  pub fn run(&mut self, program: &Program) -> Result<(), Error> {
+  pub fn run(&mut self, program: &Program) -> Result<Option<Value>, Error> {
     trace_enter!();
     trace_var!(program);
     loop {
@@ -101,67 +105,78 @@ impl VirtualMachine {
             },
           }
         },
-        Add => {
-          let addend = self.pop()?;
-          trace_var!(addend);
-          let augend = self.pop()?;
-          trace_var!(augend);
-          match (addend, augend) {
-            (Number(a), Number(b)) => self.push(Value::Number(b + a))?,
+        Add => self.binary_arithmetic_operation(Add, |a, b| b + a, Value::Number)?,
+        Subtract => self.binary_arithmetic_operation(Subtract, |a, b| b - a, Value::Number)?,
+        Multiply => self.binary_arithmetic_operation(Multiply, |a, b| b * a, Value::Number)?,
+        Divide => self.binary_arithmetic_operation(Divide, |a, b| b / a, Value::Number)?,
+        Equal => {
+          let a = self.pop()?;
+          trace_var!(a);
+          let b = self.pop()?;
+          trace_var!(b);
+          use Value::*;
+          match (a, b) {
+            (Number(a), Number(b)) => self.push(Value::Boolean(a == b))?,
+            (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b == a))?,
             (_, _) => {
               return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
-                Add, augend, addend,
+                instruction,
+                b,
+                a,
               )))
             },
           }
         },
-        Subtract => {
-          let subtrahend = self.pop()?;
-          trace_var!(subtrahend);
-          let minuend = self.pop()?;
-          trace_var!(minuend);
-          match (subtrahend, minuend) {
-            (Number(a), Number(b)) => self.push(Value::Number(b - a))?,
-            (_, _) => {
-              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
-                Subtract, minuend, subtrahend,
-              )))
-            },
-          }
-        },
-        Multiply => {
-          let multiplier = self.pop()?;
-          trace_var!(multiplier);
-          let multiplicand = self.pop()?;
-          trace_var!(multiplicand);
-          match (multiplier, multiplicand) {
-            (Number(a), Number(b)) => self.push(Value::Number(b * a))?,
-            (_, _) => {
-              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
-                Multiply,
-                multiplicand,
-                multiplier,
-              )))
-            },
-          }
-        },
-        Divide => {
-          let divisor = self.pop()?;
-          trace_var!(divisor);
-          let dividend = self.pop()?;
-          trace_var!(dividend);
-          match (divisor, dividend) {
-            (Number(a), Number(b)) => self.push(Value::Number(b / a))?,
-            (_, _) => {
-              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
-                Divide, dividend, divisor,
-              )))
-            },
-          }
-        },
+        NotEqual => self.binary_arithmetic_operation(NotEqual, |a, b| b != a, Value::Boolean)?,
+        GreaterThan => self.binary_arithmetic_operation(GreaterThan, |a, b| b > a, Value::Boolean)?,
+        LessThan => self.binary_arithmetic_operation(LessThan, |a, b| b < a, Value::Boolean)?,
+        GreaterThanOrEqual => self.binary_arithmetic_operation(GreaterThanOrEqual, |a, b| b >= a, Value::Boolean)?,
+        LessThanOrEqual => self.binary_arithmetic_operation(LessThanOrEqual, |a, b| b <= a, Value::Boolean)?,
         Return => break,
+        True => self.push(Value::Boolean(true))?,
+        False => self.push(Value::Boolean(false))?,
+        Instruction::Nil => self.push(Value::Nil)?,
+        Not => {
+          let value = self.pop()?;
+          trace_var!(value);
+          let answer = self.is_falsey(&value);
+          self.push(Value::Boolean(answer))?;
+        },
       }
       self.instruction_pointer += 1;
+    }
+    let result = self.pop().ok();
+    println!("{:#?}", result);
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Binary arithmetic operator.
+  #[named]
+  #[inline]
+  pub fn binary_arithmetic_operation<T>(
+    &mut self,
+    instruction: Instruction,
+    function: fn(f64, f64) -> T,
+    valuate: fn(T) -> Value,
+  ) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(instruction);
+    let a = self.pop()?;
+    trace_var!(a);
+    let b = self.pop()?;
+    trace_var!(b);
+    use Value::*;
+    match (a, b) {
+      (Number(a), Number(b)) => self.push(valuate(function(a, b)))?,
+      (_, _) => {
+        return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+          instruction,
+          b,
+          a,
+        )))
+      },
     }
     trace_exit!();
     Ok(())
@@ -195,6 +210,23 @@ impl VirtualMachine {
     trace_var!(result);
     trace_exit!();
     Ok(result)
+  }
+
+  /// Is this "falsey" or not?
+  #[named]
+  #[inline]
+  pub fn is_falsey(&mut self, value: &Value) -> bool {
+    trace_enter!();
+    trace_var!(value);
+    use Value::*;
+    let result = match value {
+      Nil => true,
+      Boolean(value) => !value,
+      _ => false,
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 }
 

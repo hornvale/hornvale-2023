@@ -11,9 +11,9 @@ pub type ParseFn = fn(&mut Parser, &mut Program) -> Result<(), Error>;
 #[derive(Clone, Display)]
 #[display(fmt = "prefix: <fn>, infix: <fn>, precedence: {}", precedence)]
 pub struct Rule {
-  /// Prefix function.
+  /// Prefix function, for when this token appears as a prefix.
   pub prefix: Option<ParseFn>,
-  /// Infix function.
+  /// Infix function, for when this token appears as an infix.
   pub infix: Option<ParseFn>,
   /// Precedence.
   pub precedence: Precedence,
