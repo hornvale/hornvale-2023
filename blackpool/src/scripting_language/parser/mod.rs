@@ -147,11 +147,11 @@ impl Parser {
   pub fn parse_number(&mut self, program: &mut Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(program);
-    let current = self.current.unwrap();
-    trace_var!(current);
-    let start = current.start;
+    let previous = self.previous.unwrap();
+    trace_var!(previous);
+    let start = previous.start;
     trace_var!(start);
-    let end = start + current.length;
+    let end = start + previous.length;
     trace_var!(end);
     let string = &self.scanner.source[start..end];
     trace_var!(string);

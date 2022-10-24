@@ -1,60 +1,12 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
-
 /// The `Value` enum.
 #[derive(Clone, Copy, Debug, Display, Deserialize, PartialEq, Serialize)]
 pub enum Value {
+  /// Boolean.
+  Boolean(bool),
   /// Number is a double.
   Number(f64),
-}
-
-impl Add for Value {
-  type Output = Self;
-  fn add(self, other: Self) -> Self::Output {
-    use Value::*;
-    match (self, other) {
-      (Number(number), Number(other)) => Number(number + other),
-    }
-  }
-}
-
-impl Div for Value {
-  type Output = Self;
-  fn div(self, other: Self) -> Self::Output {
-    use Value::*;
-    match (self, other) {
-      (Number(number), Number(other)) => Number(number / other),
-    }
-  }
-}
-
-impl Mul for Value {
-  type Output = Self;
-  fn mul(self, other: Self) -> Self::Output {
-    use Value::*;
-    match (self, other) {
-      (Number(number), Number(other)) => Number(number * other),
-    }
-  }
-}
-
-impl Neg for Value {
-  type Output = Self;
-  fn neg(self) -> Self::Output {
-    use Value::*;
-    match self {
-      Number(number) => Number(-number),
-    }
-  }
-}
-
-impl Sub for Value {
-  type Output = Self;
-  fn sub(self, other: Self) -> Self::Output {
-    use Value::*;
-    match (self, other) {
-      (Number(number), Number(other)) => Number(number - other),
-    }
-  }
+  /// Nil.
+  Nil,
 }
 
 #[cfg(test)]

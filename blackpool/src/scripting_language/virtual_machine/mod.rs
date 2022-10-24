@@ -6,7 +6,6 @@ use crate::scripting_language::value::Value;
 pub mod constants;
 use constants::*;
 pub mod error;
-// use error::compilation::CompilationError;
 use error::runtime::RuntimeError;
 use error::Error;
 
@@ -76,6 +75,7 @@ impl VirtualMachine {
       let instruction = *instruction_option.unwrap();
       trace_var!(instruction);
       use Instruction::*;
+      use Value::*;
       match instruction {
         Constant(index) => {
           let constant = program.constants.constants[index as usize];
@@ -90,45 +90,74 @@ impl VirtualMachine {
         Negate => {
           let pop = self.pop()?;
           trace_var!(pop);
-          let answer = -pop;
-          trace_var!(answer);
-          self.push(answer)?;
+          match pop {
+            Number(pop) => {
+              let answer = -pop;
+              trace_var!(answer);
+              self.push(Value::Number(answer))?;
+            },
+            _ => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperand(Negate, pop)));
+            },
+          }
         },
         Add => {
           let addend = self.pop()?;
           trace_var!(addend);
           let augend = self.pop()?;
           trace_var!(augend);
-          let answer = augend + addend;
-          trace_var!(answer);
-          self.push(answer)?;
+          match (addend, augend) {
+            (Number(a), Number(b)) => self.push(Value::Number(b + a))?,
+            (_, _) => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+                Add, augend, addend,
+              )))
+            },
+          }
         },
         Subtract => {
           let subtrahend = self.pop()?;
           trace_var!(subtrahend);
           let minuend = self.pop()?;
           trace_var!(minuend);
-          let answer = minuend - subtrahend;
-          trace_var!(answer);
-          self.push(answer)?;
+          match (subtrahend, minuend) {
+            (Number(a), Number(b)) => self.push(Value::Number(b - a))?,
+            (_, _) => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+                Subtract, minuend, subtrahend,
+              )))
+            },
+          }
         },
         Multiply => {
           let multiplier = self.pop()?;
           trace_var!(multiplier);
           let multiplicand = self.pop()?;
           trace_var!(multiplicand);
-          let answer = multiplicand * multiplier;
-          trace_var!(answer);
-          self.push(answer)?;
+          match (multiplier, multiplicand) {
+            (Number(a), Number(b)) => self.push(Value::Number(b * a))?,
+            (_, _) => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+                Multiply,
+                multiplicand,
+                multiplier,
+              )))
+            },
+          }
         },
         Divide => {
           let divisor = self.pop()?;
           trace_var!(divisor);
           let dividend = self.pop()?;
           trace_var!(dividend);
-          let answer = dividend / divisor;
-          trace_var!(answer);
-          self.push(answer)?;
+          match (divisor, dividend) {
+            (Number(a), Number(b)) => self.push(Value::Number(b / a))?,
+            (_, _) => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+                Divide, dividend, divisor,
+              )))
+            },
+          }
         },
         Return => break,
       }
