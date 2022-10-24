@@ -193,7 +193,7 @@ impl Scanner {
       self.advance();
     }
     if self.is_at_end() {
-      return Err(Error::UnterminatedString);
+      return Err(Error::UnterminatedString(self.line_number));
     }
     self.advance();
     let result = self.make_token(TokenType::String);

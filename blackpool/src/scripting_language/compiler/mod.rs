@@ -1,3 +1,4 @@
+use crate::scripting_language::parser::Parser;
 use crate::scripting_language::program::Program;
 use crate::scripting_language::scanner::Scanner;
 use crate::scripting_language::token::r#type::Type as TokenType;
@@ -20,29 +21,32 @@ impl Compiler {
     result
   }
 
-  /// Constructor.
+  /// Compile some source.
   #[named]
-  pub fn compile(&self, source: &String) -> Result<Program, Error> {
+  pub fn compile(&mut self, source: &String, program: &mut Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
     let mut scanner = Scanner::new(source);
-    let line_number: usize = usize::MAX;
-    loop {
-      let token = scanner.scan_token()?;
-      if token.r#type == TokenType::Eof {
-        break;
-      }
-      if token.line_number != line_number {
-        print!("{:>4} ", token.line_number);
-      } else {
-        print!("   | ");
-      }
-      println!("{} {} {}", token.r#type, token.length, token.start);
-    }
-    let result = Program::default();
-    trace_var!(result);
+    trace_var!(scanner);
+    let mut parser = Parser::default();
+    trace_var!(parser);
+    parser.advance(&mut scanner)?;
+    parser.expression()?;
+    parser.consume(&mut scanner, TokenType::Eof, "expected end of expression")?;
+    self.finalize(&mut parser, program)?;
     trace_exit!();
-    Ok(result)
+    Ok(())
+  }
+
+  /// Conclude.
+  #[named]
+  pub fn finalize(&mut self, parser: &mut Parser, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(parser);
+    trace_var!(program);
+    parser.emit_return(program)?;
+    trace_exit!();
+    Ok(())
   }
 }
 

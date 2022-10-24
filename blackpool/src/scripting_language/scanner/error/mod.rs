@@ -5,6 +5,6 @@ pub enum Error {
   #[error("encountered an unexpected character ({0})")]
   UnexpectedCharacter(char),
   /// Encountered an unterminated string.
-  #[error("encountered an unterminated string")]
-  UnterminatedString,
+  #[error("encountered an unterminated string on line {0}")]
+  UnterminatedString(usize),
 }

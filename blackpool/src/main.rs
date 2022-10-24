@@ -33,7 +33,10 @@ fn repl(vm: &mut VirtualMachine) -> Result<(), Error> {
       break;
     }
     trace_var!(line);
-    vm.interpret(&line).ok();
+    match vm.interpret(&line) {
+      Ok(()) => println!("OK"),
+      Err(error) => println!("Error: {}", error),
+    }
   }
   trace_exit!();
   Ok(())

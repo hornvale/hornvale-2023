@@ -52,9 +52,10 @@ impl VirtualMachine {
   pub fn compile(&mut self, source: &String) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
-    let compiler = Compiler::default();
+    let mut compiler = Compiler::default();
     trace_var!(compiler);
-    let program = compiler.compile(source)?;
+    let mut program = Program::default();
+    compiler.compile(source, &mut program)?;
     trace_var!(program);
     self.run(&program)?;
     trace_exit!();
