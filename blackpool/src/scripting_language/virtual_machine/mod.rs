@@ -257,4 +257,62 @@ pub mod test {
     assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
     trace_exit!();
   }
+
+  #[named]
+  #[test]
+  #[should_panic]
+  pub fn test_vm3() {
+    init();
+    trace_enter!();
+    let mut vm = VirtualMachine::default();
+    let line = "invalid input".to_string();
+    // Should panic.
+    vm.interpret(&line).unwrap();
+    trace_exit!();
+  }
+
+  #[named]
+  #[test]
+  pub fn test_vm4() {
+    init();
+    trace_enter!();
+    let mut vm = VirtualMachine::default();
+    vm.interpret(&"2 > 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
+    vm.interpret(&"2 >= 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
+    vm.interpret(&"2 == 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
+    vm.interpret(&"2 != 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"2 != 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
+    vm.interpret(&"2 == 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"!(2 > 3)".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"!(2 >= 3)".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"2 < 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"2 <= 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"2 - 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(-1.0)));
+    vm.interpret(&"3 - 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(1.0)));
+    vm.interpret(&"2 + 3".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(5.0)));
+    vm.interpret(&"3 + 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(5.0)));
+    vm.interpret(&"2 * -4".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(-8.0)));
+    vm.interpret(&"3 * 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(6.0)));
+    vm.interpret(&"-4 / 2".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(-2.0)));
+    vm.interpret(&"2 / 4".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Number(0.5)));
+    trace_exit!();
+  }
 }

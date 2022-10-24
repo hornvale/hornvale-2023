@@ -118,3 +118,19 @@ impl Default for Rules {
     result
   }
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_rules() {
+    init();
+    trace_enter!();
+    let rules = Rules::default();
+    trace_exit!();
+  }
+}
