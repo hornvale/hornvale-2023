@@ -38,18 +38,16 @@ impl VirtualMachine {
 
   /// Interpret some source code.
   #[named]
-  pub fn interpret(&mut self, source: &String) -> Result<Option<Value>, Error> {
+  pub fn interpret(&mut self, source: &String) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
     self.instruction_pointer = 0;
     self.stack = Vec::with_capacity(STACK_SIZE_MAX);
     let program = self.compile(source)?;
-    let result = self.run(&program)?;
-    println!("{:#?}", program);
-    println!("{:#?}", result);
-    trace_var!(result);
+    trace_var!(program);
+    self.run(&program)?;
     trace_exit!();
-    Ok(result)
+    Ok(())
   }
 
   /// Compile the source code.
@@ -68,7 +66,7 @@ impl VirtualMachine {
 
   /// Run the program.
   #[named]
-  pub fn run(&mut self, program: &Program) -> Result<Option<Value>, Error> {
+  pub fn run(&mut self, program: &Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(program);
     loop {
@@ -145,11 +143,8 @@ impl VirtualMachine {
       }
       self.instruction_pointer += 1;
     }
-    let result = self.pop().ok();
-    println!("{:#?}", result);
-    trace_var!(result);
     trace_exit!();
-    Ok(result)
+    Ok(())
   }
 
   /// Binary arithmetic operator.
