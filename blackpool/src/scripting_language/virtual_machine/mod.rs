@@ -313,6 +313,12 @@ pub mod test {
     assert_eq!(vm.pop(), Ok(Value::Number(-2.0)));
     vm.interpret(&"2 / 4".to_string()).unwrap();
     assert_eq!(vm.pop(), Ok(Value::Number(0.5)));
+    vm.interpret(&"nil".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Nil));
+    vm.interpret(&"true".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    vm.interpret(&"false".to_string()).unwrap();
+    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
     trace_exit!();
   }
 }

@@ -39,3 +39,22 @@ impl Precedence {
     Some(result)
   }
 }
+
+#[cfg(test)]
+pub mod test {
+
+  use super::*;
+  use crate::test::*;
+
+  #[named]
+  #[test]
+  pub fn test_precedence() {
+    init();
+    trace_enter!();
+    let mut precedence = Some(Precedence::None);
+    while precedence != Option::None {
+      precedence = precedence.unwrap().next();
+    }
+    trace_exit!();
+  }
+}

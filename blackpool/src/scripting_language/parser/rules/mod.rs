@@ -130,7 +130,7 @@ pub mod test {
   pub fn test_rules() {
     init();
     trace_enter!();
-    let rules = Rules::default();
+    let _rules = Rules::default();
     trace_exit!();
   }
 }
