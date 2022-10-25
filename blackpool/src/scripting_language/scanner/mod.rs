@@ -427,6 +427,42 @@ pub mod test {
         line_number: 1,
       })]
     );
+    test_scanner_tokens!(
+      "1312.1231215123",
+      [Ok(Token {
+        r#type: Number,
+        start: 0,
+        length: 15,
+        line_number: 1,
+      })]
+    );
+    test_scanner_tokens!(
+      "\"goat\"",
+      [Ok(Token {
+        r#type: String,
+        start: 0,
+        length: 6,
+        line_number: 1,
+      })]
+    );
+    test_scanner_tokens!(
+      "// single-line comment",
+      [Ok(Token {
+        r#type: Eof,
+        start: 22,
+        length: 0,
+        line_number: 1,
+      })]
+    );
+    test_scanner_tokens!(
+      "\n",
+      [Ok(Token {
+        r#type: Eof,
+        start: 1,
+        length: 0,
+        line_number: 2,
+      })]
+    );
     trace_exit!();
   }
 }

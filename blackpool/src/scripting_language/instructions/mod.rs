@@ -13,23 +13,6 @@ pub struct Instructions {
 }
 
 impl Instructions {
-  /// Constructor.
-  #[named]
-  pub fn new() -> Self {
-    trace_enter!();
-    let instructions = Vec::new();
-    trace_var!(instructions);
-    let line_numbers = Vec::new();
-    trace_var!(line_numbers);
-    let result = Self {
-      instructions,
-      line_numbers,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
-  }
-
   /// Append an instruction to the program.
   #[named]
   pub fn append(&mut self, instruction: Instruction, line_number: usize) {

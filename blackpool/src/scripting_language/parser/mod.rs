@@ -249,23 +249,6 @@ impl Parser {
     Ok(())
   }
 
-  /// Emit an instruction.
-  #[named]
-  #[inline]
-  pub fn emit_instructions(
-    &mut self,
-    program: &mut Program,
-    instructions: (Instruction, Instruction),
-  ) -> Result<(), Error> {
-    trace_enter!();
-    trace_var!(program);
-    trace_var!(instructions);
-    self.emit_instruction(program, instructions.0)?;
-    self.emit_instruction(program, instructions.1)?;
-    trace_exit!();
-    Ok(())
-  }
-
   /// Conclude.
   #[named]
   pub fn emit_return(&mut self, program: &mut Program) -> Result<(), Error> {

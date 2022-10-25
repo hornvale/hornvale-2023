@@ -11,16 +11,6 @@ use error::Error;
 pub struct Compiler {}
 
 impl Compiler {
-  /// Constructor.
-  #[named]
-  pub fn new() -> Self {
-    trace_enter!();
-    let result = Self {};
-    trace_var!(result);
-    trace_exit!();
-    result
-  }
-
   /// Compile some source.
   #[named]
   pub fn compile(&mut self, source: &String, program: &mut Program) -> Result<(), Error> {

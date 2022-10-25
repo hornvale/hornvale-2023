@@ -15,21 +15,6 @@ pub struct Program {
 }
 
 impl Program {
-  /// Constructor.
-  #[named]
-  pub fn new() -> Self {
-    trace_enter!();
-    let instructions = Instructions::default();
-    let constants = Constants::default();
-    let result = Program {
-      instructions,
-      constants,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
-  }
-
   /// Dump the disassembled program to a std::fmt::Write object.
   #[named]
   #[inline]

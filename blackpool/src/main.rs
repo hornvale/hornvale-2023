@@ -65,7 +65,7 @@ fn main() -> Result<(), Error> {
   use pretty_env_logger::env_logger::builder;
   let _ = builder().is_test(true).try_init();
   let args: Vec<String> = args().collect();
-  let mut vm = VirtualMachine::new();
+  let mut vm = VirtualMachine::default();
   match args.len() {
     1 => {
       let stdio = io::stdin();
@@ -109,7 +109,7 @@ pub mod test {
     init();
     trace_enter!();
     let mut vm = VirtualMachine::default();
-    let mut output = Vec::new();
+    let output = Vec::new();
     let input = b"3 + 4";
     repl(&mut vm, &input[..], output).unwrap();
     trace_exit!();

@@ -11,17 +11,6 @@ pub struct Constants {
 }
 
 impl Constants {
-  /// Constructor.
-  #[named]
-  pub fn new() -> Self {
-    trace_enter!();
-    let constants = Vec::new();
-    let result = Constants { constants };
-    trace_var!(result);
-    trace_exit!();
-    result
-  }
-
   /// Insert a new constant.  This returns the approprite instruction for
   /// loading the constant, which will depend on how many constants have
   /// already been added.

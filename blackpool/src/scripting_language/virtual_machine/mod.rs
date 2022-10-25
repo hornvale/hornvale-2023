@@ -19,23 +19,6 @@ pub struct VirtualMachine {
 }
 
 impl VirtualMachine {
-  /// Constructor.
-  #[named]
-  pub fn new() -> Self {
-    trace_enter!();
-    let instruction_pointer = 0;
-    trace_var!(instruction_pointer);
-    let stack = Vec::with_capacity(STACK_SIZE_MAX);
-    trace_var!(stack);
-    let result = Self {
-      instruction_pointer,
-      stack,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
-  }
-
   /// Interpret some source code.
   #[named]
   pub fn interpret(&mut self, source: &String) -> Result<(), Error> {
