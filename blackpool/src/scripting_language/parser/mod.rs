@@ -25,25 +25,25 @@ use rules::Rules;
   suppress_new_errors,
   did_encounter_error
 )]
-pub struct Parser {
+pub struct Parser<'source> {
   /// The scanner.
-  pub scanner: Scanner,
+  pub scanner: Scanner<'source>,
   /// The current token.
   pub current: Option<Token>,
   /// The last token processed.
   pub previous: Option<Token>,
   /// The rules!
-  pub rules: Rules,
+  pub rules: Rules<'source>,
   /// Whether we should suppress new errors ("Panic Mode").
   pub suppress_new_errors: bool,
   /// Whether we have actually encountered an error.
   pub did_encounter_error: Option<Error>,
 }
 
-impl Parser {
+impl<'source> Parser<'source> {
   /// Constructor.
   #[named]
-  pub fn new(scanner: Scanner) -> Self {
+  pub fn new(scanner: Scanner<'source>) -> Parser<'source> {
     trace_enter!();
     let current = None;
     trace_var!(current);
@@ -286,7 +286,7 @@ impl Parser {
 
   /// Get the previous rule.
   #[named]
-  pub fn get_previous_rule(&self) -> Option<Rule> {
+  pub fn get_previous_rule(&self) -> Option<Rule<'source>> {
     trace_enter!();
     let result = match self.previous {
       None => None,
@@ -299,7 +299,7 @@ impl Parser {
 
   /// Get the current rule.
   #[named]
-  pub fn get_current_rule(&self) -> Option<Rule> {
+  pub fn get_current_rule(&self) -> Option<Rule<'source>> {
     trace_enter!();
     let result = match self.current {
       None => None,
@@ -312,7 +312,7 @@ impl Parser {
 
   /// Get a rule.
   #[named]
-  pub fn get_rule(&self, token_type: &TokenType) -> Option<Rule> {
+  pub fn get_rule(&self, token_type: &TokenType) -> Option<Rule<'source>> {
     trace_enter!();
     trace_var!(token_type);
     let result = self.rules.rules.get(token_type).cloned();

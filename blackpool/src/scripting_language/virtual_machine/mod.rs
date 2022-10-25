@@ -21,7 +21,7 @@ pub struct VirtualMachine {
 impl VirtualMachine {
   /// Interpret some source code.
   #[named]
-  pub fn interpret(&mut self, source: &String) -> Result<(), Error> {
+  pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
     self.instruction_pointer = 0;
@@ -35,7 +35,7 @@ impl VirtualMachine {
 
   /// Compile the source code.
   #[named]
-  pub fn compile(&mut self, source: &String) -> Result<Program, Error> {
+  pub fn compile(&mut self, source: &str) -> Result<Program, Error> {
     trace_enter!();
     trace_var!(source);
     let mut compiler = Compiler::default();

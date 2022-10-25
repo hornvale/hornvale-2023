@@ -13,7 +13,7 @@ pub struct Compiler {}
 impl Compiler {
   /// Compile some source.
   #[named]
-  pub fn compile(&mut self, source: &String, program: &mut Program) -> Result<(), Error> {
+  pub fn compile<'source>(&mut self, source: &'source str, program: &mut Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
     let scanner = Scanner::new(source);

@@ -9,12 +9,12 @@ use crate::scripting_language::token::r#type::Type as TokenType;
 /// The `Rules` type.
 #[derive(Clone, Debug, Display)]
 #[display(fmt = "rules: {:#?}", rules)]
-pub struct Rules {
+pub struct Rules<'source> {
   /// The individual rules.
-  pub rules: HashMap<TokenType, Rule>,
+  pub rules: HashMap<TokenType, Rule<'source>>,
 }
 
-impl Rules {
+impl<'source> Rules<'source> {
   /// Constructor.
   #[named]
   pub fn new() -> Self {
@@ -32,8 +32,8 @@ impl Rules {
   pub fn add_rule(
     &mut self,
     token_type: TokenType,
-    prefix: Option<ParseFn>,
-    infix: Option<ParseFn>,
+    prefix: Option<ParseFn<'source>>,
+    infix: Option<ParseFn<'source>>,
     precedence: Precedence,
   ) {
     trace_enter!();
@@ -51,7 +51,7 @@ impl Rules {
   }
 }
 
-impl Default for Rules {
+impl<'source> Default for Rules<'source> {
   /// No constraints, just let it all hang out.
   #[named]
   fn default() -> Self {

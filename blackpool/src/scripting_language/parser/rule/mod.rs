@@ -5,21 +5,21 @@ use crate::scripting_language::parser::precedence::Precedence;
 use crate::scripting_language::parser::Parser;
 use crate::scripting_language::program::Program;
 
-pub type ParseFn = fn(&mut Parser, &mut Program) -> Result<(), Error>;
+pub type ParseFn<'source> = fn(&mut Parser<'source>, &mut Program) -> Result<(), Error>;
 
 /// The `Rule` type.
 #[derive(Clone, Display)]
 #[display(fmt = "prefix: <fn>, infix: <fn>, precedence: {}", precedence)]
-pub struct Rule {
+pub struct Rule<'source> {
   /// Prefix function, for when this token appears as a prefix.
-  pub prefix: Option<ParseFn>,
+  pub prefix: Option<ParseFn<'source>>,
   /// Infix function, for when this token appears as an infix.
-  pub infix: Option<ParseFn>,
+  pub infix: Option<ParseFn<'source>>,
   /// Precedence.
   pub precedence: Precedence,
 }
 
-impl Debug for Rule {
+impl<'source> Debug for Rule<'source> {
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let prefix = match self.prefix {
       Some(_) => "Some(<fn>)",

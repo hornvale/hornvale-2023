@@ -9,7 +9,7 @@ use error::Error;
 /// The `Scanner` type.
 #[derive(Clone, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Serialize)]
 #[display(fmt = "start: {}, current: {}, line: {}", start, current, line_number)]
-pub struct Scanner {
+pub struct Scanner<'source> {
   /// Where this token started.
   pub start: usize,
   /// Where we are currently.
@@ -17,15 +17,15 @@ pub struct Scanner {
   /// The current line number.
   pub line_number: usize,
   /// The source code.
-  pub source: String,
+  pub source: &'source str,
   /// The source bytes.
   pub source_bytes: Vec<u8>,
 }
 
-impl Scanner {
+impl<'source> Scanner<'source> {
   /// Constructor.
   #[named]
-  pub fn new(source: &str) -> Self {
+  pub fn new(source: &'source str) -> Self {
     trace_enter!();
     trace_var!(source);
     let start = 0;
@@ -34,8 +34,6 @@ impl Scanner {
     trace_var!(current);
     let line_number = 1;
     trace_var!(line_number);
-    let source = source.to_string();
-    trace_var!(source);
     let source_bytes = source.as_bytes().to_vec();
     trace_var!(source_bytes);
     let result = Self {
