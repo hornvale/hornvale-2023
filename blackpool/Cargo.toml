@@ -20,7 +20,11 @@ name = "blackpool"
 path = "src/main.rs"
 
 [dependencies]
+assert_approx_eq = { workspace = true }
+derive_more = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }
 pretty_env_logger = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
 volmark = { workspace = true }

@@ -1,6 +1,20 @@
 #![allow(unused_macros)]
 
+#[allow(unused_imports)]
+#[macro_use]
+extern crate assert_approx_eq;
+#[macro_use]
+extern crate derive_more;
+#[macro_use]
+extern crate serde;
+#[macro_use]
+extern crate thiserror;
+
+#[macro_use]
+extern crate volmark;
 pub use volmark::*;
+
+pub mod scripting_language;
 
 #[cfg(test)]
 pub mod test {
