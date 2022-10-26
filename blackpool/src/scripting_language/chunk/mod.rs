@@ -7,17 +7,17 @@ use crate::scripting_language::garbage_collection::reference::Reference as GcRef
 use crate::scripting_language::instructions::Instructions;
 use crate::scripting_language::value::Value;
 
-/// A program consisting of bytecode.
+/// A chunk or portion thereof consisting of bytecode.
 #[derive(Clone, Debug, Default, PartialEq)]
-pub struct Program {
-  /// The serialized instructions comprising the program.
+pub struct Chunk {
+  /// The serialized instructions comprising the chunk.
   pub instructions: Instructions,
   /// The constant pool.
   pub constants: Constants,
 }
 
-impl Program {
-  /// Dump the disassembled program to a std::fmt::Write object.
+impl Chunk {
+  /// Dump the disassembled chunk to a std::fmt::Write object.
   #[named]
   #[inline]
   pub fn dump_fmt<W: FmtWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
@@ -27,7 +27,7 @@ impl Program {
     Ok(())
   }
 
-  /// Dump the disassembled program to a std::io::Write object.
+  /// Dump the disassembled chunk to a std::io::Write object.
   #[named]
   #[inline]
   pub fn dump_io<W: IoWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
@@ -69,11 +69,11 @@ pub mod test {
     init();
     trace_enter!();
     let mut string = String::new();
-    let mut program = Program::default();
-    let const_inst = program.constants.push(Value::Number(1.2)).unwrap();
-    program.instructions.append(const_inst, 1);
-    program.instructions.append(Instruction::Return, 2);
-    let result = program.dump_fmt(&mut string).unwrap();
+    let mut chunk = Chunk::default();
+    let const_inst = chunk.constants.push(Value::Number(1.2)).unwrap();
+    chunk.instructions.append(const_inst, 1);
+    chunk.instructions.append(Instruction::Return, 2);
+    let result = chunk.dump_fmt(&mut string).unwrap();
     assert_eq!(result, ());
     let lines: Vec<&str> = string.split("\n").collect();
     assert_eq!(lines[0], "");

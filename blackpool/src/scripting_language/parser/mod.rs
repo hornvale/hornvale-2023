@@ -1,6 +1,6 @@
+use crate::scripting_language::chunk::Chunk;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::instruction::Instruction;
-use crate::scripting_language::program::Program;
 use crate::scripting_language::scanner::Scanner;
 use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
@@ -128,10 +128,10 @@ impl<'source> Parser<'source> {
 
   /// Grouping.
   #[named]
-  pub fn parse_grouping(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_grouping(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    self.parse_expression(program)?;
+    trace_var!(chunk);
+    self.parse_expression(chunk)?;
     self.consume(TokenType::RightParenthesis, "expected ')' after expression")?;
     trace_exit!();
     Ok(())
@@ -139,13 +139,13 @@ impl<'source> Parser<'source> {
 
   /// Declaration.
   #[named]
-  pub fn parse_declaration(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_declaration(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     if self.r#match(TokenType::Var)? {
-      self.parse_var_declaration(program)?;
+      self.parse_var_declaration(chunk)?;
     } else {
-      self.parse_statement(program)?;
+      self.parse_statement(chunk)?;
     }
     if self.suppress_new_errors {
       self.synchronize()?;
@@ -156,31 +156,31 @@ impl<'source> Parser<'source> {
 
   /// Variable declaration.
   #[named]
-  pub fn parse_var_declaration(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_var_declaration(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    let variable_index = self.parse_variable(program, "expected a variable identifier")?;
+    trace_var!(chunk);
+    let variable_index = self.parse_variable(chunk, "expected a variable identifier")?;
     trace_var!(variable_index);
     if self.r#match(TokenType::Equal)? {
-      self.parse_expression(program)?;
+      self.parse_expression(chunk)?;
     } else {
-      self.emit_instruction(program, Instruction::Nil)?;
+      self.emit_instruction(chunk, Instruction::Nil)?;
     }
     self.consume(TokenType::Semicolon, "expected semicolon after variable declaration")?;
-    self.define_variable(program, variable_index)?;
+    self.define_variable(chunk, variable_index)?;
     trace_exit!();
     Ok(())
   }
 
   /// Statement.
   #[named]
-  pub fn parse_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     if self.r#match(TokenType::Print)? {
-      self.parse_print_statement(program)?;
+      self.parse_print_statement(chunk)?;
     } else {
-      self.parse_expression_statement(program)?;
+      self.parse_expression_statement(chunk)?;
     }
     trace_exit!();
     Ok(())
@@ -188,34 +188,34 @@ impl<'source> Parser<'source> {
 
   /// Statement.
   #[named]
-  pub fn parse_print_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_print_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    self.parse_expression(program)?;
+    trace_var!(chunk);
+    self.parse_expression(chunk)?;
     self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
-    self.emit_instruction(program, Instruction::Print)?;
+    self.emit_instruction(chunk, Instruction::Print)?;
     trace_exit!();
     Ok(())
   }
 
   /// Expression statement.
   #[named]
-  pub fn parse_expression_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_expression_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    self.parse_expression(program)?;
+    trace_var!(chunk);
+    self.parse_expression(chunk)?;
     self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
-    self.emit_instruction(program, Instruction::Pop)?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
     trace_exit!();
     Ok(())
   }
 
   /// Expression.
   #[named]
-  pub fn parse_expression(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_expression(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    self.parse_precedence(&Precedence::Assignment, program)?;
+    trace_var!(chunk);
+    self.parse_precedence(&Precedence::Assignment, chunk)?;
     trace_exit!();
     Ok(())
   }
@@ -223,9 +223,9 @@ impl<'source> Parser<'source> {
   /// A number!
   #[named]
   #[inline]
-  pub fn parse_number(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_number(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     let previous = self.previous.unwrap();
     trace_var!(previous);
     let start = previous.start;
@@ -236,7 +236,7 @@ impl<'source> Parser<'source> {
     trace_var!(string);
     let value = string.parse::<f64>()?;
     trace_var!(value);
-    self.emit_constant(program, Value::Number(value))?;
+    self.emit_constant(chunk, Value::Number(value))?;
     trace_exit!();
     Ok(())
   }
@@ -244,9 +244,9 @@ impl<'source> Parser<'source> {
   /// A string!
   #[named]
   #[inline]
-  pub fn parse_string(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_string(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     let previous = self.previous.unwrap();
     trace_var!(previous);
     let start = previous.start + 1;
@@ -257,7 +257,7 @@ impl<'source> Parser<'source> {
     trace_var!(string);
     let value = self.garbage_collector.intern(string.to_owned());
     trace_var!(value);
-    self.emit_constant(program, Value::String(value))?;
+    self.emit_constant(chunk, Value::String(value))?;
     trace_exit!();
     Ok(())
   }
@@ -284,13 +284,13 @@ impl<'source> Parser<'source> {
   /// Parse a variable identifier.
   #[named]
   #[inline]
-  pub fn parse_variable(&mut self, program: &mut Program, message: &str) -> Result<u8, Error> {
+  pub fn parse_variable(&mut self, chunk: &mut Chunk, message: &str) -> Result<u8, Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_var!(message);
     self.consume(TokenType::Identifier, message)?;
-    self.declare_variable(program)?;
-    let result = self.get_identifier_constant(program, self.previous.unwrap())?;
+    self.declare_variable(chunk)?;
+    let result = self.get_identifier_constant(chunk, self.previous.unwrap())?;
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -298,24 +298,24 @@ impl<'source> Parser<'source> {
 
   /// Binary operator.
   #[named]
-  pub fn parse_binary(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_binary(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     let operator_type = self.previous.unwrap().r#type;
     let rule = self.get_rule(&operator_type);
-    self.parse_precedence(&rule.unwrap().precedence.next().unwrap(), program)?;
+    self.parse_precedence(&rule.unwrap().precedence.next().unwrap(), chunk)?;
     use TokenType::*;
     match operator_type {
-      BangEqual => self.emit_instruction(program, Instruction::NotEqual)?,
-      EqualEqual => self.emit_instruction(program, Instruction::Equal)?,
-      GreaterThan => self.emit_instruction(program, Instruction::GreaterThan)?,
-      GreaterThanOrEqual => self.emit_instruction(program, Instruction::GreaterThanOrEqual)?,
-      LessThan => self.emit_instruction(program, Instruction::LessThan)?,
-      LessThanOrEqual => self.emit_instruction(program, Instruction::LessThanOrEqual)?,
-      Plus => self.emit_instruction(program, Instruction::Add)?,
-      Minus => self.emit_instruction(program, Instruction::Subtract)?,
-      Star => self.emit_instruction(program, Instruction::Multiply)?,
-      Slash => self.emit_instruction(program, Instruction::Divide)?,
+      BangEqual => self.emit_instruction(chunk, Instruction::NotEqual)?,
+      EqualEqual => self.emit_instruction(chunk, Instruction::Equal)?,
+      GreaterThan => self.emit_instruction(chunk, Instruction::GreaterThan)?,
+      GreaterThanOrEqual => self.emit_instruction(chunk, Instruction::GreaterThanOrEqual)?,
+      LessThan => self.emit_instruction(chunk, Instruction::LessThan)?,
+      LessThanOrEqual => self.emit_instruction(chunk, Instruction::LessThanOrEqual)?,
+      Plus => self.emit_instruction(chunk, Instruction::Add)?,
+      Minus => self.emit_instruction(chunk, Instruction::Subtract)?,
+      Star => self.emit_instruction(chunk, Instruction::Multiply)?,
+      Slash => self.emit_instruction(chunk, Instruction::Divide)?,
       _ => {},
     }
     trace_exit!();
@@ -324,15 +324,15 @@ impl<'source> Parser<'source> {
 
   /// Unary operator.
   #[named]
-  pub fn parse_unary(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_unary(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     let operator_type = self.previous.unwrap().r#type;
-    self.parse_expression(program)?;
+    self.parse_expression(chunk)?;
     use TokenType::*;
     match operator_type {
-      Minus => self.emit_instruction(program, Instruction::Negate)?,
-      Bang => self.emit_instruction(program, Instruction::Not)?,
+      Minus => self.emit_instruction(chunk, Instruction::Negate)?,
+      Bang => self.emit_instruction(chunk, Instruction::Not)?,
       _ => {},
     }
     trace_exit!();
@@ -341,15 +341,15 @@ impl<'source> Parser<'source> {
 
   /// Literal.
   #[named]
-  pub fn parse_literal(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_literal(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     let token_type = self.previous.unwrap().r#type;
     use TokenType::*;
     match token_type {
-      True => self.emit_instruction(program, Instruction::True)?,
-      False => self.emit_instruction(program, Instruction::False)?,
-      Nil => self.emit_instruction(program, Instruction::Nil)?,
+      True => self.emit_instruction(chunk, Instruction::True)?,
+      False => self.emit_instruction(chunk, Instruction::False)?,
+      Nil => self.emit_instruction(chunk, Instruction::Nil)?,
       _ => {},
     }
     trace_exit!();
@@ -385,9 +385,9 @@ impl<'source> Parser<'source> {
   /// Declare a variable.
   #[named]
   #[inline]
-  pub fn declare_variable(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn declare_variable(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_exit!();
     Ok(())
   }
@@ -395,11 +395,11 @@ impl<'source> Parser<'source> {
   /// Define a variable.
   #[named]
   #[inline]
-  pub fn define_variable(&mut self, program: &mut Program, index: u8) -> Result<(), Error> {
+  pub fn define_variable(&mut self, chunk: &mut Chunk, index: u8) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_var!(index);
-    self.emit_instruction(program, Instruction::DefineGlobal(index))?;
+    self.emit_instruction(chunk, Instruction::DefineGlobal(index))?;
     trace_exit!();
     Ok(())
   }
@@ -407,13 +407,13 @@ impl<'source> Parser<'source> {
   /// Get an identifier constant.
   #[named]
   #[inline]
-  pub fn get_identifier_constant(&mut self, program: &mut Program, token: Token) -> Result<u8, Error> {
+  pub fn get_identifier_constant(&mut self, chunk: &mut Chunk, token: Token) -> Result<u8, Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_var!(token);
     let value = self.intern_token(&token)?;
     trace_var!(value);
-    let result = self.make_constant(program, value)?;
+    let result = self.make_constant(chunk, value)?;
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -422,11 +422,11 @@ impl<'source> Parser<'source> {
   /// Create a constant.
   #[named]
   #[inline]
-  pub fn make_constant(&mut self, program: &mut Program, value: Value) -> Result<u8, Error> {
+  pub fn make_constant(&mut self, chunk: &mut Chunk, value: Value) -> Result<u8, Error> {
     trace_enter!();
     trace_var!(value);
-    program.constants.push(value)?;
-    let result = (program.constants.constants.len() - 1) as u8;
+    chunk.constants.push(value)?;
+    let result = (chunk.constants.constants.len() - 1) as u8;
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -461,12 +461,12 @@ impl<'source> Parser<'source> {
   /// Emit a constant.
   #[named]
   #[inline]
-  pub fn emit_constant(&mut self, program: &mut Program, value: Value) -> Result<(), Error> {
+  pub fn emit_constant(&mut self, chunk: &mut Chunk, value: Value) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_var!(value);
-    let instruction = program.constants.push(value)?;
-    self.emit_instruction(program, instruction)?;
+    let instruction = chunk.constants.push(value)?;
+    self.emit_instruction(chunk, instruction)?;
     trace_exit!();
     Ok(())
   }
@@ -474,11 +474,11 @@ impl<'source> Parser<'source> {
   /// Emit an instruction.
   #[named]
   #[inline]
-  pub fn emit_instruction(&mut self, program: &mut Program, instruction: Instruction) -> Result<(), Error> {
+  pub fn emit_instruction(&mut self, chunk: &mut Chunk, instruction: Instruction) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     trace_var!(instruction);
-    program
+    chunk
       .instructions
       .append(instruction, self.previous.unwrap().line_number);
     trace_exit!();
@@ -487,17 +487,17 @@ impl<'source> Parser<'source> {
 
   /// Conclude.
   #[named]
-  pub fn emit_return(&mut self, program: &mut Program) -> Result<(), Error> {
+  pub fn emit_return(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
-    self.emit_instruction(program, Instruction::Return)?;
+    trace_var!(chunk);
+    self.emit_instruction(chunk, Instruction::Return)?;
     trace_exit!();
     Ok(())
   }
 
   /// Parse precedence.
   #[named]
-  pub fn parse_precedence(&mut self, precedence: &Precedence, program: &mut Program) -> Result<(), Error> {
+  pub fn parse_precedence(&mut self, precedence: &Precedence, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(precedence);
     self.advance()?;
@@ -507,7 +507,7 @@ impl<'source> Parser<'source> {
       return Err(Error::ExpectedExpression(self.previous));
     }
     let prefix = previous_rule.prefix.unwrap();
-    prefix(self, program)?;
+    prefix(self, chunk)?;
     while precedence <= &self.get_current_rule().unwrap().precedence {
       self.advance()?;
       let previous_rule = self.get_previous_rule().unwrap();
@@ -515,7 +515,7 @@ impl<'source> Parser<'source> {
         return Err(Error::ExpectedExpression(self.previous));
       }
       let infix = previous_rule.infix.unwrap();
-      infix(self, program)?;
+      infix(self, chunk)?;
     }
     Ok(())
   }

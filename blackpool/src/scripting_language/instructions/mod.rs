@@ -13,7 +13,7 @@ pub struct Instructions {
 }
 
 impl Instructions {
-  /// Append an instruction to the program.
+  /// Append an instruction to the chunk.
   #[named]
   pub fn append(&mut self, instruction: Instruction, line_number: usize) {
     trace_enter!();

@@ -2,6 +2,7 @@
 pub mod r#macro;
 pub use r#macro::*;
 
+pub mod chunk;
 pub mod compiler;
 pub mod constants;
 pub mod error;
@@ -9,7 +10,6 @@ pub mod garbage_collection;
 pub mod instruction;
 pub mod instructions;
 pub mod parser;
-pub mod program;
 pub mod scanner;
 pub mod table;
 pub mod token;

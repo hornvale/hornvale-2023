@@ -1,9 +1,9 @@
+use crate::scripting_language::chunk::Chunk;
 use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
 use crate::scripting_language::instruction::Instruction;
-use crate::scripting_language::program::Program;
 use crate::scripting_language::table::Table;
 use crate::scripting_language::value::Value;
 
@@ -62,34 +62,34 @@ impl VirtualMachine {
     trace_var!(source);
     self.instruction_pointer = 0;
     self.stack = Vec::with_capacity(STACK_SIZE_MAX);
-    let program = self.compile(source)?;
-    trace_var!(program);
-    self.run(&program)?;
+    let chunk = self.compile(source)?;
+    trace_var!(chunk);
+    self.run(&chunk)?;
     trace_exit!();
     Ok(())
   }
 
   /// Compile the source code.
   #[named]
-  pub fn compile(&mut self, source: &str) -> Result<Program, Error> {
+  pub fn compile(&mut self, source: &str) -> Result<Chunk, Error> {
     trace_enter!();
     trace_var!(source);
     let mut compiler = Compiler::default();
     trace_var!(compiler);
-    let mut result = Program::default();
+    let mut result = Chunk::default();
     compiler.compile(source, &mut result, &mut self.garbage_collector)?;
     trace_var!(result);
     trace_exit!();
     Ok(result)
   }
 
-  /// Run the program.
+  /// Run the chunk.
   #[named]
-  pub fn run(&mut self, program: &Program) -> Result<(), Error> {
+  pub fn run(&mut self, chunk: &Chunk) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(program);
+    trace_var!(chunk);
     loop {
-      let instruction_option = program.instructions.instructions.get(self.instruction_pointer);
+      let instruction_option = chunk.instructions.instructions.get(self.instruction_pointer);
       if instruction_option.is_none() {
         break;
       }
@@ -99,12 +99,12 @@ impl VirtualMachine {
       use Value::*;
       match instruction {
         Constant(index) => {
-          let constant = program.constants.constants[index as usize];
+          let constant = chunk.constants.constants[index as usize];
           trace_var!(constant);
           self.push(constant)?;
         },
         LongConstant(index) => {
-          let constant = program.constants.constants[index as usize];
+          let constant = chunk.constants.constants[index as usize];
           trace_var!(constant);
           self.push(constant)?;
         },
@@ -193,7 +193,7 @@ impl VirtualMachine {
           self.push(Value::Boolean(answer))?;
         },
         DefineGlobal(index) => {
-          let identifier = program.read_string(index);
+          let identifier = chunk.read_string(index);
           let value = self.pop()?;
           self.globals.insert(identifier, value);
         },
