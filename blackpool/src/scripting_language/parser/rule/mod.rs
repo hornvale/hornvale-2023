@@ -5,7 +5,7 @@ use crate::scripting_language::parser::error::Error;
 use crate::scripting_language::parser::precedence::Precedence;
 use crate::scripting_language::parser::Parser;
 
-pub type ParseFn<'source> = fn(&mut Parser<'source>, &mut Chunk) -> Result<(), Error>;
+pub type ParseFn<'source> = fn(&mut Parser<'source>, &mut Chunk, bool) -> Result<(), Error>;
 
 /// The `Rule` type.
 #[derive(Clone, Display)]

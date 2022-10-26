@@ -29,4 +29,7 @@ pub enum Error {
   /// Expected an expression.
   #[error("expected an expression at {0:#?}")]
   ExpectedExpression(Option<Token>),
+  /// Invalid assignment target.
+  #[error("invalid assignment target {0:#?}")]
+  InvalidAssignmentTarget(Option<Token>),
 }

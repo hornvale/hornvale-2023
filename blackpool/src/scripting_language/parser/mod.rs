@@ -128,7 +128,7 @@ impl<'source> Parser<'source> {
 
   /// Grouping.
   #[named]
-  pub fn parse_grouping(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_grouping(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     self.parse_expression(chunk)?;
@@ -223,7 +223,7 @@ impl<'source> Parser<'source> {
   /// A number!
   #[named]
   #[inline]
-  pub fn parse_number(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_number(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     let previous = self.previous.unwrap();
@@ -244,7 +244,7 @@ impl<'source> Parser<'source> {
   /// A string!
   #[named]
   #[inline]
-  pub fn parse_string(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_string(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     let previous = self.previous.unwrap();
@@ -283,10 +283,10 @@ impl<'source> Parser<'source> {
 
   /// Parse a variable.
   #[named]
-  pub fn parse_variable(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_variable(&mut self, chunk: &mut Chunk, can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
-    self.did_name_variable(chunk, self.previous.unwrap())?;
+    self.did_name_variable(chunk, self.previous.unwrap(), can_assign)?;
     trace_exit!();
     Ok(())
   }
@@ -306,7 +306,7 @@ impl<'source> Parser<'source> {
 
   /// Binary operator.
   #[named]
-  pub fn parse_binary(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_binary(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     let operator_type = self.previous.unwrap().r#type;
@@ -332,7 +332,7 @@ impl<'source> Parser<'source> {
 
   /// Unary operator.
   #[named]
-  pub fn parse_unary(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_unary(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     let operator_type = self.previous.unwrap().r#type;
@@ -349,7 +349,7 @@ impl<'source> Parser<'source> {
 
   /// Literal.
   #[named]
-  pub fn parse_literal(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_literal(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     let token_type = self.previous.unwrap().r#type;
@@ -505,13 +505,13 @@ impl<'source> Parser<'source> {
 
   /// Handle when we named a variable.
   #[named]
-  pub fn did_name_variable(&mut self, chunk: &mut Chunk, name: Token) -> Result<(), Error> {
+  pub fn did_name_variable(&mut self, chunk: &mut Chunk, name: Token, can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(name);
     let index = self.get_identifier_constant(chunk, name)?;
     let get_op = Instruction::GetGlobal(index);
     let set_op = Instruction::SetGlobal(index);
-    if self.r#match(TokenType::Equal)? {
+    if can_assign && self.r#match(TokenType::Equal)? {
       self.parse_expression(chunk)?;
       self.emit_instruction(chunk, set_op)?;
     } else {
@@ -533,7 +533,8 @@ impl<'source> Parser<'source> {
       return Err(Error::ExpectedExpression(self.previous));
     }
     let prefix = previous_rule.prefix.unwrap();
-    prefix(self, chunk)?;
+    let can_assign = precedence <= &Precedence::Assignment;
+    prefix(self, chunk, can_assign)?;
     while precedence <= &self.get_current_rule().unwrap().precedence {
       self.advance()?;
       let previous_rule = self.get_previous_rule().unwrap();
@@ -541,8 +542,12 @@ impl<'source> Parser<'source> {
         return Err(Error::ExpectedExpression(self.previous));
       }
       let infix = previous_rule.infix.unwrap();
-      infix(self, chunk)?;
+      infix(self, chunk, can_assign)?;
     }
+    if can_assign && self.r#match(TokenType::Equal)? {
+      return Err(Error::InvalidAssignmentTarget(self.previous));
+    }
+    trace_exit!();
     Ok(())
   }
 
