@@ -1,4 +1,4 @@
-use crate::scripting_language::compiler::error::Error as CompilerError;
+use crate::scripting_language::interpreter::error::Error as InterpreterError;
 
 pub mod runtime;
 use runtime::RuntimeError;
@@ -6,9 +6,9 @@ use runtime::RuntimeError;
 /// Errors encountered in compiling or executing a script.
 #[derive(Clone, Debug, Error, PartialEq)]
 pub enum Error {
-  /// A compiler error occurred.
-  #[error("a compiler error occurred ({0})")]
-  CompilerError(#[from] CompilerError),
+  /// An interpreter error occurred.
+  #[error("an interpreter error occurred ({0})")]
+  InterpreterError(#[from] InterpreterError),
   /// A runtime error occurred.
   #[error("a runtime error occurred ({0})")]
   RuntimeError(#[from] RuntimeError),

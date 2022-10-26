@@ -1,9 +1,9 @@
 use crate::scripting_language::chunk::Chunk;
-use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
 use crate::scripting_language::instruction::Instruction;
+use crate::scripting_language::interpreter::Interpreter;
 use crate::scripting_language::table::Table;
 use crate::scripting_language::value::Value;
 
@@ -74,10 +74,10 @@ impl VirtualMachine {
   pub fn compile(&mut self, source: &str) -> Result<Chunk, Error> {
     trace_enter!();
     trace_var!(source);
-    let mut compiler = Compiler::default();
-    trace_var!(compiler);
+    let mut interpreter = Interpreter::default();
+    trace_var!(interpreter);
     let mut result = Chunk::default();
-    compiler.compile(source, &mut result, &mut self.garbage_collector)?;
+    interpreter.compile(source, &mut result, &mut self.garbage_collector)?;
     trace_var!(result);
     trace_exit!();
     Ok(result)
