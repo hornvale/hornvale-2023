@@ -142,10 +142,32 @@ impl<'source> Parser<'source> {
   pub fn parse_declaration(&mut self, program: &mut Program) -> Result<(), Error> {
     trace_enter!();
     trace_var!(program);
-    self.parse_statement(program)?;
+    if self.r#match(TokenType::Var)? {
+      self.parse_var_declaration(program)?;
+    } else {
+      self.parse_statement(program)?;
+    }
     if self.suppress_new_errors {
       self.synchronize()?;
     }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Variable declaration.
+  #[named]
+  pub fn parse_var_declaration(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    let variable_index = self.parse_variable(program, "expected a variable identifier")?;
+    trace_var!(variable_index);
+    if self.r#match(TokenType::Equal)? {
+      self.parse_expression(program)?;
+    } else {
+      self.emit_instruction(program, Instruction::Nil)?;
+    }
+    self.consume(TokenType::Semicolon, "expected semicolon after variable declaration")?;
+    self.define_variable(program, variable_index)?;
     trace_exit!();
     Ok(())
   }
@@ -240,6 +262,40 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
+  /// Intern a string from the source.
+  #[named]
+  #[inline]
+  pub fn intern_token(&mut self, token: &Token) -> Result<Value, Error> {
+    trace_enter!();
+    let start = token.start + 1;
+    trace_var!(start);
+    let end = start + token.length - 2;
+    trace_var!(end);
+    let string = &self.scanner.source[start..end];
+    trace_var!(string);
+    let value = self.garbage_collector.intern(string.to_owned());
+    trace_var!(value);
+    let result = Value::String(value);
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Parse a variable identifier.
+  #[named]
+  #[inline]
+  pub fn parse_variable(&mut self, program: &mut Program, message: &str) -> Result<u8, Error> {
+    trace_enter!();
+    trace_var!(program);
+    trace_var!(message);
+    self.consume(TokenType::Identifier, message)?;
+    self.declare_variable(program)?;
+    let result = self.get_identifier_constant(program, self.previous.unwrap())?;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
   /// Binary operator.
   #[named]
   pub fn parse_binary(&mut self, program: &mut Program) -> Result<(), Error> {
@@ -324,6 +380,56 @@ impl<'source> Parser<'source> {
     }
     trace_exit!();
     Ok(())
+  }
+
+  /// Declare a variable.
+  #[named]
+  #[inline]
+  pub fn declare_variable(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Define a variable.
+  #[named]
+  #[inline]
+  pub fn define_variable(&mut self, program: &mut Program, index: u8) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    trace_var!(index);
+    self.emit_instruction(program, Instruction::DefineGlobal(index))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Get an identifier constant.
+  #[named]
+  #[inline]
+  pub fn get_identifier_constant(&mut self, program: &mut Program, token: Token) -> Result<u8, Error> {
+    trace_enter!();
+    trace_var!(program);
+    trace_var!(token);
+    let value = self.intern_token(&token)?;
+    trace_var!(value);
+    let result = self.make_constant(program, value)?;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Create a constant.
+  #[named]
+  #[inline]
+  pub fn make_constant(&mut self, program: &mut Program, value: Value) -> Result<u8, Error> {
+    trace_enter!();
+    trace_var!(value);
+    program.constants.push(value)?;
+    let result = (program.constants.constants.len() - 1) as u8;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
   }
 
   /// Match current token.

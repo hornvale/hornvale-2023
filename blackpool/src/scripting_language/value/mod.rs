@@ -56,8 +56,14 @@ impl Trace for Value {
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     trace_enter!();
     trace_var!(garbage_collector);
-    if let Value::String(value) = self {
-      garbage_collector.mark_object(*value)
+    match self {
+      // Value::BoundMethod(value) => garbage_collector.mark_object(*value),
+      // Value::Class(value) => garbage_collector.mark_object(*value),
+      // Value::Closure(value) => garbage_collector.mark_object(*value),
+      // Value::Function(value) => garbage_collector.mark_object(*value),
+      // Value::Instance(value) => garbage_collector.mark_object(*value),
+      Value::String(value) => garbage_collector.mark_object(*value),
+      _ => (),
     };
     trace_exit!();
   }

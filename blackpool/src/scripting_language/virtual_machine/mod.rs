@@ -24,6 +24,8 @@ pub struct VirtualMachine {
   pub garbage_collector: GarbageCollector,
   /// Global variables.
   pub globals: Table,
+  /// The last thing popped from the stack.
+  pub last_pop: Option<Value>,
 }
 
 impl VirtualMachine {
@@ -39,11 +41,14 @@ impl VirtualMachine {
     trace_var!(garbage_collector);
     let globals = Table::new();
     trace_var!(globals);
+    let last_pop = None;
+    trace_var!(last_pop);
     let result = Self {
       instruction_pointer,
       stack,
       garbage_collector,
       globals,
+      last_pop,
     };
     trace_var!(result);
     trace_exit!();
@@ -187,6 +192,11 @@ impl VirtualMachine {
           let answer = self.is_falsey(&value);
           self.push(Value::Boolean(answer))?;
         },
+        DefineGlobal(index) => {
+          let identifier = program.read_string(index);
+          let value = self.pop()?;
+          self.globals.insert(identifier, value);
+        },
       }
       self.instruction_pointer += 1;
     }
@@ -249,6 +259,7 @@ impl VirtualMachine {
     }
     trace_var!(self.stack);
     let result = self.stack.pop().unwrap();
+    self.last_pop = Some(result);
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -392,9 +403,9 @@ pub mod test {
     init();
     trace_enter!();
     let mut vm = VirtualMachine::new();
-    let line = "!(5 - 4 > 3 * 2 == !nil)".to_string();
+    let line = "!(5 - 4 > 3 * 2 == !nil);".to_string();
     vm.interpret(&line).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
     trace_exit!();
   }
 
@@ -417,48 +428,48 @@ pub mod test {
     init();
     trace_enter!();
     let mut vm = VirtualMachine::new();
-    vm.interpret(&"2 > 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
-    vm.interpret(&"2 >= 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
-    vm.interpret(&"2 == 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
-    vm.interpret(&"2 != 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"2 != 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
-    vm.interpret(&"2 == 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"!(2 > 3)".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"!(2 >= 3)".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"2 < 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"2 <= 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"2 - 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(-1.0)));
-    vm.interpret(&"3 - 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(1.0)));
-    vm.interpret(&"2 + 3".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(5.0)));
-    vm.interpret(&"3 + 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(5.0)));
-    vm.interpret(&"2 * -4".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(-8.0)));
-    vm.interpret(&"3 * 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(6.0)));
-    vm.interpret(&"-4 / 2".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(-2.0)));
-    vm.interpret(&"2 / 4".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Number(0.5)));
-    vm.interpret(&"nil".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Nil));
-    vm.interpret(&"true".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
-    vm.interpret(&"false".to_string()).unwrap();
-    assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
+    vm.interpret(&"2 > 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 >= 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 == 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 != 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"2 != 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 == 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"!(2 > 3);".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"!(2 >= 3);".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"2 < 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"2 <= 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"2 - 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(-1.0));
+    vm.interpret(&"3 - 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(1.0));
+    vm.interpret(&"2 + 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(5.0));
+    vm.interpret(&"3 + 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(5.0));
+    vm.interpret(&"2 * -4;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(-8.0));
+    vm.interpret(&"3 * 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(6.0));
+    vm.interpret(&"-4 / 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(-2.0));
+    vm.interpret(&"2 / 4;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Number(0.5));
+    vm.interpret(&"nil;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Nil);
+    vm.interpret(&"true;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"false;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
     trace_exit!();
   }
 }

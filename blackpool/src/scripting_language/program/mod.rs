@@ -3,7 +3,9 @@ use std::fmt::Write as FmtWrite;
 use std::io::Write as IoWrite;
 
 use crate::scripting_language::constants::Constants;
+use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
 use crate::scripting_language::instructions::Instructions;
+use crate::scripting_language::value::Value;
 
 /// A program consisting of bytecode.
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -35,6 +37,21 @@ impl Program {
     write!(out, "{}", string)?;
     trace_exit!();
     Ok(())
+  }
+
+  /// Read a string.
+  #[named]
+  pub fn read_string(&self, index: u8) -> GcReference<String> {
+    trace_enter!();
+    trace_var!(index);
+    let result = if let Value::String(string) = self.constants.constants[index as usize] {
+      string
+    } else {
+      panic!("Constant is not String!")
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 }
 
