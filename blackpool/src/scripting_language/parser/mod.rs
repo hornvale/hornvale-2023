@@ -1,3 +1,4 @@
+use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::program::Program;
 use crate::scripting_language::scanner::Scanner;
@@ -15,7 +16,7 @@ pub mod rules;
 use rules::Rules;
 
 /// The `Parser` type.
-#[derive(Clone, Debug, Display)]
+#[derive(Debug, Display)]
 #[display(
   fmt = "scanner: {}, current: {:#?}, previous: {:#?}, rules: {}, suppress_new_errors: {}, did_encounter_error: {:#?}",
   scanner,
@@ -28,6 +29,8 @@ use rules::Rules;
 pub struct Parser<'source> {
   /// The scanner.
   pub scanner: Scanner<'source>,
+  /// The garbage collector.
+  pub garbage_collector: &'source mut GarbageCollector,
   /// The current token.
   pub current: Option<Token>,
   /// The last token processed.
@@ -43,8 +46,10 @@ pub struct Parser<'source> {
 impl<'source> Parser<'source> {
   /// Constructor.
   #[named]
-  pub fn new(scanner: Scanner<'source>) -> Parser<'source> {
+  pub fn new(scanner: Scanner<'source>, garbage_collector: &'source mut GarbageCollector) -> Parser<'source> {
     trace_enter!();
+    trace_var!(scanner);
+    trace_var!(garbage_collector);
     let current = None;
     trace_var!(current);
     let previous = None;
@@ -57,6 +62,7 @@ impl<'source> Parser<'source> {
     trace_var!(did_encounter_error);
     let result = Self {
       scanner,
+      garbage_collector,
       current,
       previous,
       rules,
@@ -131,6 +137,57 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
+  /// Declaration.
+  #[named]
+  pub fn parse_declaration(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    self.parse_statement(program)?;
+    if self.suppress_new_errors {
+      self.synchronize()?;
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Statement.
+  #[named]
+  pub fn parse_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    if self.r#match(TokenType::Print)? {
+      self.parse_print_statement(program)?;
+    } else {
+      self.parse_expression_statement(program)?;
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Statement.
+  #[named]
+  pub fn parse_print_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    self.parse_expression(program)?;
+    self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
+    self.emit_instruction(program, Instruction::Print)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Expression statement.
+  #[named]
+  pub fn parse_expression_statement(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    self.parse_expression(program)?;
+    self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
+    self.emit_instruction(program, Instruction::Pop)?;
+    trace_exit!();
+    Ok(())
+  }
+
   /// Expression.
   #[named]
   pub fn parse_expression(&mut self, program: &mut Program) -> Result<(), Error> {
@@ -158,6 +215,27 @@ impl<'source> Parser<'source> {
     let value = string.parse::<f64>()?;
     trace_var!(value);
     self.emit_constant(program, Value::Number(value))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// A string!
+  #[named]
+  #[inline]
+  pub fn parse_string(&mut self, program: &mut Program) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(program);
+    let previous = self.previous.unwrap();
+    trace_var!(previous);
+    let start = previous.start + 1;
+    trace_var!(start);
+    let end = start + previous.length - 2;
+    trace_var!(end);
+    let string = &self.scanner.source[start..end];
+    trace_var!(string);
+    let value = self.garbage_collector.intern(string.to_owned());
+    trace_var!(value);
+    self.emit_constant(program, Value::String(value))?;
     trace_exit!();
     Ok(())
   }
@@ -220,6 +298,58 @@ impl<'source> Parser<'source> {
     }
     trace_exit!();
     Ok(())
+  }
+
+  /// Rejoin society.
+  #[named]
+  pub fn synchronize(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    self.suppress_new_errors = false;
+    while self.previous.unwrap().r#type != TokenType::Eof {
+      if self.previous.unwrap().r#type == TokenType::Semicolon {
+        return Ok(());
+      }
+      match self.current.unwrap().r#type {
+        TokenType::Class
+        | TokenType::Function
+        | TokenType::Var
+        | TokenType::For
+        | TokenType::If
+        | TokenType::While
+        | TokenType::Print
+        | TokenType::Return => return Ok(()),
+        _ => (),
+      }
+      self.advance()?;
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Match current token.
+  #[named]
+  pub fn r#match(&mut self, token_type: TokenType) -> Result<bool, Error> {
+    trace_enter!();
+    trace_var!(token_type);
+    if !self.check(token_type) {
+      return Ok(false);
+    }
+    self.advance()?;
+    let result = true;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Check type of current token.
+  #[named]
+  pub fn check(&mut self, token_type: TokenType) -> bool {
+    trace_enter!();
+    trace_var!(token_type);
+    let result = self.current.is_some() && self.current.unwrap().r#type == token_type;
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 
   /// Emit a constant.

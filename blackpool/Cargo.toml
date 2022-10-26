@@ -21,6 +21,7 @@ path = "src/main.rs"
 
 [dependencies]
 assert_approx_eq = { workspace = true }
+derivative = { workspace = true }
 derive_more = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }

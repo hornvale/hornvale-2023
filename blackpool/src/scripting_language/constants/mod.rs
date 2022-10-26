@@ -5,7 +5,7 @@ use crate::scripting_language::value::Value;
 /// The `Constants` type.
 ///
 /// This represents a constant pool.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Constants {
   pub constants: Vec<Value>,
 }

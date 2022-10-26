@@ -1,3 +1,4 @@
+use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::parser::Parser;
 use crate::scripting_language::program::Program;
 use crate::scripting_language::scanner::Scanner;
@@ -13,16 +14,23 @@ pub struct Compiler {}
 impl Compiler {
   /// Compile some source.
   #[named]
-  pub fn compile<'source>(&mut self, source: &'source str, program: &mut Program) -> Result<(), Error> {
+  pub fn compile<'source>(
+    &mut self,
+    source: &'source str,
+    program: &mut Program,
+    garbage_collector: &mut GarbageCollector,
+  ) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
+    trace_var!(program);
     let scanner = Scanner::new(source);
     trace_var!(scanner);
-    let mut parser = Parser::new(scanner);
+    let mut parser = Parser::new(scanner, garbage_collector);
     trace_var!(parser);
     parser.advance()?;
-    parser.parse_expression(program)?;
-    parser.consume(TokenType::Eof, "expected end of expression")?;
+    while !parser.r#match(TokenType::Eof)? {
+      parser.parse_declaration(program)?;
+    }
     self.finalize(&mut parser, program)?;
     trace_exit!();
     Ok(())

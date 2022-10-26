@@ -38,13 +38,7 @@ where
     }
     trace_var!(line);
     match vm.interpret(&line) {
-      Ok(_) => {
-        let value_option = vm.pop().ok();
-        match value_option {
-          Some(value) => writeln!(&mut output, "OK: {}", value)?,
-          None => writeln!(&mut output, "OK")?,
-        }
-      },
+      Ok(_) => writeln!(&mut output, "OK")?,
       Err(error) => writeln!(&mut output, "Error: {}", error)?,
     }
   }
@@ -65,7 +59,7 @@ fn main() -> Result<(), Error> {
   use pretty_env_logger::env_logger::builder;
   let _ = builder().is_test(true).try_init();
   let args: Vec<String> = args().collect();
-  let mut vm = VirtualMachine::default();
+  let mut vm = VirtualMachine::new();
   match args.len() {
     1 => {
       let stdio = io::stdin();
@@ -86,7 +80,6 @@ pub mod test {
 
   use super::*;
 
-  #[named]
   pub fn init() {
     let _ = builder().is_test(true).try_init();
     set_var("RUST_BACKTRACE", "1");
@@ -98,7 +91,7 @@ pub mod test {
   pub fn test() {
     init();
     trace_enter!();
-    let mut vm = VirtualMachine::default();
+    let mut vm = VirtualMachine::new();
     run_file(&mut vm, "nonexistent file.txt").unwrap();
     trace_exit!();
   }
@@ -108,7 +101,7 @@ pub mod test {
   pub fn test2() {
     init();
     trace_enter!();
-    let mut vm = VirtualMachine::default();
+    let mut vm = VirtualMachine::new();
     let output = Vec::new();
     let input = b"3 + 4";
     repl(&mut vm, &input[..], output).unwrap();

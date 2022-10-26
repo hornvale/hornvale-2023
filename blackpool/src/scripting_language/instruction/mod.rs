@@ -42,6 +42,10 @@ pub enum Instruction {
   GreaterThanOrEqual,
   /// LessThanOrEqual for the top two values of the stack.
   LessThanOrEqual,
+  /// Print the top value on the stack.
+  Print,
+  /// Pop the value off the stack.
+  Pop,
 }
 
 impl Instruction {

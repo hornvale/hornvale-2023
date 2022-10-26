@@ -94,7 +94,7 @@ impl<'source> Default for Rules<'source> {
       Precedence::Comparison,
     );
     result.add_rule(Identifier, None, None, Precedence::None);
-    result.add_rule(String, None, None, Precedence::None);
+    result.add_rule(String, Some(Parser::parse_string), None, Precedence::None);
     result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
     result.add_rule(And, None, None, Precedence::None);
     result.add_rule(Class, None, None, Precedence::None);

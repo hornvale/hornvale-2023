@@ -1,12 +1,78 @@
+use std::any::Any;
+use std::fmt::{Formatter, Result as FmtResult};
+
+use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
+use crate::scripting_language::garbage_collection::reference::Reference;
+use crate::scripting_language::garbage_collection::trace::Trace;
+
 /// The `Value` enum.
-#[derive(Clone, Copy, Debug, Display, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Display, PartialEq)]
 pub enum Value {
   /// Boolean.
   Boolean(bool),
   /// Number is a double.
   Number(f64),
+  /// String.
+  String(Reference<String>),
   /// Nil.
   Nil,
+}
+
+impl Trace for Value {
+  /// Format.
+  #[named]
+  fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
+    trace_enter!();
+    trace_var!(garbage_collector);
+    use Value::*;
+    let result = match self {
+      Boolean(value) => write!(f, "{}", value),
+      // BoundMethod(value) => gc.deref(*value).format(f, garbage_collector),
+      // Class(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      // Closure(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      // Function(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      // Instance(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      // NativeFunction(_) => write!(f, "<native fn>"),
+      Nil => write!(f, "nil"),
+      Number(value) => write!(f, "{}", value),
+      String(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+  /// Get the size.
+  #[named]
+  fn get_size(&self) -> usize {
+    trace_enter!();
+    let result = 0;
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Trace!
+  #[named]
+  fn trace(&self, garbage_collector: &mut GarbageCollector) {
+    trace_enter!();
+    trace_var!(garbage_collector);
+    if let Value::String(value) = self {
+      garbage_collector.mark_object(*value)
+    };
+    trace_exit!();
+  }
+  /// Downcast.
+  #[named]
+  fn as_any(&self) -> &dyn Any {
+    trace_enter!();
+    panic!("value should not be allocated");
+  }
+  /// Downcast.
+  #[named]
+  fn as_any_mut(&mut self) -> &mut dyn Any {
+    trace_enter!();
+    panic!("value should not be allocated");
+  }
 }
 
 #[cfg(test)]

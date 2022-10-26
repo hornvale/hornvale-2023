@@ -6,7 +6,7 @@ use crate::scripting_language::constants::Constants;
 use crate::scripting_language::instructions::Instructions;
 
 /// A program consisting of bytecode.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Program {
   /// The serialized instructions comprising the program.
   pub instructions: Instructions,

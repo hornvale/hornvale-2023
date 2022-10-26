@@ -1,6 +1,10 @@
 use crate::scripting_language::compiler::Compiler;
+use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
+use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
+use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::program::Program;
+use crate::scripting_language::table::Table;
 use crate::scripting_language::value::Value;
 
 pub mod constants;
@@ -10,15 +14,42 @@ use error::runtime::RuntimeError;
 use error::Error;
 
 /// The `VirtualMachine` type.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Debug)]
 pub struct VirtualMachine {
   /// Points at the next instruction to read.
   pub instruction_pointer: usize,
   /// The stack.
   pub stack: Vec<Value>,
+  /// The garbage collector.
+  pub garbage_collector: GarbageCollector,
+  /// Global variables.
+  pub globals: Table,
 }
 
 impl VirtualMachine {
+  /// Constructor.
+  #[named]
+  pub fn new() -> Self {
+    trace_enter!();
+    let instruction_pointer = 0;
+    trace_var!(instruction_pointer);
+    let stack = Vec::with_capacity(STACK_SIZE_MAX);
+    trace_var!(stack);
+    let garbage_collector = GarbageCollector::new();
+    trace_var!(garbage_collector);
+    let globals = Table::new();
+    trace_var!(globals);
+    let result = Self {
+      instruction_pointer,
+      stack,
+      garbage_collector,
+      globals,
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
   /// Interpret some source code.
   #[named]
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
@@ -41,7 +72,7 @@ impl VirtualMachine {
     let mut compiler = Compiler::default();
     trace_var!(compiler);
     let mut result = Program::default();
-    compiler.compile(source, &mut result)?;
+    compiler.compile(source, &mut result, &mut self.garbage_collector)?;
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -86,7 +117,31 @@ impl VirtualMachine {
             },
           }
         },
-        Add => self.binary_arithmetic_operation(Add, |a, b| b + a, Value::Number)?,
+        Add => {
+          let a = self.pop()?;
+          trace_var!(a);
+          let b = self.pop()?;
+          trace_var!(b);
+          use Value::*;
+          match (&a, &b) {
+            (Number(a), Number(b)) => self.push(Value::Number(a + b))?,
+            (String(a), String(b)) => {
+              let b = self.garbage_collector.deref(*b);
+              let a = self.garbage_collector.deref(*a);
+              let result = format!("{}{}", b, a);
+              let result = self.intern(result);
+              let value = Value::String(result);
+              self.push(value)?;
+            },
+            (_, _) => {
+              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
+                instruction,
+                b,
+                a,
+              )))
+            },
+          }
+        },
         Subtract => self.binary_arithmetic_operation(Subtract, |a, b| b - a, Value::Number)?,
         Multiply => self.binary_arithmetic_operation(Multiply, |a, b| b * a, Value::Number)?,
         Divide => self.binary_arithmetic_operation(Divide, |a, b| b / a, Value::Number)?,
@@ -98,6 +153,7 @@ impl VirtualMachine {
           use Value::*;
           match (a, b) {
             (Number(a), Number(b)) => self.push(Value::Boolean(a == b))?,
+            (String(a), String(b)) => self.push(Value::Boolean(a == b))?,
             (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b == a))?,
             (_, _) => {
               return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
@@ -117,6 +173,14 @@ impl VirtualMachine {
         True => self.push(Value::Boolean(true))?,
         False => self.push(Value::Boolean(false))?,
         Instruction::Nil => self.push(Value::Nil)?,
+        Pop => {
+          self.pop()?;
+        },
+        Print => {
+          let value = self.pop()?;
+          let formatter = TraceFormatter::new(value, &self.garbage_collector);
+          println!("{}", formatter);
+        },
         Not => {
           let value = self.pop()?;
           trace_var!(value);
@@ -190,6 +254,22 @@ impl VirtualMachine {
     Ok(result)
   }
 
+  /// Peek at a value on the stack.
+  #[named]
+  #[inline]
+  pub fn peek(&self, offset: usize) -> Value {
+    trace_enter!();
+    trace_var!(offset);
+    let max_index = self.stack.len() - 1;
+    trace_var!(max_index);
+    let index = max_index - offset;
+    trace_var!(index);
+    let result = self.stack[index];
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
   /// Is this "falsey" or not?
   #[named]
   #[inline]
@@ -202,6 +282,83 @@ impl VirtualMachine {
       Boolean(value) => !value,
       _ => false,
     };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Eliminates duplicate string references.
+  #[named]
+  pub fn intern(&mut self, name: String) -> GcReference<String> {
+    trace_enter!();
+    trace_var!(name);
+    self.mark_and_sweep();
+    let result = self.garbage_collector.intern(name);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Mark and sweep GC.
+  ///
+  /// As the name implies, mark-sweep works in two phases:
+  ///
+  /// Mark: We start with the roots and traverse or trace through all of the
+  /// objects those roots refer to. This is a classic graph traversal of all of
+  /// the reachable objects. Each time we visit an object, we mark it in some
+  /// way.
+  ///
+  /// Sweep: Once the mark phase completes, every reachable object in the heap
+  /// has been marked. That means any unmarked object is unreachable and ripe
+  /// for reclamation. We go through all the unmarked objects and free each
+  /// one.
+  ///
+  /// @see https://craftinginterpreters.com/garbage-collection.html
+  #[named]
+  pub fn mark_and_sweep(&mut self) {
+    trace_enter!();
+    if self.garbage_collector.should_collect() {
+      debug!("Beginning garbage collection.");
+      self.mark_roots();
+      self.garbage_collector.collect_garbage();
+      debug!("Concluding garbage collection.");
+    }
+    trace_exit!();
+  }
+
+  /// Mark roots.
+  #[named]
+  fn mark_roots(&mut self) {
+    trace_enter!();
+    // Mark everything on the stack as a root object.
+    debug!("marking {} values on stack for garbage collection", self.stack.len());
+    for &value in &self.stack {
+      debug!("marking value {:#?} on stack", value);
+      self.garbage_collector.mark_value(value);
+    }
+    /*
+    debug!("marking values frame for garbage collection");
+    for &frame in &self.frames {
+        self.garbage_collector.mark_object(frame.closure)
+    }
+    */
+    /*
+    debug!("marking upvalues for garbage collection");
+    for &upvalue in &self.open_upvalues {
+        self.garbage_collector.mark_object(upvalue);
+    }
+    */
+    debug!("marking {} global variables for garbage collection", self.globals.len());
+    self.garbage_collector.mark_table(&self.globals);
+    // self.garbage_collector.mark_object(self.init_string);
+  }
+}
+
+impl Default for VirtualMachine {
+  #[named]
+  fn default() -> Self {
+    trace_enter!();
+    let result = Self::new();
     trace_var!(result);
     trace_exit!();
     result
@@ -234,7 +391,7 @@ pub mod test {
   pub fn test_vm2() {
     init();
     trace_enter!();
-    let mut vm = VirtualMachine::default();
+    let mut vm = VirtualMachine::new();
     let line = "!(5 - 4 > 3 * 2 == !nil)".to_string();
     vm.interpret(&line).unwrap();
     assert_eq!(vm.pop(), Ok(Value::Boolean(true)));
@@ -247,7 +404,7 @@ pub mod test {
   pub fn test_vm3() {
     init();
     trace_enter!();
-    let mut vm = VirtualMachine::default();
+    let mut vm = VirtualMachine::new();
     let line = "invalid input".to_string();
     // Should panic.
     vm.interpret(&line).unwrap();
@@ -259,7 +416,7 @@ pub mod test {
   pub fn test_vm4() {
     init();
     trace_enter!();
-    let mut vm = VirtualMachine::default();
+    let mut vm = VirtualMachine::new();
     vm.interpret(&"2 > 3".to_string()).unwrap();
     assert_eq!(vm.pop(), Ok(Value::Boolean(false)));
     vm.interpret(&"2 >= 3".to_string()).unwrap();

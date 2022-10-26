@@ -4,6 +4,8 @@
 #[macro_use]
 extern crate assert_approx_eq;
 #[macro_use]
+extern crate derivative;
+#[macro_use]
 extern crate derive_more;
 #[macro_use]
 extern crate serde;

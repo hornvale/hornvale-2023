@@ -17,7 +17,7 @@ macro_rules! test_instructions {
       use crate::scripting_language::program::Program;
       use crate::scripting_language::virtual_machine::VirtualMachine;
       info!("\n\n------------------ Starting test! ------------------\n");
-      let mut dump = String::new();
+      let mut dump = std::string::String::new();
       let mut program = Program::default();
       let mut line = 0;
       $(line += 1; program.instructions.append($instruction, line);)*
@@ -25,7 +25,7 @@ macro_rules! test_instructions {
       print_var!(program);
       program.instructions.dump(&mut dump).unwrap();
       println!("{}", dump);
-      let mut vm = VirtualMachine::default();
+      let mut vm = VirtualMachine::new();
       // We want the first values listed above to be the top of the stack, so
       // we have to create a vector, then reverse it.
       let mut start_stack = Vec::new();
