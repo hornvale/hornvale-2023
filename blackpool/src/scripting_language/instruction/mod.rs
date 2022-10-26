@@ -10,8 +10,12 @@ pub enum Instruction {
   Constant(u8),
   /// Produce a particular constant (16-bit operand length).
   LongConstant(u16),
-  /// Produce a particular global.
+  /// Define a particular global.
   DefineGlobal(u8),
+  /// Set a particular global.
+  SetGlobal(u8),
+  /// Get a particular global.
+  GetGlobal(u8),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

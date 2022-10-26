@@ -159,7 +159,7 @@ impl<'source> Parser<'source> {
   pub fn parse_var_declaration(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
-    let variable_index = self.parse_variable(chunk, "expected a variable identifier")?;
+    let variable_index = self.parse_variable_identifier(chunk)?;
     trace_var!(variable_index);
     if self.r#match(TokenType::Equal)? {
       self.parse_expression(chunk)?;
@@ -267,9 +267,9 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn intern_token(&mut self, token: &Token) -> Result<Value, Error> {
     trace_enter!();
-    let start = token.start + 1;
+    let start = token.start;
     trace_var!(start);
-    let end = start + token.length - 2;
+    let end = start + token.length;
     trace_var!(end);
     let string = &self.scanner.source[start..end];
     trace_var!(string);
@@ -281,14 +281,22 @@ impl<'source> Parser<'source> {
     Ok(result)
   }
 
-  /// Parse a variable identifier.
+  /// Parse a variable.
   #[named]
-  #[inline]
-  pub fn parse_variable(&mut self, chunk: &mut Chunk, message: &str) -> Result<u8, Error> {
+  pub fn parse_variable(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
-    trace_var!(message);
-    self.consume(TokenType::Identifier, message)?;
+    self.did_name_variable(chunk, self.previous.unwrap())?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Parse a variable identifier.
+  #[named]
+  pub fn parse_variable_identifier(&mut self, chunk: &mut Chunk) -> Result<u8, Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    self.consume(TokenType::Identifier, "expected a variable identifier")?;
     self.declare_variable(chunk)?;
     let result = self.get_identifier_constant(chunk, self.previous.unwrap())?;
     trace_var!(result);
@@ -491,6 +499,24 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(chunk);
     self.emit_instruction(chunk, Instruction::Return)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Handle when we named a variable.
+  #[named]
+  pub fn did_name_variable(&mut self, chunk: &mut Chunk, name: Token) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(name);
+    let index = self.get_identifier_constant(chunk, name)?;
+    let get_op = Instruction::GetGlobal(index);
+    let set_op = Instruction::SetGlobal(index);
+    if self.r#match(TokenType::Equal)? {
+      self.parse_expression(chunk)?;
+      self.emit_instruction(chunk, set_op)?;
+    } else {
+      self.emit_instruction(chunk, get_op)?;
+    }
     trace_exit!();
     Ok(())
   }

@@ -93,7 +93,7 @@ impl<'source> Default for Rules<'source> {
       Some(Parser::parse_binary),
       Precedence::Comparison,
     );
-    result.add_rule(Identifier, None, None, Precedence::None);
+    result.add_rule(Identifier, Some(Parser::parse_variable), None, Precedence::None);
     result.add_rule(String, Some(Parser::parse_string), None, Precedence::None);
     result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
     result.add_rule(And, None, None, Precedence::None);

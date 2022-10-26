@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use crate::scripting_language::chunk::Chunk;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
@@ -60,8 +62,6 @@ impl VirtualMachine {
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
-    self.instruction_pointer = 0;
-    self.stack = Vec::with_capacity(STACK_SIZE_MAX);
     let chunk = self.compile(source)?;
     trace_var!(chunk);
     self.run(&chunk)?;
@@ -183,6 +183,7 @@ impl VirtualMachine {
         },
         Print => {
           let value = self.pop()?;
+          trace_var!(value);
           let formatter = TraceFormatter::new(value, &self.garbage_collector);
           println!("{}", formatter);
         },
@@ -190,12 +191,39 @@ impl VirtualMachine {
           let value = self.pop()?;
           trace_var!(value);
           let answer = self.is_falsey(&value);
+          trace_var!(answer);
           self.push(Value::Boolean(answer))?;
         },
         DefineGlobal(index) => {
           let identifier = chunk.read_string(index);
+          trace_var!(identifier);
           let value = self.pop()?;
+          trace_var!(value);
           self.globals.insert(identifier, value);
+        },
+        GetGlobal(index) => {
+          let identifier = chunk.read_string(index);
+          trace_var!(identifier);
+          match self.globals.get(&identifier) {
+            Some(&value) => self.push(value)?,
+            None => {
+              let identifier = self.garbage_collector.deref(identifier);
+              return Err(Error::RuntimeError(RuntimeError::UndefinedVariable(
+                identifier.to_string(),
+              )));
+            },
+          }
+        },
+        SetGlobal(index) => {
+          let identifier = chunk.read_string(index);
+          let value = self.peek(0)?;
+          if let Entry::Occupied(mut entry) = self.globals.entry(identifier) {
+            entry.insert(value);
+          } else {
+            return Err(Error::RuntimeError(RuntimeError::UndefinedVariable(
+              identifier.to_string(),
+            )));
+          }
         },
       }
       self.instruction_pointer += 1;
@@ -268,9 +296,12 @@ impl VirtualMachine {
   /// Peek at a value on the stack.
   #[named]
   #[inline]
-  pub fn peek(&self, offset: usize) -> Value {
+  pub fn peek(&self, offset: usize) -> Result<Value, Error> {
     trace_enter!();
     trace_var!(offset);
+    if self.stack.is_empty() {
+      return Err(Error::RuntimeError(RuntimeError::StackUnderflow));
+    }
     let max_index = self.stack.len() - 1;
     trace_var!(max_index);
     let index = max_index - offset;
@@ -278,7 +309,7 @@ impl VirtualMachine {
     let result = self.stack[index];
     trace_var!(result);
     trace_exit!();
-    result
+    Ok(result)
   }
 
   /// Is this "falsey" or not?
@@ -428,18 +459,18 @@ pub mod test {
     init();
     trace_enter!();
     let mut vm = VirtualMachine::new();
+    vm.interpret(&"2 != 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
     vm.interpret(&"2 > 3;".to_string()).unwrap();
     assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
     vm.interpret(&"2 >= 3;".to_string()).unwrap();
     assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"2 == 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"2 != 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 != 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
     vm.interpret(&"2 == 2;".to_string()).unwrap();
     assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
+    vm.interpret(&"2 == 3;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 != 2;".to_string()).unwrap();
+    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
     vm.interpret(&"!(2 > 3);".to_string()).unwrap();
     assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
     vm.interpret(&"!(2 >= 3);".to_string()).unwrap();
