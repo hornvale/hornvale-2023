@@ -41,7 +41,7 @@ impl Chunk {
 
   /// Read a string.
   #[named]
-  pub fn read_string(&self, index: u8) -> GcReference<String> {
+  pub fn read_string(&self, index: u16) -> GcReference<String> {
     trace_enter!();
     trace_var!(index);
     let result = if let Value::String(string) = self.constants.constants[index as usize] {

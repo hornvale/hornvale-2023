@@ -6,16 +6,14 @@ use std::fmt::{Display, Formatter, Result as FmtResult, Write};
 /// An instruction consists of an opcode and its arguments.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Instruction {
-  /// Produce a particular constant (8-bit operand length).
-  Constant(u8),
   /// Produce a particular constant (16-bit operand length).
-  LongConstant(u16),
+  Constant(u16),
   /// Define a particular global.
-  DefineGlobal(u8),
+  DefineGlobal(u16),
   /// Set a particular global.
-  SetGlobal(u8),
+  SetGlobal(u16),
   /// Get a particular global.
-  GetGlobal(u8),
+  GetGlobal(u16),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.
@@ -71,7 +69,7 @@ impl Instruction {
     trace_var!(line);
     use Instruction::*;
     let result = match &self {
-      Constant(_) | LongConstant(_) => 1,
+      Constant(_) | DefineGlobal(_) | SetGlobal(_) | GetGlobal(_) => 1,
       _ => 0,
     };
     let line_string = match same_line {

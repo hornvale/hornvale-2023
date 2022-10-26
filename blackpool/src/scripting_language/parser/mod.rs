@@ -293,7 +293,7 @@ impl<'source> Parser<'source> {
 
   /// Parse a variable identifier.
   #[named]
-  pub fn parse_variable_identifier(&mut self, chunk: &mut Chunk) -> Result<u8, Error> {
+  pub fn parse_variable_identifier(&mut self, chunk: &mut Chunk) -> Result<u16, Error> {
     trace_enter!();
     trace_var!(chunk);
     self.consume(TokenType::Identifier, "expected a variable identifier")?;
@@ -403,7 +403,7 @@ impl<'source> Parser<'source> {
   /// Define a variable.
   #[named]
   #[inline]
-  pub fn define_variable(&mut self, chunk: &mut Chunk, index: u8) -> Result<(), Error> {
+  pub fn define_variable(&mut self, chunk: &mut Chunk, index: u16) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
     trace_var!(index);
@@ -415,7 +415,7 @@ impl<'source> Parser<'source> {
   /// Get an identifier constant.
   #[named]
   #[inline]
-  pub fn get_identifier_constant(&mut self, chunk: &mut Chunk, token: Token) -> Result<u8, Error> {
+  pub fn get_identifier_constant(&mut self, chunk: &mut Chunk, token: Token) -> Result<u16, Error> {
     trace_enter!();
     trace_var!(chunk);
     trace_var!(token);
@@ -430,11 +430,11 @@ impl<'source> Parser<'source> {
   /// Create a constant.
   #[named]
   #[inline]
-  pub fn make_constant(&mut self, chunk: &mut Chunk, value: Value) -> Result<u8, Error> {
+  pub fn make_constant(&mut self, chunk: &mut Chunk, value: Value) -> Result<u16, Error> {
     trace_enter!();
     trace_var!(value);
     chunk.constants.push(value)?;
-    let result = (chunk.constants.constants.len() - 1) as u8;
+    let result = (chunk.constants.constants.len() - 1) as u16;
     trace_var!(result);
     trace_exit!();
     Ok(result)

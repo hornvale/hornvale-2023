@@ -103,11 +103,6 @@ impl VirtualMachine {
           trace_var!(constant);
           self.push(constant)?;
         },
-        LongConstant(index) => {
-          let constant = chunk.constants.constants[index as usize];
-          trace_var!(constant);
-          self.push(constant)?;
-        },
         Negate => {
           let pop = self.pop()?;
           trace_var!(pop);
