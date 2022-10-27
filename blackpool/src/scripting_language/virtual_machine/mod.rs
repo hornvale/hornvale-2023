@@ -220,6 +220,15 @@ impl VirtualMachine {
             )));
           }
         },
+        GetLocal(index) => {
+          let value = self.stack[index as usize];
+          self.push(value)?;
+        },
+        SetLocal(index) => {
+          let i = index as usize;
+          let value = self.peek(0)?;
+          self.stack[i] = value;
+        },
       }
       self.instruction_pointer += 1;
     }

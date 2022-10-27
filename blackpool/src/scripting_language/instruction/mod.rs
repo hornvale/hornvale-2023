@@ -14,6 +14,10 @@ pub enum Instruction {
   SetGlobal(u16),
   /// Get a particular global.
   GetGlobal(u16),
+  /// Set a particular local.
+  SetLocal(u16),
+  /// Get a particular local.
+  GetLocal(u16),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

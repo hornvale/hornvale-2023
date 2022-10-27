@@ -10,6 +10,7 @@ pub mod garbage_collection;
 pub mod instruction;
 pub mod instructions;
 pub mod interpreter;
+pub mod local;
 pub mod parser;
 pub mod scanner;
 pub mod table;

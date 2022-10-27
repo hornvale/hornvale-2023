@@ -1,5 +1,6 @@
 use std::num::ParseFloatError;
 
+use crate::scripting_language::compiler::error::Error as CompilerError;
 use crate::scripting_language::error::Error as ScriptingLanguageError;
 use crate::scripting_language::scanner::error::Error as ScannerError;
 use crate::scripting_language::token::r#type::Type as TokenType;
@@ -32,4 +33,11 @@ pub enum Error {
   /// Invalid assignment target.
   #[error("invalid assignment target {0:#?}")]
   InvalidAssignmentTarget(Option<Token>),
+  /// Attempted to declare a variable with the same name as an existing
+  /// variable in the same scope.
+  #[error("attempted to declare a variable with the same name as an existing variable in the same scope {0:#?}")]
+  AttemptedToRedeclareVariable(Option<Token>),
+  /// Compiler error.
+  #[error("an error occurred in the compiler ({0})")]
+  CompilerError(#[from] CompilerError),
 }

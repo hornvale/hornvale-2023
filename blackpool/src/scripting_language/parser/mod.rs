@@ -1,6 +1,8 @@
 use crate::scripting_language::chunk::Chunk;
+use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::instruction::Instruction;
+use crate::scripting_language::local::Local;
 use crate::scripting_language::scanner::Scanner;
 use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
@@ -31,6 +33,8 @@ pub struct Parser<'source> {
   pub scanner: Scanner<'source>,
   /// The garbage collector.
   pub garbage_collector: &'source mut GarbageCollector,
+  /// The compiler for the current scope.
+  pub compiler: Compiler,
   /// The current token.
   pub current: Option<Token>,
   /// The last token processed.
@@ -54,6 +58,8 @@ impl<'source> Parser<'source> {
     trace_var!(current);
     let previous = None;
     trace_var!(previous);
+    let compiler = Compiler::new();
+    trace_var!(compiler);
     let rules = Rules::default();
     trace_var!(rules);
     let suppress_new_errors = false;
@@ -63,6 +69,7 @@ impl<'source> Parser<'source> {
     let result = Self {
       scanner,
       garbage_collector,
+      compiler,
       current,
       previous,
       rules,
@@ -166,7 +173,7 @@ impl<'source> Parser<'source> {
     } else {
       self.emit_instruction(chunk, Instruction::Nil)?;
     }
-    self.consume(TokenType::Semicolon, "expected semicolon after variable declaration")?;
+    self.consume(TokenType::Semicolon, "expected ';' after variable declaration")?;
     self.define_variable(chunk, variable_index)?;
     trace_exit!();
     Ok(())
@@ -179,8 +186,49 @@ impl<'source> Parser<'source> {
     trace_var!(chunk);
     if self.r#match(TokenType::Print)? {
       self.parse_print_statement(chunk)?;
+    } else if self.r#match(TokenType::LeftBrace)? {
+      self.begin_scope()?;
+      self.parse_block(chunk)?;
+      self.end_scope(chunk)?;
     } else {
       self.parse_expression_statement(chunk)?;
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Begin a scope.
+  #[named]
+  pub fn begin_scope(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    self.compiler.depth += 1;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Statement.
+  #[named]
+  pub fn parse_block(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
+      self.parse_declaration(chunk)?;
+    }
+    self.consume(TokenType::RightBrace, "expected '}' after block")?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// End a scope.
+  #[named]
+  pub fn end_scope(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+    trace_enter!();
+    self.compiler.depth -= 1;
+    for i in (0..self.compiler.locals.len()).rev() {
+      if self.compiler.locals[i].depth > self.compiler.depth {
+        self.emit_instruction(chunk, Instruction::Pop)?;
+        self.compiler.locals.pop();
+      }
     }
     trace_exit!();
     Ok(())
@@ -192,7 +240,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(chunk);
     self.parse_expression(chunk)?;
-    self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
+    self.consume(TokenType::Semicolon, "expected ';' after the expression")?;
     self.emit_instruction(chunk, Instruction::Print)?;
     trace_exit!();
     Ok(())
@@ -204,7 +252,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(chunk);
     self.parse_expression(chunk)?;
-    self.consume(TokenType::Semicolon, "expected a semicolon after the expression")?;
+    self.consume(TokenType::Semicolon, "expected ';' after the expression")?;
     self.emit_instruction(chunk, Instruction::Pop)?;
     trace_exit!();
     Ok(())
@@ -298,6 +346,9 @@ impl<'source> Parser<'source> {
     trace_var!(chunk);
     self.consume(TokenType::Identifier, "expected a variable identifier")?;
     self.declare_variable(chunk)?;
+    if self.compiler.depth > 0 {
+      return Ok(0);
+    }
     let result = self.get_identifier_constant(chunk, self.previous.unwrap())?;
     trace_var!(result);
     trace_exit!();
@@ -396,6 +447,25 @@ impl<'source> Parser<'source> {
   pub fn declare_variable(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
+    if self.compiler.depth == 0 {
+      return Ok(());
+    }
+    let token = self.previous.unwrap();
+    if self.compiler.has_local(self.scanner.source, &token) {
+      return Err(Error::AttemptedToRedeclareVariable(Some(token)));
+    }
+    self.add_local(chunk, token)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Add a local variable.
+  #[named]
+  pub fn add_local(&mut self, chunk: &mut Chunk, token: Token) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    trace_var!(token);
+    self.compiler.locals.push(Local::new(token, -1));
     trace_exit!();
     Ok(())
   }
@@ -407,7 +477,25 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(chunk);
     trace_var!(index);
+    if self.compiler.depth > 0 {
+      self.mark_initialized()?;
+      return Ok(());
+    }
     self.emit_instruction(chunk, Instruction::DefineGlobal(index))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Mark the last global as initialized.
+  #[named]
+  pub fn mark_initialized(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    if self.compiler.depth == 0 {
+      return Ok(());
+    }
+    let last_local = self.compiler.locals.last_mut().unwrap();
+    trace_var!(last_local);
+    last_local.depth = self.compiler.depth;
     trace_exit!();
     Ok(())
   }
@@ -508,9 +596,16 @@ impl<'source> Parser<'source> {
   pub fn did_name_variable(&mut self, chunk: &mut Chunk, name: Token, can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     trace_var!(name);
-    let index = self.get_identifier_constant(chunk, name)?;
-    let get_op = Instruction::GetGlobal(index);
-    let set_op = Instruction::SetGlobal(index);
+    let get_op;
+    let set_op;
+    if let Some(index) = self.compiler.resolve_local(self.scanner.source, name)? {
+      get_op = Instruction::GetLocal(index);
+      set_op = Instruction::SetLocal(index);
+    } else {
+      let index = self.get_identifier_constant(chunk, name)?;
+      get_op = Instruction::GetGlobal(index);
+      set_op = Instruction::SetGlobal(index);
+    }
     if can_assign && self.r#match(TokenType::Equal)? {
       self.parse_expression(chunk)?;
       self.emit_instruction(chunk, set_op)?;
