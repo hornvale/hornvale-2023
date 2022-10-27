@@ -186,6 +186,8 @@ impl<'source> Parser<'source> {
     trace_var!(chunk);
     if self.r#match(TokenType::Print)? {
       self.parse_print_statement(chunk)?;
+    } else if self.r#match(TokenType::If)? {
+      self.parse_if_statement(chunk)?;
     } else if self.r#match(TokenType::LeftBrace)? {
       self.begin_scope()?;
       self.parse_block(chunk)?;
@@ -242,6 +244,58 @@ impl<'source> Parser<'source> {
     self.parse_expression(chunk)?;
     self.consume(TokenType::Semicolon, "expected ';' after the expression")?;
     self.emit_instruction(chunk, Instruction::Print)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// If statement.
+  #[named]
+  pub fn parse_if_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    if self.r#match(TokenType::LeftParenthesis)? {
+      self.consume(TokenType::LeftParenthesis, "expected '(' before 'if' expression")?;
+    }
+    self.parse_expression(chunk)?;
+    if self.r#match(TokenType::RightParenthesis)? {
+      self.consume(TokenType::RightParenthesis, "expected ')' after 'if' expression")?;
+    }
+    let then_jump = chunk.instructions.instructions.len();
+    self.emit_instruction(chunk, Instruction::JumpIfFalse(u16::MAX))?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    self.parse_statement(chunk)?;
+    let else_jump = chunk.instructions.instructions.len();
+    self.patch_jump(chunk, then_jump as u16)?;
+    self.emit_instruction(chunk, Instruction::Jump(u16::MAX))?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    if self.r#match(TokenType::Else)? {
+      self.parse_statement(chunk)?;
+    }
+    self.patch_jump(chunk, else_jump as u16)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Patch the jump statement.
+  ///
+  /// We're provided with the `index`, which is the location in code of the
+  /// instruction to patch. We also have the current length of the code,
+  /// which indicates how many instructions have been added since then.
+  /// So we should take the difference of the two indices and add one so that
+  /// we jump cleanly to the next instruction.
+  #[named]
+  pub fn patch_jump(&mut self, chunk: &mut Chunk, index: u16) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(index);
+    let latest = chunk.instructions.instructions.len() as u16 - 1;
+    trace_var!(latest);
+    let offset = (latest - index) + 1;
+    trace_var!(offset);
+    match chunk.instructions.instructions[index as usize] {
+      Instruction::JumpIfFalse(ref mut dest) => *dest = offset,
+      Instruction::Jump(ref mut dest) => *dest = offset,
+      instruction => panic!("Incorrect instruction {:#?} at position", instruction),
+    };
     trace_exit!();
     Ok(())
   }

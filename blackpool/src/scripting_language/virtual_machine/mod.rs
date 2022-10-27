@@ -62,6 +62,7 @@ impl VirtualMachine {
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
+    self.instruction_pointer = 0;
     let chunk = self.compile(source)?;
     trace_var!(chunk);
     self.run(&chunk)?;
@@ -97,6 +98,7 @@ impl VirtualMachine {
       trace_var!(instruction);
       use Instruction::*;
       use Value::*;
+      debug_var!(instruction);
       match instruction {
         Constant(index) => {
           let constant = chunk.constants.constants[index as usize];
@@ -229,9 +231,19 @@ impl VirtualMachine {
           let value = self.peek(0)?;
           self.stack[i] = value;
         },
+        Jump(offset) => {
+          self.instruction_pointer += offset as usize;
+        },
+        JumpIfFalse(offset) => {
+          if self.peek(0)?.is_falsey() {
+            debug!("branch taken");
+            self.instruction_pointer += offset as usize;
+          }
+        },
       }
       self.instruction_pointer += 1;
     }
+    debug_var!(self.stack);
     trace_exit!();
     Ok(())
   }

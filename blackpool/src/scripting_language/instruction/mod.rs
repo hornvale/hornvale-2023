@@ -18,6 +18,10 @@ pub enum Instruction {
   SetLocal(u16),
   /// Get a particular local.
   GetLocal(u16),
+  /// Jump unconditionally.
+  Jump(u16),
+  /// Jump if the top value on the stack is falsey.
+  JumpIfFalse(u16),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

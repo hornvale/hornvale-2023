@@ -18,6 +18,24 @@ pub enum Value {
   Nil,
 }
 
+impl Value {
+  /// Is this "falsey" or not?
+  #[named]
+  #[inline]
+  pub fn is_falsey(&self) -> bool {
+    trace_enter!();
+    use Value::*;
+    let result = match &self {
+      Nil => true,
+      Boolean(value) => !value,
+      _ => false,
+    };
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+}
+
 impl Trace for Value {
   /// Format.
   #[named]
