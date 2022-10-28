@@ -407,12 +407,10 @@ impl VirtualMachine {
       debug!("marking value {:#?} on stack", value);
       self.garbage_collector.mark_value(value);
     }
-    /*
     debug!("marking values frame for garbage collection");
-    for &frame in &self.frames {
-        self.garbage_collector.mark_object(frame.closure)
+    for &frame in &self.call_frames {
+      self.garbage_collector.mark_object(frame.closure)
     }
-    */
     /*
     debug!("marking upvalues for garbage collection");
     for &upvalue in &self.open_upvalues {
@@ -421,7 +419,7 @@ impl VirtualMachine {
     */
     debug!("marking {} global variables for garbage collection", self.globals.len());
     self.garbage_collector.mark_table(&self.globals);
-    // self.garbage_collector.mark_object(self.init_string);
+    self.garbage_collector.mark_object(self.init_string);
   }
 
   /// Get current frame.

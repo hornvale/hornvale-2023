@@ -122,7 +122,6 @@ pub mod test {
     assert_eq!(Instruction::Negate.to_string(), "Negate");
     assert_eq!(Instruction::Return.to_string(), "Return");
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");
-    assert_eq!(Instruction::LongConstant(5).to_string(), "LongConstant(5)");
     trace_exit!();
   }
 

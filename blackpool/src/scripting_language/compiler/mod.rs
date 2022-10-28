@@ -95,7 +95,6 @@ impl Compiler {
 #[cfg(test)]
 pub mod test {
 
-  use super::*;
   use crate::test::*;
 
   #[named]
@@ -103,8 +102,6 @@ pub mod test {
   pub fn test_compiler() {
     init();
     trace_enter!();
-    let compiler = Compiler::default();
-    print_var!(compiler);
     trace_exit!();
   }
 }

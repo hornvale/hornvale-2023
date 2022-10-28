@@ -2,7 +2,7 @@ use crate::scripting_language::closure::Closure;
 use crate::scripting_language::garbage_collection::reference::Reference;
 
 /// The `CallFrame` type.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct CallFrame {
   /// The closure this callframe encapsulates.
   pub closure: Reference<Closure>,
