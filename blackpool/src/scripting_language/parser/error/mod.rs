@@ -37,6 +37,15 @@ pub enum Error {
   /// variable in the same scope.
   #[error("attempted to declare a variable with the same name as an existing variable in the same scope {0:#?}")]
   AttemptedToRedeclareVariable(Option<Token>),
+  /// Attempted to create a function with way too damned many parameters.
+  #[error("attempted to declare a function with too many parameters {0:#?}")]
+  FunctionArityExceededLimit(Option<Token>),
+  /// Attempted to call a function with way too damned many arguments.
+  #[error("attempted to call with too many arguments {0:#?}")]
+  FunctionCallArgumentsExceededLimit(Option<Token>),
+  /// Tried to exit into the surrounding context of an unparented compiler.
+  #[error("attempted to pop a compiler without an enclosing copiler {0:#?}")]
+  TriedToPopTopCompiler(Option<Token>),
   /// Compiler error.
   #[error("an error occurred in the compiler ({0})")]
   CompilerError(#[from] CompilerError),

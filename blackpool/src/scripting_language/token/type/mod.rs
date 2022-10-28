@@ -45,6 +45,7 @@ pub enum Type {
   Var,
   While,
   Eof,
+  EmptyString,
 }
 
 impl Type {
@@ -91,6 +92,7 @@ impl Type {
       Var,
       While,
       Eof,
+      EmptyString,
     ]
   }
 }

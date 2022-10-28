@@ -2,7 +2,8 @@ use std::collections::hash_map::Entry;
 use std::fmt::Debug;
 
 use crate::scripting_language::chunk::Chunk;
-use crate::scripting_language::closure::Closure;
+use crate::scripting_language::closure::upvalue::Upvalue;
+use crate::scripting_language::closure::Closure as ClosureStruct;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
@@ -35,6 +36,8 @@ pub struct VirtualMachine {
   pub last_pop: Option<Value>,
   /// The reference to the initializer.
   pub init_string: Reference<String>,
+  /// Open upvalues.
+  pub open_upvalues: Vec<Reference<Upvalue>>,
 }
 
 impl VirtualMachine {
@@ -54,6 +57,8 @@ impl VirtualMachine {
     trace_var!(last_pop);
     let init_string = garbage_collector.intern("main".to_owned());
     trace_var!(init_string);
+    let open_upvalues = Vec::new();
+    trace_var!(open_upvalues);
     let result = Self {
       call_frames,
       stack,
@@ -61,6 +66,7 @@ impl VirtualMachine {
       globals,
       last_pop,
       init_string,
+      open_upvalues,
     };
     trace_var!(result);
     trace_exit!();
@@ -76,7 +82,8 @@ impl VirtualMachine {
     trace_var!(interpreter);
     let function = interpreter.compile(source, &mut self.garbage_collector)?;
     trace_var!(function);
-    let closure = self.alloc(Closure::new(function));
+    self.push(Value::Function(function))?;
+    let closure = self.alloc(ClosureStruct::new(function));
     trace_var!(closure);
     self.call_frames.push(CallFrame::new(closure, 0));
     self.run()?;
@@ -170,7 +177,19 @@ impl VirtualMachine {
         LessThan => self.binary_arithmetic_operation(LessThan, |a, b| b < a, Value::Boolean)?,
         GreaterThanOrEqual => self.binary_arithmetic_operation(GreaterThanOrEqual, |a, b| b >= a, Value::Boolean)?,
         LessThanOrEqual => self.binary_arithmetic_operation(LessThanOrEqual, |a, b| b <= a, Value::Boolean)?,
-        Return => break,
+        Return => {
+          let call_frame = self.call_frames.pop().unwrap();
+          trace_var!(call_frame);
+          let return_value = self.pop()?;
+          trace_var!(return_value);
+          self.close_upvalues(call_frame.index)?;
+          if self.call_frames.is_empty() {
+            return Ok(());
+          } else {
+            self.stack.truncate(call_frame.index);
+            self.push(return_value)?;
+          }
+        },
         True => self.push(Value::Boolean(true))?,
         False => self.push(Value::Boolean(false))?,
         Instruction::Nil => self.push(Value::Nil)?,
@@ -222,13 +241,14 @@ impl VirtualMachine {
           }
         },
         GetLocal(index) => {
+          let index = index as usize + self.get_current_frame().index;
           let value = self.stack[index as usize];
           self.push(value)?;
         },
         SetLocal(index) => {
-          let i = index as usize;
+          let index = index as usize + self.get_current_frame().index;
           let value = self.peek(0)?;
-          self.stack[i] = value;
+          self.stack[index] = value;
         },
         Jump(offset) => {
           self.get_current_frame_mut().instruction_pointer += offset as usize;
@@ -242,11 +262,30 @@ impl VirtualMachine {
         Loop(offset) => {
           self.get_current_frame_mut().instruction_pointer -= offset as usize;
         },
+        Instruction::Closure(index) => {
+          let function_value = self.get_current_chunk().constants.constants[index as usize];
+          if let Value::Function(function) = function_value {
+            let upvalue_count = self.garbage_collector.deref(function).upvalues.len();
+            let mut closure = ClosureStruct::new(function);
+            for i in 0..upvalue_count {
+              let upvalue = self.garbage_collector.deref(function).upvalues[i];
+              let object_upvalue = if upvalue.is_local {
+                let location = self.get_current_frame().index + upvalue.index as usize;
+                self.capture_upvalue(location)?
+              } else {
+                self.get_current_closure().upvalues[upvalue.index as usize]
+              };
+              closure.upvalues.push(object_upvalue);
+            }
+            let closure = self.alloc(closure);
+            self.push(Value::Closure(closure))?;
+          }
+        },
+        Call(argument_count) => {
+          self.call_value(argument_count as usize)?;
+        },
       }
     }
-    debug_var!(self.stack);
-    trace_exit!();
-    Ok(())
   }
 
   /// Binary arithmetic operator.
@@ -444,7 +483,7 @@ impl VirtualMachine {
 
   /// Get current closure.
   #[named]
-  pub fn get_current_closure(&self) -> &Closure {
+  pub fn get_current_closure(&self) -> &ClosureStruct {
     trace_enter!();
     let closure = self.get_current_frame().closure;
     trace_var!(closure);
@@ -466,6 +505,94 @@ impl VirtualMachine {
     trace_var!(result);
     trace_exit!();
     result
+  }
+
+  /// Capture an upvalue.
+  #[named]
+  pub fn capture_upvalue(&mut self, location: usize) -> Result<Reference<Upvalue>, Error> {
+    trace_enter!();
+    trace_var!(location);
+    for &upvalue_ref in &self.open_upvalues {
+      let upvalue = self.garbage_collector.deref(upvalue_ref);
+      trace_var!(upvalue);
+      if upvalue.location == location {
+        return Ok(upvalue_ref);
+      }
+    }
+    let upvalue = Upvalue::new(location);
+    trace_var!(upvalue);
+    let upvalue = self.alloc(upvalue);
+    trace_var!(upvalue);
+    self.open_upvalues.push(upvalue);
+    trace_var!(upvalue);
+    Ok(upvalue)
+  }
+
+  /// Call the value on top of the stack as a function.
+  #[named]
+  pub fn call_value(&mut self, argument_count: usize) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(argument_count);
+    let callee = self.peek(argument_count)?;
+    match callee {
+      Value::Closure(closure) => self.call(closure, argument_count)?,
+      value => return Err(Error::RuntimeError(RuntimeError::CalledUncallableValue(value))),
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Call a closure.
+  #[named]
+  pub fn call(&mut self, closure_reference: Reference<ClosureStruct>, argument_count: usize) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(closure_reference);
+    trace_var!(argument_count);
+    let closure = self.garbage_collector.deref(closure_reference);
+    trace_var!(closure);
+    let function = self.garbage_collector.deref(closure.function);
+    trace_var!(function);
+    if argument_count != function.arity {
+      return Err(Error::RuntimeError(
+        RuntimeError::CalledFunctionWithWrongNumberOfArguments(argument_count, function.arity),
+      ));
+    } else if self.call_frames.len() == CALL_FRAMES_MAX {
+      return Err(Error::RuntimeError(RuntimeError::StackOverflow));
+    } else {
+      let start = self.stack.len() - argument_count - 1;
+      trace_var!(start);
+      debug!(
+        "Calling {} {} with arguments ({:#?})",
+        closure,
+        function,
+        &self.stack[start..start + argument_count]
+      );
+      let call_frame = CallFrame::new(closure_reference, start);
+      self.call_frames.push(call_frame);
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Zap upvalues from callstack.
+  #[named]
+  pub fn close_upvalues(&mut self, last: usize) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(last);
+    let mut i = 0;
+    while i != self.open_upvalues.len() {
+      let upvalue_reference = self.open_upvalues[i];
+      let upvalue = self.garbage_collector.deref_mut(upvalue_reference);
+      if upvalue.location >= last {
+        self.open_upvalues.remove(i);
+        let location = upvalue.location;
+        upvalue.closed = Some(self.stack[location]);
+      } else {
+        i += 1;
+      }
+    }
+    trace_exit!();
+    Ok(())
   }
 }
 

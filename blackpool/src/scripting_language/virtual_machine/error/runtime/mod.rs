@@ -19,4 +19,10 @@ pub enum RuntimeError {
   /// Undefined variable.
   #[error("encountered a reference to an undefined variable '{0}'")]
   UndefinedVariable(String),
+  /// Attempted to call something that wasn't a function.
+  #[error("attempted to call a non-callable value '{0}'")]
+  CalledUncallableValue(Value),
+  /// Called a function with an unexpected number of arguments.
+  #[error("attempted to call a function with {0} arguments (expected {1})")]
+  CalledFunctionWithWrongNumberOfArguments(usize, usize),
 }

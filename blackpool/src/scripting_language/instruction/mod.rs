@@ -24,6 +24,10 @@ pub enum Instruction {
   JumpIfFalse(u16),
   /// Loop back to the offset indicated by the top value on the stack.
   Loop(u16),
+  /// Reference to a closure.
+  Closure(u16),
+  /// A function call and the number of arguments.
+  Call(u8),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

@@ -1,3 +1,5 @@
+use std::mem::replace;
+
 use crate::scripting_language::compiler::function_type::FunctionType;
 use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::function::Function;
@@ -36,7 +38,7 @@ pub struct Parser<'source> {
   /// The garbage collector.
   pub garbage_collector: &'source mut GarbageCollector,
   /// The compiler for the current scope.
-  pub compiler: Compiler,
+  pub compiler: Box<Compiler>,
   /// The current token.
   pub current: Option<Token>,
   /// The last token processed.
@@ -62,7 +64,7 @@ impl<'source> Parser<'source> {
     trace_var!(previous);
     let function_name = garbage_collector.intern("script".to_owned());
     trace_var!(function_name);
-    let compiler = Compiler::new(function_name, FunctionType::Script);
+    let compiler = Box::new(Compiler::new(function_name, FunctionType::Script));
     trace_var!(compiler);
     let rules = Rules::default();
     trace_var!(rules);
@@ -166,8 +168,10 @@ impl<'source> Parser<'source> {
   #[named]
   pub fn parse_declaration(&mut self) -> Result<(), Error> {
     trace_enter!();
-    if self.r#match(TokenType::Var)? {
-      self.parse_var_declaration()?;
+    if self.r#match(TokenType::Function)? {
+      self.parse_function_declaration()?;
+    } else if self.r#match(TokenType::Var)? {
+      self.parse_variable_declaration()?;
     } else {
       self.parse_statement()?;
     }
@@ -178,11 +182,24 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
+  /// Function declaration.
+  #[named]
+  pub fn parse_function_declaration(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    let function_index = self.parse_variable_identifier("expected a function name")?;
+    trace_var!(function_index);
+    self.mark_initialized()?;
+    self.parse_function(FunctionType::Function)?;
+    self.define_variable(function_index)?;
+    trace_exit!();
+    Ok(())
+  }
+
   /// Variable declaration.
   #[named]
-  pub fn parse_var_declaration(&mut self) -> Result<(), Error> {
+  pub fn parse_variable_declaration(&mut self) -> Result<(), Error> {
     trace_enter!();
-    let variable_index = self.parse_variable_identifier()?;
+    let variable_index = self.parse_variable_identifier("expected a variable identifier")?;
     trace_var!(variable_index);
     if self.r#match(TokenType::Equal)? {
       self.parse_expression()?;
@@ -203,6 +220,8 @@ impl<'source> Parser<'source> {
       self.parse_print_statement()?;
     } else if self.r#match(TokenType::If)? {
       self.parse_if_statement()?;
+    } else if self.r#match(TokenType::Return)? {
+      self.parse_return_statement()?;
     } else if self.r#match(TokenType::While)? {
       self.parse_while_statement()?;
     } else if self.r#match(TokenType::For)? {
@@ -227,7 +246,38 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
-  /// Statement.
+  /// Function.
+  #[named]
+  pub fn parse_function(&mut self, function_type: FunctionType) -> Result<(), Error> {
+    trace_enter!();
+    self.push_compiler(function_type)?;
+    self.begin_scope()?;
+    self.consume(TokenType::LeftParenthesis, "expected '(' after function name.")?;
+    if !self.check(TokenType::RightParenthesis) {
+      loop {
+        self.compiler.function.arity += 1;
+        if self.compiler.function.arity > 255 {
+          return Err(Error::FunctionArityExceededLimit(self.current));
+        }
+        let parameter = self.parse_variable_identifier("expected a parameter identifier")?;
+        self.define_variable(parameter)?;
+        if !self.r#match(TokenType::Comma)? {
+          break;
+        }
+      }
+    }
+    self.consume(TokenType::RightParenthesis, "expected ')' after parameter list")?;
+    self.consume(TokenType::LeftBrace, "expected '{' before function body")?;
+    self.parse_block()?;
+    let function = self.pop_compiler()?;
+    let function_id = self.garbage_collector.alloc(function);
+    let index = self.make_constant(Value::Function(function_id))?;
+    self.emit_instruction(Instruction::Closure(index))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Block.
   #[named]
   pub fn parse_block(&mut self) -> Result<(), Error> {
     trace_enter!();
@@ -254,7 +304,7 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
-  /// Statement.
+  /// Print statement.
   #[named]
   pub fn parse_print_statement(&mut self) -> Result<(), Error> {
     trace_enter!();
@@ -284,6 +334,23 @@ impl<'source> Parser<'source> {
       self.parse_statement()?;
     }
     self.patch_jump(else_jump as u16)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Return statement.
+  #[named]
+  pub fn parse_return_statement(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    if let FunctionType::Script = self.compiler.function_type {
+      // Not going to block `return` in top-level code ATM.
+    } else if self.r#match(TokenType::Semicolon)? {
+      self.emit_return()?;
+    } else {
+      self.parse_expression()?;
+      self.consume(TokenType::Semicolon, "expected ';' after return value")?;
+      self.emit_instruction(Instruction::Return)?;
+    }
     trace_exit!();
     Ok(())
   }
@@ -351,6 +418,43 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
+  /// Parse a function call.
+  #[named]
+  pub fn parse_call(&mut self, can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(can_assign);
+    let argument_count = self.parse_argument_list()?;
+    trace_var!(argument_count);
+    self.emit_instruction(Instruction::Call(argument_count))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Parse the argument length.
+  #[named]
+  pub fn parse_argument_list(&mut self) -> Result<u8, Error> {
+    trace_enter!();
+    let mut count: usize = 0;
+    trace_var!(count);
+    if !self.check(TokenType::RightParenthesis) {
+      loop {
+        self.parse_expression()?;
+        if count == 255 {
+          return Err(Error::FunctionCallArgumentsExceededLimit(self.current));
+        }
+        count += 1;
+        if !self.r#match(TokenType::Comma)? {
+          break;
+        }
+      }
+    }
+    self.consume(TokenType::RightParenthesis, "expected ')' after call arguments")?;
+    let result = count as u8;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
   /// For statement.
   #[named]
   pub fn parse_for_statement(&mut self) -> Result<(), Error> {
@@ -362,7 +466,7 @@ impl<'source> Parser<'source> {
     if self.r#match(TokenType::Semicolon)? {
       // No initializer, no problem.
     } else if self.r#match(TokenType::Var)? {
-      self.parse_var_declaration()?;
+      self.parse_variable_declaration()?;
     } else {
       self.parse_expression_statement()?;
     }
@@ -466,7 +570,7 @@ impl<'source> Parser<'source> {
   /// Intern a string from the source.
   #[named]
   #[inline]
-  pub fn intern_token(&mut self, token: &Token) -> Result<Value, Error> {
+  pub fn intern_token(&mut self, token: &Token) -> Result<Reference<String>, Error> {
     trace_enter!();
     let start = token.start;
     trace_var!(start);
@@ -474,9 +578,7 @@ impl<'source> Parser<'source> {
     trace_var!(end);
     let string = &self.scanner.source[start..end];
     trace_var!(string);
-    let value = self.garbage_collector.intern(string.to_owned());
-    trace_var!(value);
-    let result = Value::String(value);
+    let result = self.garbage_collector.intern(string.to_owned());
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -522,9 +624,9 @@ impl<'source> Parser<'source> {
 
   /// Parse a variable identifier.
   #[named]
-  pub fn parse_variable_identifier(&mut self) -> Result<u16, Error> {
+  pub fn parse_variable_identifier(&mut self, message: &str) -> Result<u16, Error> {
     trace_enter!();
-    self.consume(TokenType::Identifier, "expected a variable identifier")?;
+    self.consume(TokenType::Identifier, message)?;
     self.declare_variable()?;
     if self.compiler.depth > 0 {
       return Ok(0);
@@ -680,9 +782,43 @@ impl<'source> Parser<'source> {
   pub fn get_identifier_constant(&mut self, token: Token) -> Result<u16, Error> {
     trace_enter!();
     trace_var!(token);
-    let value = self.intern_token(&token)?;
+    let reference = self.intern_token(&token)?;
+    trace_var!(reference);
+    let value = Value::String(reference);
     trace_var!(value);
     let result = self.make_constant(value)?;
+    trace_var!(result);
+    trace_exit!();
+    Ok(result)
+  }
+
+  /// Switch to a new compiler.
+  #[named]
+  pub fn push_compiler(&mut self, function_type: FunctionType) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(function_type);
+    let function_name = self.intern_token(&self.previous.unwrap())?;
+    trace_var!(function_name);
+    let new_compiler = Box::new(Compiler::new(function_name, function_type));
+    trace_var!(new_compiler);
+    let old_compiler = replace(&mut self.compiler, new_compiler);
+    self.compiler.enclosing = Some(old_compiler);
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Pop the last compiler.
+  #[named]
+  pub fn pop_compiler(&mut self) -> Result<Function, Error> {
+    trace_enter!();
+    self.emit_return()?;
+    let result = match self.compiler.enclosing.take() {
+      Some(enclosing) => {
+        let compiler = replace(&mut self.compiler, enclosing);
+        compiler.function
+      },
+      None => return Err(Error::TriedToPopTopCompiler(self.current)),
+    };
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -759,6 +895,7 @@ impl<'source> Parser<'source> {
   #[named]
   pub fn emit_return(&mut self) -> Result<(), Error> {
     trace_enter!();
+    self.emit_instruction(Instruction::Nil)?;
     self.emit_instruction(Instruction::Return)?;
     trace_exit!();
     Ok(())

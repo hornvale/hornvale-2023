@@ -59,7 +59,12 @@ impl<'source> Default for Rules<'source> {
     let mut result = Rules::new();
     trace_var!(result);
     use TokenType::*;
-    result.add_rule(LeftParenthesis, Some(Parser::parse_grouping), None, Precedence::None);
+    result.add_rule(
+      LeftParenthesis,
+      Some(Parser::parse_grouping),
+      Some(Parser::parse_call),
+      Precedence::Call,
+    );
     result.add_rule(RightParenthesis, None, None, Precedence::None);
     result.add_rule(LeftBrace, None, None, Precedence::None);
     result.add_rule(RightBrace, None, None, Precedence::None);

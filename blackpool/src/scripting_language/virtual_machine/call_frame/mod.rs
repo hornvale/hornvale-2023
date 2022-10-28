@@ -8,7 +8,7 @@ pub struct CallFrame {
   pub closure: Reference<Closure>,
   /// Points at the next instruction to read.
   pub instruction_pointer: usize,
-  /// The index of this callframe.
+  /// Points at our window in the stack.
   pub index: usize,
 }
 

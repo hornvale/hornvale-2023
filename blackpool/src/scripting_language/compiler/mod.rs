@@ -1,6 +1,7 @@
 use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::local::Local;
+use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
 
 pub mod error;
@@ -28,7 +29,7 @@ impl Compiler {
   #[named]
   pub fn new(function_name: Reference<String>, function_type: FunctionType) -> Self {
     trace_enter!();
-    let locals = Vec::new();
+    let mut locals = Vec::new();
     trace_var!(locals);
     let depth = 0;
     trace_var!(depth);
@@ -36,6 +37,9 @@ impl Compiler {
     trace_var!(function);
     let enclosing = None;
     trace_var!(enclosing);
+    let token = Token::synthesize(TokenType::EmptyString);
+    trace_var!(token);
+    locals.push(Local::new(token, 0));
     let result = Self {
       enclosing,
       locals,

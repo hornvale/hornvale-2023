@@ -40,7 +40,8 @@ impl Trace for Closure {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     trace_enter!();
     trace_var!(garbage_collector);
-    let result = write!(f, "upvalue");
+    let function = garbage_collector.deref(self.function);
+    let result = function.format(f, garbage_collector);
     trace_var!(result);
     trace_exit!();
     result
