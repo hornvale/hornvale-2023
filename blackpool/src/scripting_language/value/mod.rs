@@ -6,9 +6,10 @@ use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::Trace;
+use crate::scripting_language::native_function::NativeFunction;
 
 /// The `Value` enum.
-#[derive(Clone, Copy, Debug, Display, PartialEq)]
+#[derive(Clone, Copy, Debug, Display)]
 pub enum Value {
   /// Boolean.
   Boolean(bool),
@@ -16,6 +17,8 @@ pub enum Value {
   Closure(Reference<Closure>),
   /// Function!
   Function(Reference<Function>),
+  /// A native function.
+  NativeFunction(NativeFunction),
   /// Number is a double.
   Number(f64),
   /// String.
@@ -56,7 +59,7 @@ impl Trace for Value {
       Closure(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       Function(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       // Instance(value) => garbage_collector.deref(*value).format(f, garbage_collector),
-      // NativeFunction(_) => write!(f, "<native fn>"),
+      NativeFunction(_) => write!(f, "<native fn>"),
       Nil => write!(f, "nil"),
       Number(value) => write!(f, "{}", value),
       String(value) => garbage_collector.deref(*value).format(f, garbage_collector),

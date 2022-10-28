@@ -5,6 +5,8 @@
 pub enum FunctionType {
   /// A function!
   Function,
+  /// Native functions.
+  NativeFunction,
   /// A script!
   Script,
 }

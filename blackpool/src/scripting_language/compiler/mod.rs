@@ -10,7 +10,7 @@ pub mod function_type;
 use function_type::FunctionType;
 
 /// The `Compiler` type.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Compiler {
   /// The compiler enclosing us.
   pub enclosing: Option<Box<Compiler>>,

@@ -1,3 +1,4 @@
+use cpu_time::ProcessTime;
 use std::collections::hash_map::Entry;
 use std::fmt::Debug;
 
@@ -10,6 +11,8 @@ use crate::scripting_language::garbage_collection::trace::formatter::Formatter a
 use crate::scripting_language::garbage_collection::trace::Trace;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::interpreter::Interpreter;
+use crate::scripting_language::native_function::NativeFunction;
+use crate::scripting_language::standard_library;
 use crate::scripting_language::table::Table;
 use crate::scripting_language::value::Value;
 
@@ -38,6 +41,8 @@ pub struct VirtualMachine {
   pub init_string: Reference<String>,
   /// Open upvalues.
   pub open_upvalues: Vec<Reference<Upvalue>>,
+  /// Start time.
+  pub start_time: ProcessTime,
 }
 
 impl VirtualMachine {
@@ -59,7 +64,9 @@ impl VirtualMachine {
     trace_var!(init_string);
     let open_upvalues = Vec::new();
     trace_var!(open_upvalues);
-    let result = Self {
+    let start_time = ProcessTime::now();
+    trace_var!(start_time);
+    let mut result = Self {
       call_frames,
       stack,
       garbage_collector,
@@ -67,7 +74,11 @@ impl VirtualMachine {
       last_pop,
       init_string,
       open_upvalues,
+      start_time,
     };
+    result
+      .define_native_function("uptime", NativeFunction(standard_library::uptime))
+      .unwrap();
     trace_var!(result);
     trace_exit!();
     result
@@ -536,6 +547,14 @@ impl VirtualMachine {
     let callee = self.peek(argument_count)?;
     match callee {
       Value::Closure(closure) => self.call(closure, argument_count)?,
+      Value::NativeFunction(native_function) => {
+        let start = self.stack.len() - argument_count;
+        trace_var!(start);
+        let result = native_function.0(self, &self.stack[start..])?;
+        trace_var!(result);
+        self.stack.truncate(start - 1);
+        self.push(result)?;
+      },
       value => return Err(Error::RuntimeError(RuntimeError::CalledUncallableValue(value))),
     }
     trace_exit!();
@@ -561,11 +580,13 @@ impl VirtualMachine {
     } else {
       let start = self.stack.len() - argument_count - 1;
       trace_var!(start);
+      let end = start + argument_count;
+      trace_var!(end);
       debug!(
         "Calling {} {} with arguments ({:#?})",
         closure,
         function,
-        &self.stack[start..start + argument_count]
+        &self.stack[start..end]
       );
       let call_frame = CallFrame::new(closure_reference, start);
       self.call_frames.push(call_frame);
@@ -591,6 +612,21 @@ impl VirtualMachine {
         i += 1;
       }
     }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Define a native function.
+  #[named]
+  pub fn define_native_function(&mut self, name: &str, native_function: NativeFunction) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(name);
+    trace_var!(native_function);
+    let name_reference = self.garbage_collector.intern(name.to_owned());
+    trace_var!(name_reference);
+    self
+      .globals
+      .insert(name_reference, Value::NativeFunction(native_function));
     trace_exit!();
     Ok(())
   }

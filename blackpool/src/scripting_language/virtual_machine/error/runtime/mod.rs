@@ -2,7 +2,7 @@ use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::value::Value;
 
 /// Errors encountered at runtime.
-#[derive(Clone, Debug, Error, PartialEq)]
+#[derive(Clone, Debug, Error)]
 pub enum RuntimeError {
   /// Stack overflow.
   #[error("stack overflow")]

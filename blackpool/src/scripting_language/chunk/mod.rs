@@ -8,7 +8,7 @@ use crate::scripting_language::instructions::Instructions;
 use crate::scripting_language::value::Value;
 
 /// A chunk or portion thereof consisting of bytecode.
-#[derive(Clone, Debug, Default, Display, PartialEq)]
+#[derive(Clone, Debug, Default, Display)]
 #[display(fmt = "instructions: {}, constants: {}", instructions, constants)]
 pub struct Chunk {
   /// The serialized instructions comprising the chunk.

@@ -13,7 +13,7 @@ pub mod upvalue;
 use upvalue::Upvalue;
 
 /// The `Function` type.
-#[derive(Clone, Debug, Display, PartialEq)]
+#[derive(Clone, Debug, Display)]
 #[display(
   fmt = "name: {}, chunk: {}, arity: {}, upvalues: {:#?}",
   name,

@@ -7,7 +7,7 @@ use crate::scripting_language::garbage_collection::trace::Trace;
 use crate::scripting_language::value::Value;
 
 /// What's upvalue?  Nawmuch, man, what's up with you?
-#[derive(Clone, Debug, Display, PartialEq)]
+#[derive(Clone, Debug, Display)]
 #[display(fmt = "location: {}, closed: {:#?}", location, closed)]
 pub struct Upvalue {
   /// The index of this item.

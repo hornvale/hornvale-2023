@@ -7,7 +7,7 @@ use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
 
 /// Errors encountered during the parsing process.
-#[derive(Clone, Debug, Error, PartialEq)]
+#[derive(Clone, Debug, Error)]
 pub enum Error {
   /// Unknown error.
   #[error("an unknown error occurred")]
