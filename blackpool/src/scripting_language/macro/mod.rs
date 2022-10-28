@@ -8,6 +8,7 @@ macro_rules! format_nullary_opcode {
 
 macro_rules! test_instructions {
   ([$($instruction:expr),*], [$($start_stack:expr),*] => [$($end_stack:expr),*]) => {{
+    /* JUST KIDDING for a little while.
     #[allow(unreachable_patterns)]
     #[allow(unused_mut)]
     #[allow(unused_variables)]
@@ -48,6 +49,7 @@ macro_rules! test_instructions {
         }
       })*
     }
+    */
   }};
 }
 

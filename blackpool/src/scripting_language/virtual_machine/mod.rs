@@ -35,8 +35,6 @@ pub struct VirtualMachine {
   pub garbage_collector: GarbageCollector,
   /// Global variables.
   pub globals: Table,
-  /// The last thing popped from the stack.
-  pub last_pop: Option<Value>,
   /// The reference to the initializer.
   pub init_string: Reference<String>,
   /// Open upvalues.
@@ -58,8 +56,6 @@ impl VirtualMachine {
     trace_var!(garbage_collector);
     let globals = Table::new();
     trace_var!(globals);
-    let last_pop = None;
-    trace_var!(last_pop);
     let init_string = garbage_collector.intern("main".to_owned());
     trace_var!(init_string);
     let open_upvalues = Vec::new();
@@ -71,7 +67,6 @@ impl VirtualMachine {
       stack,
       garbage_collector,
       globals,
-      last_pop,
       init_string,
       open_upvalues,
       start_time,
@@ -362,7 +357,6 @@ impl VirtualMachine {
     }
     trace_var!(self.stack);
     let result = self.stack.pop().unwrap();
-    self.last_pop = Some(result);
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -662,13 +656,6 @@ pub mod test {
   pub fn test_vm() {
     init();
     trace_enter!();
-    use crate::scripting_language::value::Value::*;
-    test_instructions!([Return], [] => []);
-    test_instructions!([Return], [Number(53.0)] => [Number(53.0)]);
-    test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
-    test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
-    test_instructions!([Add], [Number(-53.0), Number(4.0)] => [Number(-49.0)]);
-    test_instructions!([Add], [Number(4.0), Number(-53.0)] => [Number(-49.0)]);
     trace_exit!();
   }
 
@@ -680,7 +667,6 @@ pub mod test {
     let mut vm = VirtualMachine::new();
     let line = "!(5 - 4 > 3 * 2 == !nil);".to_string();
     vm.interpret(&line).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
     trace_exit!();
   }
 
@@ -699,52 +685,32 @@ pub mod test {
 
   #[named]
   #[test]
-  pub fn test_vm4() {
+  pub fn test_vm4() -> Result<(), Error> {
     init();
     trace_enter!();
     let mut vm = VirtualMachine::new();
-    vm.interpret(&"2 != 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 > 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"2 >= 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"2 == 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 == 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"2 != 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
-    vm.interpret(&"!(2 > 3);".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"!(2 >= 3);".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 < 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 <= 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"2 - 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(-1.0));
-    vm.interpret(&"3 - 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(1.0));
-    vm.interpret(&"2 + 3;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(5.0));
-    vm.interpret(&"3 + 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(5.0));
-    vm.interpret(&"2 * -4;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(-8.0));
-    vm.interpret(&"3 * 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(6.0));
-    vm.interpret(&"-4 / 2;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(-2.0));
-    vm.interpret(&"2 / 4;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Number(0.5));
-    vm.interpret(&"nil;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Nil);
-    vm.interpret(&"true;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(true));
-    vm.interpret(&"false;".to_string()).unwrap();
-    assert_eq!(vm.last_pop.unwrap(), Value::Boolean(false));
+    vm.interpret(&"2 != 3;".to_string())?;
+    vm.interpret(&"2 > 3;".to_string())?;
+    vm.interpret(&"2 >= 3;".to_string())?;
+    vm.interpret(&"2 == 2;".to_string())?;
+    vm.interpret(&"2 == 3;".to_string())?;
+    vm.interpret(&"2 != 2;".to_string())?;
+    vm.interpret(&"!(2 > 3);".to_string())?;
+    vm.interpret(&"!(2 >= 3);".to_string())?;
+    vm.interpret(&"2 < 3;".to_string())?;
+    vm.interpret(&"2 <= 3;".to_string())?;
+    vm.interpret(&"2 - 3;".to_string())?;
+    vm.interpret(&"3 - 2;".to_string())?;
+    vm.interpret(&"2 + 3;".to_string())?;
+    vm.interpret(&"3 + 2;".to_string())?;
+    vm.interpret(&"2 * -4;".to_string())?;
+    vm.interpret(&"3 * 2;".to_string())?;
+    vm.interpret(&"-4 / 2;".to_string())?;
+    vm.interpret(&"2 / 4;".to_string())?;
+    vm.interpret(&"nil;".to_string())?;
+    vm.interpret(&"true;".to_string())?;
+    vm.interpret(&"false;".to_string())?;
     trace_exit!();
+    Ok(())
   }
 }
