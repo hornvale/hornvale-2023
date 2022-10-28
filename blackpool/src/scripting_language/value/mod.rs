@@ -9,7 +9,7 @@ use crate::scripting_language::garbage_collection::trace::Trace;
 use crate::scripting_language::native_function::NativeFunction;
 
 /// The `Value` enum.
-#[derive(Clone, Copy, Debug, Display)]
+#[derive(Clone, Copy, Debug, Display, PartialEq)]
 pub enum Value {
   /// Boolean.
   Boolean(bool),
