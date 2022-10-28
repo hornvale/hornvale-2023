@@ -30,3 +30,7 @@ pretty_env_logger = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }
 volmark = { workspace = true }
+
+[dev-dependencies]
+regex = "1.5.4"
+test-generator = "0.3.0"
