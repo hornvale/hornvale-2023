@@ -1,7 +1,7 @@
 use crate::scripting_language::token::Token;
 
 /// The `Local` type, used to refer to local variables.
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Local {
   /// The name of this local variable.
   pub token: Token,

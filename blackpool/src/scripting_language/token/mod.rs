@@ -3,7 +3,7 @@ pub mod r#type;
 use r#type::Type;
 
 /// The `Token` type.
-#[derive(Clone, Copy, Debug, Deserialize, Display, Eq, Error, Hash, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Display, Eq, Error, Hash, PartialEq)]
 #[display(
   fmt = "type: {}, start: {}, length: {}, line: {}",
   r#type,

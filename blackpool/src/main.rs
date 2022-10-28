@@ -67,7 +67,20 @@ fn main() -> Result<(), Error> {
       let output = io::stdout();
       repl(&mut vm, input, output)
     },
-    2 => run_file(&mut vm, &args[1]),
+    2 => {
+      run_file(&mut vm, &args[1]).unwrap_or_else(|error| match error {
+        Error::VirtualMachineError(VirtualMachineError::InterpreterError(_)) => {
+          // println!("{:#?}", error);
+          exit(65);
+        },
+        Error::VirtualMachineError(VirtualMachineError::RuntimeError(_)) => {
+          // println!("{:#?}", error);
+          exit(70);
+        },
+        _ => {},
+      });
+      Ok(())
+    },
     _ => exit(-1),
   }
 }

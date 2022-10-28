@@ -48,7 +48,7 @@ pub struct Parser<'source> {
   /// Whether we should suppress new errors ("Panic Mode").
   pub suppress_new_errors: bool,
   /// Whether we have actually encountered an error.
-  pub did_encounter_error: Option<Error>,
+  pub did_encounter_error: bool,
 }
 
 impl<'source> Parser<'source> {
@@ -70,7 +70,7 @@ impl<'source> Parser<'source> {
     trace_var!(rules);
     let suppress_new_errors = false;
     trace_var!(suppress_new_errors);
-    let did_encounter_error = None;
+    let did_encounter_error = false;
     trace_var!(did_encounter_error);
     let result = Self {
       scanner,
@@ -107,7 +107,7 @@ impl<'source> Parser<'source> {
   pub fn advance(&mut self) -> Result<(), Error> {
     trace_enter!();
     self.previous = self.current;
-    let mut error_messages = Vec::new();
+    let mut errors = Vec::new();
     loop {
       match self.scanner.scan_token() {
         Ok(token) => {
@@ -115,21 +115,20 @@ impl<'source> Parser<'source> {
           break;
         },
         Err(error) => {
-          self.did_encounter_error = Some(error.into());
-          error_messages.push(error.to_string());
+          self.did_encounter_error = true;
+          errors.push(error);
         },
       }
       self.current = Some(self.scanner.scan_token()?);
     }
-    let result = match &self.did_encounter_error {
-      Some(error) => {
-        if error_messages.len() > 1 {
-          Err(Error::MultipleErrors(error_messages))
-        } else {
-          Err(error.clone())
-        }
-      },
-      None => Ok(()),
+    let result = if self.did_encounter_error {
+      if errors.len() > 1 {
+        Err(Error::MultipleErrors(errors.iter().map(|&e| e.to_string()).collect()))
+      } else {
+        Err(errors[0].into())
+      }
+    } else {
+      Ok(())
     };
     trace_var!(result);
     trace_exit!();
@@ -148,6 +147,7 @@ impl<'source> Parser<'source> {
       self.advance()?;
       Ok(())
     } else {
+      self.did_encounter_error_at_current(message);
       Err(Error::UnexpectedTokenError(current_type, message.to_string()))
     };
     trace_exit!();
@@ -199,7 +199,7 @@ impl<'source> Parser<'source> {
   #[named]
   pub fn parse_variable_declaration(&mut self) -> Result<(), Error> {
     trace_enter!();
-    let variable_index = self.parse_variable_identifier("expected a variable identifier")?;
+    let variable_index = self.parse_variable_identifier("Expect variable name.")?;
     trace_var!(variable_index);
     if self.r#match(TokenType::Equal)? {
       self.parse_expression()?;
@@ -257,6 +257,7 @@ impl<'source> Parser<'source> {
       loop {
         self.compiler.function.arity += 1;
         if self.compiler.function.arity > 255 {
+          self.did_encounter_error_at_current("Can't have more than 255 parameters.");
           return Err(Error::FunctionArityExceededLimit(self.current));
         }
         let parameter = self.parse_variable_identifier("expected a parameter identifier")?;
@@ -267,7 +268,7 @@ impl<'source> Parser<'source> {
       }
     }
     self.consume(TokenType::RightParenthesis, "expected ')' after parameter list")?;
-    self.consume(TokenType::LeftBrace, "expected '{' before function body")?;
+    self.consume(TokenType::LeftBrace, "Expect '{' before function body.")?;
     self.parse_block()?;
     let function = self.pop_compiler()?;
     let function_id = self.garbage_collector.alloc(function);
@@ -275,6 +276,50 @@ impl<'source> Parser<'source> {
     self.emit_instruction(Instruction::Closure(index))?;
     trace_exit!();
     Ok(())
+  }
+
+  /// Encountered an error at the previous token.
+  #[named]
+  pub fn did_encounter_error(&mut self, message: &str) {
+    trace_enter!();
+    trace_var!(message);
+    self.did_encounter_error_at_token(self.previous.unwrap(), message);
+    trace_exit!();
+  }
+
+  /// Encountered an error at the current token.
+  #[named]
+  pub fn did_encounter_error_at_current(&mut self, message: &str) {
+    trace_enter!();
+    trace_var!(message);
+    self.did_encounter_error_at_token(self.current.unwrap(), message);
+    trace_exit!();
+  }
+
+  /// Encountered an error.
+  #[named]
+  pub fn did_encounter_error_at_token(&mut self, token: Token, message: &str) {
+    trace_enter!();
+    trace_var!(token);
+    trace_var!(message);
+    if self.suppress_new_errors {
+      return;
+    }
+    self.did_encounter_error = true;
+    self.suppress_new_errors = true;
+    eprint!("[line {}] Error", token.line_number);
+    let start = token.start;
+    trace_var!(start);
+    let end = start + token.length;
+    trace_var!(end);
+    let string = &self.scanner.source[start..end];
+    use TokenType::*;
+    match token.r#type {
+      Eof => eprint!(" at end"),
+      _ => eprint!(" at '{}'", string),
+    };
+    eprintln!(": {}", message);
+    trace_exit!();
   }
 
   /// Block.
@@ -440,6 +485,7 @@ impl<'source> Parser<'source> {
       loop {
         self.parse_expression()?;
         if count == 255 {
+          self.did_encounter_error("Can't have more than 255 arguments.");
           return Err(Error::FunctionCallArgumentsExceededLimit(self.current));
         }
         count += 1;
@@ -730,6 +776,7 @@ impl<'source> Parser<'source> {
     }
     let token = self.previous.unwrap();
     if self.compiler.has_local(self.scanner.source, &token) {
+      self.did_encounter_error("Already variable with this name in this scope.");
       return Err(Error::AttemptedToRedeclareVariable(Some(token)));
     }
     self.add_local(token)?;
@@ -817,7 +864,9 @@ impl<'source> Parser<'source> {
         let compiler = replace(&mut self.compiler, enclosing);
         compiler.function
       },
-      None => return Err(Error::TriedToPopTopCompiler(self.current)),
+      None => {
+        return Err(Error::TriedToPopTopCompiler(self.current));
+      },
     };
     trace_var!(result);
     trace_exit!();
@@ -935,6 +984,7 @@ impl<'source> Parser<'source> {
     let previous_rule = self.get_previous_rule().unwrap();
     trace_var!(previous_rule);
     if previous_rule.prefix.is_none() {
+      self.did_encounter_error("Expect expression.");
       return Err(Error::ExpectedExpression(self.previous));
     }
     let prefix = previous_rule.prefix.unwrap();

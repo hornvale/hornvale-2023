@@ -45,6 +45,7 @@ pub enum Type {
   Var,
   While,
   Eof,
+  ScannerError(&'static str),
   EmptyString,
 }
 
@@ -92,6 +93,7 @@ impl Type {
       Var,
       While,
       Eof,
+      ScannerError(""),
       EmptyString,
     ]
   }

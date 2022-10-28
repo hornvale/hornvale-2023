@@ -174,16 +174,24 @@ impl VirtualMachine {
             (Number(a), Number(b)) => self.push(Value::Boolean(a == b))?,
             (String(a), String(b)) => self.push(Value::Boolean(a == b))?,
             (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b == a))?,
-            (_, _) => {
-              return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
-                instruction,
-                b,
-                a,
-              )))
-            },
+            (Nil, Nil) => self.push(Value::Boolean(true))?,
+            (_, _) => self.push(Value::Boolean(false))?,
           }
         },
-        NotEqual => self.binary_arithmetic_operation(NotEqual, |a, b| b != a, Value::Boolean)?,
+        NotEqual => {
+          let a = self.pop()?;
+          trace_var!(a);
+          let b = self.pop()?;
+          trace_var!(b);
+          use Value::*;
+          match (a, b) {
+            (Number(a), Number(b)) => self.push(Value::Boolean(a != b))?,
+            (String(a), String(b)) => self.push(Value::Boolean(a != b))?,
+            (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b != a))?,
+            (Nil, Nil) => self.push(Value::Boolean(false))?,
+            (_, _) => self.push(Value::Boolean(true))?,
+          }
+        },
         GreaterThan => self.binary_arithmetic_operation(GreaterThan, |a, b| b > a, Value::Boolean)?,
         LessThan => self.binary_arithmetic_operation(LessThan, |a, b| b < a, Value::Boolean)?,
         GreaterThanOrEqual => self.binary_arithmetic_operation(GreaterThanOrEqual, |a, b| b >= a, Value::Boolean)?,
