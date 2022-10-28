@@ -1,6 +1,7 @@
 use std::any::Any;
 use std::fmt::{Formatter, Result as FmtResult};
 
+use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::Trace;
@@ -10,6 +11,8 @@ use crate::scripting_language::garbage_collection::trace::Trace;
 pub enum Value {
   /// Boolean.
   Boolean(bool),
+  /// Function!
+  Function(Reference<Function>),
   /// Number is a double.
   Number(f64),
   /// String.
@@ -48,7 +51,7 @@ impl Trace for Value {
       // BoundMethod(value) => gc.deref(*value).format(f, garbage_collector),
       // Class(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       // Closure(value) => garbage_collector.deref(*value).format(f, garbage_collector),
-      // Function(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      Function(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       // Instance(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       // NativeFunction(_) => write!(f, "<native fn>"),
       Nil => write!(f, "nil"),
@@ -78,7 +81,7 @@ impl Trace for Value {
       // Value::BoundMethod(value) => garbage_collector.mark_object(*value),
       // Value::Class(value) => garbage_collector.mark_object(*value),
       // Value::Closure(value) => garbage_collector.mark_object(*value),
-      // Value::Function(value) => garbage_collector.mark_object(*value),
+      Value::Function(value) => garbage_collector.mark_object(*value),
       // Value::Instance(value) => garbage_collector.mark_object(*value),
       Value::String(value) => garbage_collector.mark_object(*value),
       _ => (),

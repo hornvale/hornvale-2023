@@ -3,12 +3,13 @@ use std::fmt::Write as FmtWrite;
 use std::io::Write as IoWrite;
 
 use crate::scripting_language::constants::Constants;
-use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
+use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::instructions::Instructions;
 use crate::scripting_language::value::Value;
 
 /// A chunk or portion thereof consisting of bytecode.
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, Default, Display, PartialEq)]
+#[display(fmt = "instructions: {}, constants: {}", instructions, constants)]
 pub struct Chunk {
   /// The serialized instructions comprising the chunk.
   pub instructions: Instructions,
@@ -41,7 +42,7 @@ impl Chunk {
 
   /// Read a string.
   #[named]
-  pub fn read_string(&self, index: u16) -> GcReference<String> {
+  pub fn read_string(&self, index: u16) -> Reference<String> {
     trace_enter!();
     trace_var!(index);
     let result = if let Value::String(string) = self.constants.constants[index as usize] {

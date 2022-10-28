@@ -4,7 +4,8 @@ use std::fmt::Write;
 use crate::scripting_language::instruction::Instruction;
 
 /// The `Instructions` collection.
-#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Serialize)]
+#[display(fmt = "instructions: {:#?}, line_numbers: {:#?}", instructions, line_numbers)]
 pub struct Instructions {
   /// The actual collected instructions.
   pub instructions: Vec<Instruction>,

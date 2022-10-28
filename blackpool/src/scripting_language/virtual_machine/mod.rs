@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use crate::scripting_language::chunk::Chunk;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
-use crate::scripting_language::garbage_collection::reference::Reference as GcReference;
+use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::interpreter::Interpreter;
@@ -352,7 +352,7 @@ impl VirtualMachine {
 
   /// Eliminates duplicate string references.
   #[named]
-  pub fn intern(&mut self, name: String) -> GcReference<String> {
+  pub fn intern(&mut self, name: String) -> Reference<String> {
     trace_enter!();
     trace_var!(name);
     self.mark_and_sweep();
