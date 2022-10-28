@@ -1,12 +1,22 @@
+use crate::scripting_language::function::Function;
+use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::local::Local;
 use crate::scripting_language::token::Token;
 
 pub mod error;
 use error::Error;
+pub mod function_type;
+use function_type::FunctionType;
 
 /// The `Compiler` type.
-#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Compiler {
+  /// The compiler enclosing us.
+  pub enclosing: Option<Box<Compiler>>,
+  /// The function we're compiling.
+  pub function: Function,
+  /// The type of function we're compiling.
+  pub function_type: FunctionType,
   /// Local variables.
   pub locals: Vec<Local>,
   /// Scope depth.
@@ -16,13 +26,23 @@ pub struct Compiler {
 impl Compiler {
   /// Constructor.
   #[named]
-  pub fn new() -> Self {
+  pub fn new(function_name: Reference<String>, function_type: FunctionType) -> Self {
     trace_enter!();
     let locals = Vec::new();
     trace_var!(locals);
     let depth = 0;
     trace_var!(depth);
-    let result = Self { locals, depth };
+    let function = Function::new(function_name);
+    trace_var!(function);
+    let enclosing = None;
+    trace_var!(enclosing);
+    let result = Self {
+      enclosing,
+      locals,
+      depth,
+      function,
+      function_type,
+    };
     trace_var!(result);
     trace_exit!();
     result

@@ -1,11 +1,10 @@
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
-use crate::scripting_language::chunk::Chunk;
 use crate::scripting_language::parser::error::Error;
 use crate::scripting_language::parser::precedence::Precedence;
 use crate::scripting_language::parser::Parser;
 
-pub type ParseFn<'source> = fn(&mut Parser<'source>, &mut Chunk, bool) -> Result<(), Error>;
+pub type ParseFn<'source> = fn(&mut Parser<'source>, bool) -> Result<(), Error>;
 
 /// The `Rule` type.
 #[derive(Clone, Display)]

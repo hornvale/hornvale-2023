@@ -1,8 +1,8 @@
-use crate::scripting_language::chunk::Chunk;
+use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
+use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::parser::Parser;
 use crate::scripting_language::scanner::Scanner;
-use crate::scripting_language::token::r#type::Type as TokenType;
 
 pub mod error;
 use error::Error;
@@ -19,34 +19,17 @@ impl Interpreter {
   pub fn compile<'source>(
     &mut self,
     source: &'source str,
-    chunk: &mut Chunk,
     garbage_collector: &mut GarbageCollector,
-  ) -> Result<(), Error> {
+  ) -> Result<Reference<Function>, Error> {
     trace_enter!();
     trace_var!(source);
-    trace_var!(chunk);
     let scanner = Scanner::new(source);
     trace_var!(scanner);
-    let mut parser = Parser::new(scanner, garbage_collector);
+    let parser = Parser::new(scanner, garbage_collector);
     trace_var!(parser);
-    parser.advance()?;
-    while !parser.r#match(TokenType::Eof)? {
-      parser.parse_declaration(chunk)?;
-    }
-    self.finalize(&mut parser, chunk)?;
+    let result = parser.compile()?;
     trace_exit!();
-    Ok(())
-  }
-
-  /// Conclude.
-  #[named]
-  pub fn finalize(&mut self, parser: &mut Parser, chunk: &mut Chunk) -> Result<(), Error> {
-    trace_enter!();
-    trace_var!(parser);
-    trace_var!(chunk);
-    parser.emit_return(chunk)?;
-    trace_exit!();
-    Ok(())
+    Ok(result)
   }
 }
 

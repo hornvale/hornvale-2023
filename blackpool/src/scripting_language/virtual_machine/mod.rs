@@ -1,14 +1,19 @@
 use std::collections::hash_map::Entry;
+use std::fmt::Debug;
 
 use crate::scripting_language::chunk::Chunk;
+use crate::scripting_language::closure::Closure;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
+use crate::scripting_language::garbage_collection::trace::Trace;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::interpreter::Interpreter;
 use crate::scripting_language::table::Table;
 use crate::scripting_language::value::Value;
 
+pub mod call_frame;
+use call_frame::CallFrame;
 pub mod constants;
 use constants::*;
 pub mod error;
@@ -18,8 +23,8 @@ use error::Error;
 /// The `VirtualMachine` type.
 #[derive(Debug)]
 pub struct VirtualMachine {
-  /// Points at the next instruction to read.
-  pub instruction_pointer: usize,
+  /// The callframes.
+  pub call_frames: Vec<CallFrame>,
   /// The stack.
   pub stack: Vec<Value>,
   /// The garbage collector.
@@ -28,6 +33,8 @@ pub struct VirtualMachine {
   pub globals: Table,
   /// The last thing popped from the stack.
   pub last_pop: Option<Value>,
+  /// The reference to the initializer.
+  pub init_string: Reference<String>,
 }
 
 impl VirtualMachine {
@@ -35,22 +42,25 @@ impl VirtualMachine {
   #[named]
   pub fn new() -> Self {
     trace_enter!();
-    let instruction_pointer = 0;
-    trace_var!(instruction_pointer);
+    let call_frames = Vec::with_capacity(CALL_FRAMES_MAX);
+    trace_var!(call_frames);
     let stack = Vec::with_capacity(STACK_SIZE_MAX);
     trace_var!(stack);
-    let garbage_collector = GarbageCollector::new();
+    let mut garbage_collector = GarbageCollector::new();
     trace_var!(garbage_collector);
     let globals = Table::new();
     trace_var!(globals);
     let last_pop = None;
     trace_var!(last_pop);
+    let init_string = garbage_collector.intern("main".to_owned());
+    trace_var!(init_string);
     let result = Self {
-      instruction_pointer,
+      call_frames,
       stack,
       garbage_collector,
       globals,
       last_pop,
+      init_string,
     };
     trace_var!(result);
     trace_exit!();
@@ -62,49 +72,35 @@ impl VirtualMachine {
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     trace_enter!();
     trace_var!(source);
-    self.instruction_pointer = 0;
-    let chunk = self.compile(source)?;
-    trace_var!(chunk);
-    self.run(&chunk)?;
+    let mut interpreter = Interpreter::default();
+    trace_var!(interpreter);
+    let function = interpreter.compile(source, &mut self.garbage_collector)?;
+    trace_var!(function);
+    let closure = self.alloc(Closure::new(function));
+    trace_var!(closure);
+    self.call_frames.push(CallFrame::new(closure, 0));
+    self.run()?;
     trace_exit!();
     Ok(())
   }
 
-  /// Compile the source code.
-  #[named]
-  pub fn compile(&mut self, source: &str) -> Result<Chunk, Error> {
-    trace_enter!();
-    trace_var!(source);
-    let mut interpreter = Interpreter::default();
-    trace_var!(interpreter);
-    let mut result = Chunk::default();
-    interpreter.compile(source, &mut result, &mut self.garbage_collector)?;
-    trace_var!(result);
-    trace_exit!();
-    Ok(result)
-  }
-
   /// Run the chunk.
   #[named]
-  pub fn run(&mut self, chunk: &Chunk) -> Result<(), Error> {
+  pub fn run(&mut self) -> Result<(), Error> {
     trace_enter!();
-    trace_var!(chunk);
     loop {
-      let instruction_option = chunk.instructions.instructions.get(self.instruction_pointer);
-      self.instruction_pointer += 1;
-      if instruction_option.is_none() {
-        break;
-      }
-      let instruction = *instruction_option.unwrap();
+      let instruction =
+        self.get_current_chunk().instructions.instructions[self.get_current_frame().instruction_pointer];
+      self.get_current_frame_mut().instruction_pointer += 1;
       trace_var!(instruction);
       use Instruction::*;
       use Value::*;
       debug_var!(self.stack);
-      debug_var!(self.instruction_pointer);
+      debug_var!(self.get_current_frame().instruction_pointer);
       debug_var!(instruction);
       match instruction {
         Constant(index) => {
-          let constant = chunk.constants.constants[index as usize];
+          let constant = self.get_current_chunk().constants.constants[index as usize];
           trace_var!(constant);
           self.push(constant)?;
         },
@@ -195,14 +191,14 @@ impl VirtualMachine {
           self.push(Value::Boolean(answer))?;
         },
         DefineGlobal(index) => {
-          let identifier = chunk.read_string(index);
+          let identifier = self.get_current_chunk().read_string(index);
           trace_var!(identifier);
           let value = self.pop()?;
           trace_var!(value);
           self.globals.insert(identifier, value);
         },
         GetGlobal(index) => {
-          let identifier = chunk.read_string(index);
+          let identifier = self.get_current_chunk().read_string(index);
           trace_var!(identifier);
           match self.globals.get(&identifier) {
             Some(&value) => self.push(value)?,
@@ -215,7 +211,7 @@ impl VirtualMachine {
           }
         },
         SetGlobal(index) => {
-          let identifier = chunk.read_string(index);
+          let identifier = self.get_current_chunk().read_string(index);
           let value = self.peek(0)?;
           if let Entry::Occupied(mut entry) = self.globals.entry(identifier) {
             entry.insert(value);
@@ -235,16 +231,16 @@ impl VirtualMachine {
           self.stack[i] = value;
         },
         Jump(offset) => {
-          self.instruction_pointer += offset as usize;
+          self.get_current_frame_mut().instruction_pointer += offset as usize;
         },
         JumpIfFalse(offset) => {
           if self.peek(0)?.is_falsey() {
             debug!("branch taken");
-            self.instruction_pointer += offset as usize;
+            self.get_current_frame_mut().instruction_pointer += offset as usize;
           }
         },
         Loop(offset) => {
-          self.instruction_pointer -= offset as usize;
+          self.get_current_frame_mut().instruction_pointer -= offset as usize;
         },
       }
     }
@@ -350,6 +346,18 @@ impl VirtualMachine {
     result
   }
 
+  /// Allocate an object.
+  #[named]
+  pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
+    trace_enter!();
+    trace_var!(object);
+    self.mark_and_sweep();
+    let result = self.garbage_collector.alloc(object);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
   /// Eliminates duplicate string references.
   #[named]
   pub fn intern(&mut self, name: String) -> Reference<String> {
@@ -414,6 +422,52 @@ impl VirtualMachine {
     debug!("marking {} global variables for garbage collection", self.globals.len());
     self.garbage_collector.mark_table(&self.globals);
     // self.garbage_collector.mark_object(self.init_string);
+  }
+
+  /// Get current frame.
+  #[named]
+  pub fn get_current_frame(&self) -> &CallFrame {
+    trace_enter!();
+    let result = self.call_frames.last().unwrap();
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Get current frame mutable.
+  #[named]
+  pub fn get_current_frame_mut(&mut self) -> &mut CallFrame {
+    trace_enter!();
+    let result = self.call_frames.last_mut().unwrap();
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Get current closure.
+  #[named]
+  pub fn get_current_closure(&self) -> &Closure {
+    trace_enter!();
+    let closure = self.get_current_frame().closure;
+    trace_var!(closure);
+    let result = self.garbage_collector.deref(closure);
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Get current chunk.
+  #[named]
+  pub fn get_current_chunk(&self) -> &Chunk {
+    trace_enter!();
+    let closure = self.get_current_closure();
+    trace_var!(closure);
+    let function = self.garbage_collector.deref(closure.function);
+    trace_var!(function);
+    let result = &function.chunk;
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 }
 
