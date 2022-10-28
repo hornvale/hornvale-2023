@@ -91,6 +91,7 @@ impl VirtualMachine {
     trace_var!(chunk);
     loop {
       let instruction_option = chunk.instructions.instructions.get(self.instruction_pointer);
+      self.instruction_pointer += 1;
       if instruction_option.is_none() {
         break;
       }
@@ -98,6 +99,8 @@ impl VirtualMachine {
       trace_var!(instruction);
       use Instruction::*;
       use Value::*;
+      debug_var!(self.stack);
+      debug_var!(self.instruction_pointer);
       debug_var!(instruction);
       match instruction {
         Constant(index) => {
@@ -240,8 +243,10 @@ impl VirtualMachine {
             self.instruction_pointer += offset as usize;
           }
         },
+        Loop(offset) => {
+          self.instruction_pointer -= offset as usize;
+        },
       }
-      self.instruction_pointer += 1;
     }
     debug_var!(self.stack);
     trace_exit!();

@@ -188,6 +188,10 @@ impl<'source> Parser<'source> {
       self.parse_print_statement(chunk)?;
     } else if self.r#match(TokenType::If)? {
       self.parse_if_statement(chunk)?;
+    } else if self.r#match(TokenType::While)? {
+      self.parse_while_statement(chunk)?;
+    } else if self.r#match(TokenType::For)? {
+      self.parse_for_statement(chunk)?;
     } else if self.r#match(TokenType::LeftBrace)? {
       self.begin_scope()?;
       self.parse_block(chunk)?;
@@ -253,20 +257,16 @@ impl<'source> Parser<'source> {
   pub fn parse_if_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
-    if self.r#match(TokenType::LeftParenthesis)? {
-      self.consume(TokenType::LeftParenthesis, "expected '(' before 'if' expression")?;
-    }
+    self.r#match(TokenType::LeftParenthesis)?;
     self.parse_expression(chunk)?;
-    if self.r#match(TokenType::RightParenthesis)? {
-      self.consume(TokenType::RightParenthesis, "expected ')' after 'if' expression")?;
-    }
+    self.r#match(TokenType::RightParenthesis)?;
     let then_jump = chunk.instructions.instructions.len();
     self.emit_instruction(chunk, Instruction::JumpIfFalse(u16::MAX))?;
     self.emit_instruction(chunk, Instruction::Pop)?;
     self.parse_statement(chunk)?;
     let else_jump = chunk.instructions.instructions.len();
-    self.patch_jump(chunk, then_jump as u16)?;
     self.emit_instruction(chunk, Instruction::Jump(u16::MAX))?;
+    self.patch_jump(chunk, then_jump as u16)?;
     self.emit_instruction(chunk, Instruction::Pop)?;
     if self.r#match(TokenType::Else)? {
       self.parse_statement(chunk)?;
@@ -289,13 +289,107 @@ impl<'source> Parser<'source> {
     trace_var!(index);
     let latest = chunk.instructions.instructions.len() as u16 - 1;
     trace_var!(latest);
-    let offset = (latest - index) + 1;
+    let offset = latest - index;
     trace_var!(offset);
     match chunk.instructions.instructions[index as usize] {
       Instruction::JumpIfFalse(ref mut dest) => *dest = offset,
       Instruction::Jump(ref mut dest) => *dest = offset,
       instruction => panic!("Incorrect instruction {:#?} at position", instruction),
     };
+    trace_exit!();
+    Ok(())
+  }
+
+  /// While statement.
+  #[named]
+  pub fn parse_while_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    let loop_start = chunk.instructions.instructions.len();
+    self.r#match(TokenType::LeftParenthesis)?;
+    self.parse_expression(chunk)?;
+    self.r#match(TokenType::RightParenthesis)?;
+    let exit_jump = chunk.instructions.instructions.len();
+    self.emit_instruction(chunk, Instruction::JumpIfFalse(u16::MAX))?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    self.parse_statement(chunk)?;
+    self.emit_loop(chunk, loop_start as u16)?;
+    self.patch_jump(chunk, exit_jump as u16)?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Emit a loop instruction.
+  ///
+  /// We're provided with the `index`, which is the location in code of the
+  /// instruction to patch. We also have the current length of the code,
+  /// which indicates how many instructions have been added since then.
+  /// So we should take the difference of the two indices so that we jump back
+  /// to when the condition is checked.
+  #[named]
+  pub fn emit_loop(&mut self, chunk: &mut Chunk, index: u16) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    trace_var!(index);
+    let latest = chunk.instructions.instructions.len() as u16 - 1;
+    trace_var!(latest);
+    let offset = (latest - index) + 2;
+    trace_var!(offset);
+    self.emit_instruction(chunk, Instruction::Loop(offset))?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// For statement.
+  #[named]
+  pub fn parse_for_statement(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    self.begin_scope()?;
+    self.consume(TokenType::LeftParenthesis, "expected '(' after 'for'.")?;
+
+    // Process initializer segment.
+    if self.r#match(TokenType::Semicolon)? {
+      // No initializer, no problem.
+    } else if self.r#match(TokenType::Var)? {
+      self.parse_var_declaration(chunk)?;
+    } else {
+      self.parse_expression_statement(chunk)?;
+    }
+
+    let mut loop_start = chunk.instructions.instructions.len();
+
+    // Process condition segment.
+    let mut exit_jump: Option<usize> = None;
+    if !self.r#match(TokenType::Semicolon)? {
+      self.parse_expression(chunk)?;
+      self.consume(TokenType::Semicolon, "expected ';' after loop condition.")?;
+      exit_jump = Some(chunk.instructions.instructions.len());
+      self.emit_instruction(chunk, Instruction::JumpIfFalse(0xFFFF))?;
+      self.emit_instruction(chunk, Instruction::Pop)?;
+    }
+
+    // Process increment segment.
+    if !self.r#match(TokenType::RightParenthesis)? {
+      let body_jump = chunk.instructions.instructions.len();
+      self.emit_instruction(chunk, Instruction::Jump(0xFFFF))?;
+      let increment_start = chunk.instructions.instructions.len();
+      self.parse_expression(chunk)?;
+      self.emit_instruction(chunk, Instruction::Pop)?;
+      self.consume(TokenType::RightParenthesis, "expected ')' after 'for' clauses.")?;
+      self.emit_loop(chunk, loop_start as u16)?;
+      loop_start = increment_start;
+      self.patch_jump(chunk, body_jump as u16)?;
+    }
+    // Loop!
+    self.parse_statement(chunk)?;
+    self.emit_loop(chunk, loop_start as u16)?;
+    if let Some(exit_jump) = exit_jump {
+      self.patch_jump(chunk, exit_jump as u16)?;
+      self.emit_instruction(chunk, Instruction::Pop)?;
+    }
+    self.end_scope(chunk)?;
     trace_exit!();
     Ok(())
   }
@@ -317,7 +411,7 @@ impl<'source> Parser<'source> {
   pub fn parse_expression(&mut self, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(chunk);
-    self.parse_precedence(&Precedence::Assignment, chunk)?;
+    self.parse_precedence(Precedence::Assignment, chunk)?;
     trace_exit!();
     Ok(())
   }
@@ -393,6 +487,37 @@ impl<'source> Parser<'source> {
     Ok(())
   }
 
+  /// Parse an And.
+  #[named]
+  pub fn parse_and(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    let end_jump = chunk.instructions.instructions.len();
+    self.emit_instruction(chunk, Instruction::JumpIfFalse(u16::MAX))?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    self.parse_precedence(Precedence::And, chunk)?;
+    self.patch_jump(chunk, end_jump as u16)?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Parse an Or.
+  #[named]
+  pub fn parse_or(&mut self, chunk: &mut Chunk, _can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(chunk);
+    let else_jump = chunk.instructions.instructions.len();
+    self.emit_instruction(chunk, Instruction::JumpIfFalse(u16::MAX))?;
+    let end_jump = chunk.instructions.instructions.len();
+    self.emit_instruction(chunk, Instruction::Jump(u16::MAX))?;
+    self.patch_jump(chunk, else_jump as u16)?;
+    self.emit_instruction(chunk, Instruction::Pop)?;
+    self.parse_precedence(Precedence::Or, chunk)?;
+    self.patch_jump(chunk, end_jump as u16)?;
+    trace_exit!();
+    Ok(())
+  }
+
   /// Parse a variable identifier.
   #[named]
   pub fn parse_variable_identifier(&mut self, chunk: &mut Chunk) -> Result<u16, Error> {
@@ -416,7 +541,7 @@ impl<'source> Parser<'source> {
     trace_var!(chunk);
     let operator_type = self.previous.unwrap().r#type;
     let rule = self.get_rule(&operator_type);
-    self.parse_precedence(&rule.unwrap().precedence.next().unwrap(), chunk)?;
+    self.parse_precedence(rule.unwrap().precedence.next().unwrap(), chunk)?;
     use TokenType::*;
     match operator_type {
       BangEqual => self.emit_instruction(chunk, Instruction::NotEqual)?,
@@ -672,7 +797,7 @@ impl<'source> Parser<'source> {
 
   /// Parse precedence.
   #[named]
-  pub fn parse_precedence(&mut self, precedence: &Precedence, chunk: &mut Chunk) -> Result<(), Error> {
+  pub fn parse_precedence(&mut self, precedence: Precedence, chunk: &mut Chunk) -> Result<(), Error> {
     trace_enter!();
     trace_var!(precedence);
     self.advance()?;
@@ -682,9 +807,9 @@ impl<'source> Parser<'source> {
       return Err(Error::ExpectedExpression(self.previous));
     }
     let prefix = previous_rule.prefix.unwrap();
-    let can_assign = precedence <= &Precedence::Assignment;
+    let can_assign = precedence <= Precedence::Assignment;
     prefix(self, chunk, can_assign)?;
-    while precedence <= &self.get_current_rule().unwrap().precedence {
+    while precedence <= self.get_current_rule().unwrap().precedence {
       self.advance()?;
       let previous_rule = self.get_previous_rule().unwrap();
       if previous_rule.infix.is_none() {

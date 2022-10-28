@@ -22,6 +22,8 @@ pub enum Instruction {
   Jump(u16),
   /// Jump if the top value on the stack is falsey.
   JumpIfFalse(u16),
+  /// Loop back to the offset indicated by the top value on the stack.
+  Loop(u16),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

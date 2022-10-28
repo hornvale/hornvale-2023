@@ -96,7 +96,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Identifier, Some(Parser::parse_variable), None, Precedence::None);
     result.add_rule(String, Some(Parser::parse_string), None, Precedence::None);
     result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
-    result.add_rule(And, None, None, Precedence::None);
+    result.add_rule(And, None, Some(Parser::parse_and), Precedence::And);
     result.add_rule(Class, None, None, Precedence::None);
     result.add_rule(Else, None, None, Precedence::None);
     result.add_rule(False, Some(Parser::parse_literal), None, Precedence::None);
@@ -104,7 +104,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Function, None, None, Precedence::None);
     result.add_rule(If, None, None, Precedence::None);
     result.add_rule(Nil, Some(Parser::parse_literal), None, Precedence::None);
-    result.add_rule(Or, None, None, Precedence::None);
+    result.add_rule(Or, None, Some(Parser::parse_or), Precedence::Or);
     result.add_rule(Print, None, None, Precedence::None);
     result.add_rule(Return, None, None, Precedence::None);
     result.add_rule(Super, None, None, Precedence::None);
