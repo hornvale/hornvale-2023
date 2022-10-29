@@ -132,34 +132,6 @@ impl<'source> Parser<'source> {
         break;
       }
     }
-    /*
-    let mut errors = Vec::new();
-    loop {
-      match self.scanner.scan_token() {
-        Ok(token) => {
-          self.current = Some(token);
-          break;
-        },
-        Err(error) => {
-          self.did_encounter_error = true;
-          errors.push(error);
-        },
-      }
-      self.current = Some(self.scanner.scan_token()?);
-    }
-    let result = if self.did_encounter_error {
-      if errors.len() > 1 {
-        Err(Error::MultipleErrors(errors.iter().map(|&e| e.to_string()).collect()))
-      } else {
-        Err(errors[0].into())
-      }
-    } else {
-      Ok(())
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
-    */
     Ok(())
   }
 
@@ -362,7 +334,7 @@ impl<'source> Parser<'source> {
         }
       }
     }
-    self.consume(TokenType::RightParenthesis, "expected ')' after parameter list")?;
+    self.consume(TokenType::RightParenthesis, "Expect ')' after parameters.")?;
     self.consume(TokenType::LeftBrace, "Expect '{' before function body.")?;
     self.parse_block()?;
     let function = self.pop_compiler()?;
@@ -410,6 +382,7 @@ impl<'source> Parser<'source> {
     let string = &self.scanner.source[start..end];
     use TokenType::*;
     match token.r#type {
+      ScannerError(_) => (),
       Eof => eprint!(" at end"),
       _ => eprint!(" at '{}'", string),
     };
@@ -522,9 +495,13 @@ impl<'source> Parser<'source> {
     trace_enter!();
     if let FunctionType::Script = self.compiler.function_type {
       // Not going to block `return` in top-level code ATM.
+      self.did_encounter_error("Can't return from top-level code.");
     } else if self.r#match(TokenType::Semicolon)? {
       self.emit_return()?;
     } else {
+      if let FunctionType::Initializer = self.compiler.function_type {
+        self.did_encounter_error("Can't return a value from an initializer.");
+      }
       self.parse_expression()?;
       self.consume(TokenType::Semicolon, "expected ';' after return value")?;
       self.emit_instruction(Instruction::Return)?;
@@ -1077,7 +1054,10 @@ impl<'source> Parser<'source> {
   #[named]
   pub fn emit_return(&mut self) -> Result<(), Error> {
     trace_enter!();
-    self.emit_instruction(Instruction::Nil)?;
+    match self.compiler.function_type {
+      FunctionType::Initializer => self.emit_instruction(Instruction::GetLocal(0))?,
+      _ => self.emit_instruction(Instruction::Nil)?,
+    };
     self.emit_instruction(Instruction::Return)?;
     trace_exit!();
     Ok(())

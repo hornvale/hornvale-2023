@@ -59,7 +59,7 @@ impl VirtualMachine {
     trace_var!(garbage_collector);
     let globals = Table::new();
     trace_var!(globals);
-    let init_string = garbage_collector.intern("main".to_owned());
+    let init_string = garbage_collector.intern("init".to_owned());
     trace_var!(init_string);
     let open_upvalues = Vec::new();
     trace_var!(open_upvalues);
@@ -168,28 +168,14 @@ impl VirtualMachine {
           trace_var!(a);
           let b = self.pop()?;
           trace_var!(b);
-          use Value::*;
-          match (a, b) {
-            (Number(a), Number(b)) => self.push(Value::Boolean(a == b))?,
-            (String(a), String(b)) => self.push(Value::Boolean(a == b))?,
-            (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b == a))?,
-            (Nil, Nil) => self.push(Value::Boolean(true))?,
-            (_, _) => self.push(Value::Boolean(false))?,
-          }
+          self.push(Value::Boolean(a == b))?;
         },
         NotEqual => {
           let a = self.pop()?;
           trace_var!(a);
           let b = self.pop()?;
           trace_var!(b);
-          use Value::*;
-          match (a, b) {
-            (Number(a), Number(b)) => self.push(Value::Boolean(a != b))?,
-            (String(a), String(b)) => self.push(Value::Boolean(a != b))?,
-            (Boolean(a), Boolean(b)) => self.push(Value::Boolean(b != a))?,
-            (Nil, Nil) => self.push(Value::Boolean(false))?,
-            (_, _) => self.push(Value::Boolean(true))?,
-          }
+          self.push(Value::Boolean(a != b))?;
         },
         GreaterThan => self.binary_arithmetic_operation(GreaterThan, |a, b| b > a, Value::Boolean)?,
         LessThan => self.binary_arithmetic_operation(LessThan, |a, b| b < a, Value::Boolean)?,
@@ -657,6 +643,16 @@ impl VirtualMachine {
     trace_var!(argument_count);
     let callee = self.peek(argument_count)?;
     match callee {
+      Value::BoundMethod(bound_reference) => {
+        let bound = self.garbage_collector.deref(bound_reference);
+        trace_var!(bound);
+        let method = bound.method;
+        trace_var!(method);
+        let receiver = bound.receiver;
+        trace_var!(receiver);
+        self.set_in_stack(argument_count, receiver);
+        self.call(method, argument_count)?;
+      },
       Value::Closure(closure) => self.call(closure, argument_count)?,
       Value::NativeFunction(native_function) => {
         let start = self.stack.len() - argument_count;
@@ -676,9 +672,10 @@ impl VirtualMachine {
         if let Some(&initializer) = class.methods.get(&self.init_string) {
           if let Value::Closure(initializer) = initializer {
             return self.call(initializer, argument_count);
+          } else {
+            self.did_encounter_runtime_error("Initializer is not closure");
+            return Err(Error::RuntimeError(RuntimeError::ClassInitializerWasNotAClosure));
           }
-          self.did_encounter_runtime_error("Initializer is not closure");
-          return Err(Error::RuntimeError(RuntimeError::ClassInitializerWasNotAClosure));
         } else if argument_count > 0 {
           let message = format!("Expected 0 arguments but got {}.", argument_count);
           self.did_encounter_runtime_error(&message);
