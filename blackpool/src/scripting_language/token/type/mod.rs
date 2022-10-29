@@ -45,6 +45,8 @@ pub enum Type {
   Var,
   While,
   Eof,
+  Error,
+  EmptyString,
 }
 
 impl Type {
@@ -91,6 +93,8 @@ impl Type {
       Var,
       While,
       Eof,
+      Error,
+      EmptyString,
     ]
   }
 }
@@ -111,7 +115,7 @@ impl FromStr for Type {
       "class" => Ok(Class),
       "else" => Ok(Else),
       "false" => Ok(False),
-      "fun" | "func" | "fn" | "function" => Ok(Function),
+      "fun" => Ok(Function),
       "for" => Ok(For),
       "if" => Ok(If),
       "nil" => Ok(Nil),
@@ -121,7 +125,7 @@ impl FromStr for Type {
       "super" => Ok(Super),
       "this" => Ok(This),
       "true" => Ok(True),
-      "var" | "let" => Ok(Var),
+      "var" => Ok(Var),
       "while" => Ok(While),
       unknown => Err(TokenError::UnknownKeyword(unknown.to_string())),
     }

@@ -59,12 +59,17 @@ impl<'source> Default for Rules<'source> {
     let mut result = Rules::new();
     trace_var!(result);
     use TokenType::*;
-    result.add_rule(LeftParenthesis, Some(Parser::parse_grouping), None, Precedence::None);
+    result.add_rule(
+      LeftParenthesis,
+      Some(Parser::parse_grouping),
+      Some(Parser::parse_call),
+      Precedence::Call,
+    );
     result.add_rule(RightParenthesis, None, None, Precedence::None);
     result.add_rule(LeftBrace, None, None, Precedence::None);
     result.add_rule(RightBrace, None, None, Precedence::None);
     result.add_rule(Comma, None, None, Precedence::None);
-    result.add_rule(Dot, None, None, Precedence::None);
+    result.add_rule(Dot, None, Some(Parser::parse_dot), Precedence::Call);
     result.add_rule(
       Minus,
       Some(Parser::parse_unary),
@@ -93,10 +98,10 @@ impl<'source> Default for Rules<'source> {
       Some(Parser::parse_binary),
       Precedence::Comparison,
     );
-    result.add_rule(Identifier, None, None, Precedence::None);
-    result.add_rule(String, None, None, Precedence::None);
+    result.add_rule(Identifier, Some(Parser::parse_variable), None, Precedence::None);
+    result.add_rule(String, Some(Parser::parse_string), None, Precedence::None);
     result.add_rule(Number, Some(Parser::parse_number), None, Precedence::None);
-    result.add_rule(And, None, None, Precedence::None);
+    result.add_rule(And, None, Some(Parser::parse_and), Precedence::And);
     result.add_rule(Class, None, None, Precedence::None);
     result.add_rule(Else, None, None, Precedence::None);
     result.add_rule(False, Some(Parser::parse_literal), None, Precedence::None);
@@ -104,11 +109,11 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Function, None, None, Precedence::None);
     result.add_rule(If, None, None, Precedence::None);
     result.add_rule(Nil, Some(Parser::parse_literal), None, Precedence::None);
-    result.add_rule(Or, None, None, Precedence::None);
+    result.add_rule(Or, None, Some(Parser::parse_or), Precedence::Or);
     result.add_rule(Print, None, None, Precedence::None);
     result.add_rule(Return, None, None, Precedence::None);
-    result.add_rule(Super, None, None, Precedence::None);
-    result.add_rule(This, None, None, Precedence::None);
+    result.add_rule(Super, Some(Parser::parse_super), None, Precedence::None);
+    result.add_rule(This, Some(Parser::parse_this), None, Precedence::None);
     result.add_rule(True, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(Var, None, None, Precedence::None);
     result.add_rule(While, None, None, Precedence::None);

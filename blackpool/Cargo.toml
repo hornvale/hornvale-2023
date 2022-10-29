@@ -21,6 +21,8 @@ path = "src/main.rs"
 
 [dependencies]
 assert_approx_eq = { workspace = true }
+cpu-time = { workspace = true }
+derivative = { workspace = true }
 derive_more = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }
@@ -28,3 +30,7 @@ pretty_env_logger = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }
 volmark = { workspace = true }
+
+[dev-dependencies]
+regex = "1.5.4"
+test-generator = "0.3.0"

@@ -21,22 +21,29 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
 ## Hornvale Subprojects
 I know these names are somewhat opaque, but my thinking is that I decouple the name from a concrete name like "astronomy" and gain some flexibility with the borders.
 
-- [🧬 Appleton](./appleton/README.md): Biological, taxonomy and related subjects.
-- [💻 Blackpool](./blackpool/README.md): Embedded programming language and domain-specific library.
-- [🏦 Casterlyrock](./casterlyrock/README.md): Economic system, merchants, resources, scarcity.
-- [🧍‍♂️ Dreadfort](./dreadfort/README.md): Anatomy and physiology, health, damage, poison, and regeneration.
-- [📜 Goldengrove](./goldengrove/README.md): Narrative/mythopoetic procedural content generation and tools.
-- [📖 Harlaw](./harlaw/README.md): The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
-- [🍯 Honeyholt](./honeyholt/README.md): Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
-- [🌿 Ivyhall](./ivyhall/README.md): Frontend and connective logic.  As little as possible.
-- [🪦 Kingsgrave](./kingsgrave/README.md): Combat system, some closely related topics.
-- [💬 Lemonwood](./lemonwood/README.md): Linguistics system permitting communication, bidirectional translation, etc.
-- [🧠 Pyke](./pyke/README.md): Psychology and Artificial Intelligence.
-- [👻 Ramsgate](./ramsgate/README.md): Supernatural and metaphysical concepts, the thermodynamics of spirit.
-- [💫 Starfall](./starfall/README.md): Astronomical sciences, from the galaxy to the moon.
-- [🌋 Stonedance](./stonedance/README.md): Geology and physical geography.
-- [🐛 Volmark](./volmark/README.md): Debugging and other macros.
-- [🧑‍🤝‍🧑 Weepingtown](./weepingtown/README.md): Social psychology and sociology, individual and group behavior.
+- [🧬 Appleton](./appleton/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
+- [💻 Blackpool](./blackpool/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
+- [🏦 Casterlyrock](./casterlyrock/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
+- [🧍‍♂️ Dreadfort](./dreadfort/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
+- [📜 Goldengrove](./goldengrove/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
+- [📖 Harlaw](./harlaw/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
+- [🍯 Honeyholt](./honeyholt/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
+- [🌿 Ivyhall](./ivyhall/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Frontend and connective logic.  As little as possible.
+- [🪦 Kingsgrave](./kingsgrave/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Combat system, some closely related topics.
+- [💬 Lemonwood](./lemonwood/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Linguistics system permitting communication, bidirectional translation, etc.
+- [🧠 Pyke](./pyke/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Psychology and Artificial Intelligence.
+- [👻 Ramsgate](./ramsgate/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Supernatural and metaphysical concepts, the thermodynamics of spirit.
+- [💫 Starfall](./starfall/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Astronomical sciences, from the galaxy to the moon.
+- [🌋 Stonedance](./stonedance/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Geology and physical geography.
+- [🐛 Volmark](./volmark/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Debugging and other macros.
+- [🧑‍🤝‍🧑 Weepingtown](./weepingtown/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
+
+**Status**: These indicators' meanings are subject to change as I progress.
+ - <sup><sub><sub>🔴</sub></sub></sup>: I haven't even started.
+ - <sup><sub><sub>🟠</sub></sub></sup>: I've laid the groundwork, or at least taken some initial steps.
+ - <sup><sub><sub>🟡</sub></sub></sup>: It's serving some purpose, though far from complete.
+ - <sup><sub><sub>🟢</sub></sub></sup>: Working, although I'll never really consider it "feature complete".
+ - <sup><sub><sub>🔵</sub></sub></sup>: A vast radiant beach and cool jeweled moon, etc.  Some evenings I just watch the test suites as they run.
 
 ## FAQ
 
@@ -44,7 +51,7 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 Because I'm an idiot, most likely.
 
 #### Is this singleplayer or multiplayer?
-Singleplayer.  A lot of this is informed by MUDs, but the nature of being multiplayer and easy to join forces some design decisions on MUDs that I don't think I want to follow.  For instance, I want to largely avoid grinding.  Incredible levels of grinding can be required in MUDs because of Massively Online players, and I don't think that farming XP or skills is the experience I want to create.
+Singleplayer.  A lot of this is informed by MUDs, but their nature (being multiplayer and easy to join) forces some design decisions on MUDs that I don't think I want to follow.  For instance, I want to largely avoid grinding.  Incredible levels of grinding can be required in MUDs because of Massively Online players, and I don't think that farming XP or skills is the experience I want to create.
 
 #### Are you really calling this _Hornvale_?  What does that even mean?
 I use castle names from George R. R. Martin's _A Song of Ice and Fire_ for project names.  Gives me something interesting and at least semi-evocative, but also narrows my choices so I don't spend all damned day bikeshedding the project name.

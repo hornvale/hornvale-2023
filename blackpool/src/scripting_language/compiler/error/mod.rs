@@ -1,13 +1,10 @@
-use crate::scripting_language::parser::error::Error as ParserError;
-use crate::scripting_language::scanner::error::Error as ScannerError;
-
-/// Errors encountered during the compilation process.
-#[derive(Clone, Debug, Error, PartialEq)]
+/// Errors encountered during the parsing process.
+#[derive(Clone, Debug, Eq, Error, PartialEq)]
 pub enum Error {
-  /// Parser error.
-  #[error("an error occurred in the parser ({0})")]
-  ParserError(#[from] ParserError),
-  /// Scanner error.
-  #[error("an error occurred in the scanner ({0})")]
-  ScannerError(#[from] ScannerError),
+  /// Unknown error.
+  #[error("an unknown error occurred")]
+  UnknownError,
+  /// Attempted to read the variable in its own initializer.
+  #[error("attempted to read variable in its own initializer")]
+  AttemptedToReadVariableInOwnInitializer,
 }

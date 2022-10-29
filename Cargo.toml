@@ -22,6 +22,8 @@ resolver="2"
 Inflector = "0.11.4"
 assert_approx_eq = "1.1.0"
 bitfield = "0.14.0"
+cpu-time = "1.0.0"
+derivative = "2.2.0"
 derive_more = "0.99.17"
 function_name = "0.3.0"
 log = { version = "0.4.17", features = ["max_level_trace", "release_max_level_warn"] }

@@ -5,7 +5,8 @@ use crate::scripting_language::value::Value;
 /// The `Constants` type.
 ///
 /// This represents a constant pool.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Display)]
+#[display(fmt = "constants: {:?}", constants)]
 pub struct Constants {
   pub constants: Vec<Value>,
 }
@@ -20,11 +21,7 @@ impl Constants {
     trace_var!(value);
     let index = self.constants.len();
     self.constants.push(value);
-    // Use an appropriate instruction for the size of the constant index.
-    let result = match index {
-      index if index <= u8::MAX.into() => Instruction::Constant(index as u8),
-      index => Instruction::LongConstant(index as u16),
-    };
+    let result = Instruction::Constant(index as u16);
     trace_var!(result);
     trace_exit!();
     Ok(result)

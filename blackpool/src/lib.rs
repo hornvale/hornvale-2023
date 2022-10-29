@@ -3,6 +3,9 @@
 #[allow(unused_imports)]
 #[macro_use]
 extern crate assert_approx_eq;
+extern crate cpu_time;
+#[macro_use]
+extern crate derivative;
 #[macro_use]
 extern crate derive_more;
 #[macro_use]

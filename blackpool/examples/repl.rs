@@ -10,7 +10,7 @@ use blackpool::*;
 fn main() {
   init_pretty_env_logger();
   trace_enter!();
-  let mut vm = VirtualMachine::default();
+  let mut vm = VirtualMachine::new();
   loop {
     print!("> ");
     stdout().flush().unwrap();

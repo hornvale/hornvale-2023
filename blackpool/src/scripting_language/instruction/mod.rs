@@ -6,10 +6,48 @@ use std::fmt::{Display, Formatter, Result as FmtResult, Write};
 /// An instruction consists of an opcode and its arguments.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Instruction {
-  /// Produce a particular constant (8-bit operand length).
-  Constant(u8),
   /// Produce a particular constant (16-bit operand length).
-  LongConstant(u16),
+  Constant(u16),
+  /// Define a particular global.
+  DefineGlobal(u16),
+  /// Set a particular global.
+  SetGlobal(u16),
+  /// Get a particular global.
+  GetGlobal(u16),
+  /// Set a particular local.
+  SetLocal(u16),
+  /// Get a particular local.
+  GetLocal(u16),
+  /// Close an upvalue.
+  CloseUpvalue,
+  /// Set a particular upvalue.
+  SetUpvalue(u16),
+  /// Get a particular upvalue.
+  GetUpvalue(u16),
+  /// Jump unconditionally.
+  Jump(u16),
+  /// Jump if the top value on the stack is falsey.
+  JumpIfFalse(u16),
+  /// Loop back to the offset indicated by the top value on the stack.
+  Loop(u16),
+  /// Reference to a closure.
+  Closure(u16),
+  /// A function call and the number of arguments.
+  Call(u8),
+  /// A class declaration and index of its name.
+  Class(u16),
+  /// A method declaration and index of its name.
+  Method(u16),
+  /// Get an instance property.
+  GetProperty(u16),
+  /// Set an instance property.
+  SetProperty(u16),
+  /// Invoke a method call with the specified name and argument count.
+  Invoke((u16, u8)),
+  /// Get the superclass of the instance.
+  GetSuper(u16),
+  /// Invoke a method call on the superclass with the specified argument count.
+  SuperInvoke((u16, u8)),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.
@@ -42,6 +80,12 @@ pub enum Instruction {
   GreaterThanOrEqual,
   /// LessThanOrEqual for the top two values of the stack.
   LessThanOrEqual,
+  /// Print the top value on the stack.
+  Print,
+  /// Pop the value off the stack.
+  Pop,
+  /// Inherit from a superclass.
+  Inherit,
 }
 
 impl Instruction {
@@ -61,7 +105,7 @@ impl Instruction {
     trace_var!(line);
     use Instruction::*;
     let result = match &self {
-      Constant(_) | LongConstant(_) => 1,
+      Constant(_) | DefineGlobal(_) | SetGlobal(_) | GetGlobal(_) => 1,
       _ => 0,
     };
     let line_string = match same_line {
@@ -104,7 +148,6 @@ pub mod test {
     assert_eq!(Instruction::Negate.to_string(), "Negate");
     assert_eq!(Instruction::Return.to_string(), "Return");
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");
-    assert_eq!(Instruction::LongConstant(5).to_string(), "LongConstant(5)");
     trace_exit!();
   }
 
