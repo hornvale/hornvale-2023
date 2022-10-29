@@ -151,11 +151,12 @@ impl VirtualMachine {
               self.push(value)?;
             },
             (_, _) => {
+              self.did_encounter_runtime_error("Operands must be two numbers or two strings.");
               return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
                 instruction,
                 b,
                 a,
-              )))
+              )));
             },
           }
         },
@@ -417,11 +418,12 @@ impl VirtualMachine {
     match (a, b) {
       (Number(a), Number(b)) => self.push(valuate(function(a, b)))?,
       (_, _) => {
+        self.did_encounter_runtime_error("Operands must be numbers.");
         return Err(Error::RuntimeError(RuntimeError::InappropriateOperands(
           instruction,
           b,
           a,
-        )))
+        )));
       },
     }
     trace_exit!();

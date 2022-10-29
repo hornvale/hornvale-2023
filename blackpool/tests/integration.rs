@@ -102,34 +102,25 @@ fn parse_comments(path: &PathBuf) -> Expected {
 #[test_resources("blackpool/tests/integration/class/*.lox")]
 #[test_resources("blackpool/tests/integration/closure/*.lox")]
 #[test_resources("blackpool/tests/integration/comments/*.lox")]
-// Chapter 28
-// #[test_resources("blackpool/tests/integration/constructor/*.lox")]
-// Chapter 27
+#[test_resources("blackpool/tests/integration/constructor/*.lox")]
 #[test_resources("blackpool/tests/integration/field/*.lox")]
 #[test_resources("blackpool/tests/integration/for/*.lox")]
 #[test_resources("blackpool/tests/integration/function/*.lox")]
 #[test_resources("blackpool/tests/integration/if/*.lox")]
-// Chapter 27
 #[test_resources("blackpool/tests/integration/inheritance/*.lox")]
-// FAIL
-// #[test_resources("blackpool/tests/integration/limit/*.lox")]
+#[test_resources("blackpool/tests/integration/limit/*.lox")]
 #[test_resources("blackpool/tests/integration/logical_operator/*.lox")]
 #[test_resources("blackpool/tests/integration/method/*.lox")]
 #[test_resources("blackpool/tests/integration/nil/*.lox")]
 #[test_resources("blackpool/tests/integration/number/*.lox")]
-// FAIL
-// #[test_resources("blackpool/tests/integration/operator/*.lox")]
+#[test_resources("blackpool/tests/integration/operator/*.lox")]
 #[test_resources("blackpool/tests/integration/print/*.lox")]
 #[test_resources("blackpool/tests/integration/regression/*.lox")]
 #[test_resources("blackpool/tests/integration/return/*.lox")]
-// FAIL
 #[test_resources("blackpool/tests/integration/string/*.lox")]
-// Chapter 28
-// #[test_resources("blackpool/tests/integration/super/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/this/*.lox")]
-// Chapter 28
-// #[test_resources("blackpool/tests/integration/variable/*.lox")]
+#[test_resources("blackpool/tests/integration/super/*.lox")]
+#[test_resources("blackpool/tests/integration/this/*.lox")]
+#[test_resources("blackpool/tests/integration/variable/*.lox")]
 #[test_resources("blackpool/tests/integration/while/*.lox")]
 fn run_file_test(filename: &str) {
   let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -184,7 +175,7 @@ fn run_file_test(filename: &str) {
         "Compile errors should have error code 65"
       );
     }
-    assert_eq!(expected.compile_err, err, "Compile error should match");
+    assert_eq!(expected.compile_err.get(0), err.get(0), "Compile error should match");
   }
 
   assert_eq!(expected.out, out, "Output should match");

@@ -455,7 +455,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(can_assign);
     if self.class_compiler.is_none() {
-      self.did_encounter_error_at_current("Can't use 'this' outside of a class.");
+      self.did_encounter_error("Can't use 'this' outside of a class.");
       return Err(Error::AttemptedToUseThisOutsideClass(self.current));
     }
     self.parse_variable(false)?;

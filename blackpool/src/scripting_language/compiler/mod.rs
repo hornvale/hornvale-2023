@@ -37,7 +37,10 @@ impl Compiler {
     trace_var!(function);
     let enclosing = None;
     trace_var!(enclosing);
-    let token = Token::synthesize(TokenType::EmptyString);
+    let token = match function_type {
+      FunctionType::Method | FunctionType::Initializer => Token::synthesize(TokenType::This),
+      _ => Token::synthesize(TokenType::EmptyString),
+    };
     trace_var!(token);
     locals.push(Local::new(token, 0));
     let result = Self {
