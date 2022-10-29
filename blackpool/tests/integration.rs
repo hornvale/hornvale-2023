@@ -169,6 +169,7 @@ fn run_file_test(filename: &str) {
     );
   } else {
     if !err.is_empty() {
+      println!("err: {:#?}", err);
       assert_eq!(
         output.status.code().unwrap(),
         65,

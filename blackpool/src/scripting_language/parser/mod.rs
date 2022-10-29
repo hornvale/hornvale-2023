@@ -112,7 +112,7 @@ impl<'source> Parser<'source> {
     self.emit_return()?;
     let result = match self.did_encounter_error {
       false => Ok(self.garbage_collector.alloc(self.compiler.function)),
-      true => Err(first_error.unwrap()),
+      true => Err(first_error.unwrap_or(Error::UnknownError)),
     };
     trace_var!(result);
     trace_exit!();
