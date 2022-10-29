@@ -22,7 +22,7 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
 I know these names are somewhat opaque, but my thinking is that I decouple the name from a concrete name like "astronomy" and gain some flexibility with the borders.
 
 - [🧬 Appleton](./appleton/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
-- [💻 Blackpool](./blackpool/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
+- [💻 Blackpool](./blackpool/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
 - [🏦 Casterlyrock](./casterlyrock/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
 - [🧍‍♂️ Dreadfort](./dreadfort/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
 - [📜 Goldengrove](./goldengrove/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
