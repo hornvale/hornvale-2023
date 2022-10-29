@@ -111,7 +111,6 @@ impl VirtualMachine {
       trace_var!(instruction);
       use Instruction::*;
       use Value::*;
-      debug_var!(self.stack);
       debug_var!(self.get_current_frame().instruction_pointer);
       debug_var!(instruction);
       match instruction {
@@ -130,6 +129,7 @@ impl VirtualMachine {
               self.push(Value::Number(answer))?;
             },
             _ => {
+              self.did_encounter_runtime_error("Operand must be a number.");
               return Err(Error::RuntimeError(RuntimeError::InappropriateOperand(Negate, pop)));
             },
           }
@@ -379,6 +379,24 @@ impl VirtualMachine {
           } else {
             self.did_encounter_runtime_error("Superclass must be a class.");
             return Err(Error::RuntimeError(RuntimeError::AttemptedToSubclassNonClass));
+          }
+        },
+        GetSuper(index) => {
+          let method_name = self.get_current_chunk().read_string(index);
+          if let Value::Class(superclass) = self.pop()? {
+            self.bind_method(superclass, method_name)?;
+          } else {
+            self.did_encounter_runtime_error("Could not find a superclass");
+            return Err(Error::RuntimeError(RuntimeError::CouldNotFindRequestedSuperclass));
+          }
+        },
+        SuperInvoke((index, argument_count)) => {
+          let method_name = self.get_current_chunk().read_string(index);
+          if let Value::Class(class) = self.pop()? {
+            self.invoke_from_class(class, method_name, argument_count as usize)?;
+          } else {
+            self.did_encounter_runtime_error("super invoke with no class");
+            return Err(Error::RuntimeError(RuntimeError::CouldNotFindRequestedSuperclass));
           }
         },
       }
@@ -743,8 +761,7 @@ impl VirtualMachine {
       }
     } else {
       let name = self.garbage_collector.deref(name_reference);
-      let message = format!("Undefined property '{}'.", name);
-      self.did_encounter_runtime_error(&message);
+      self.did_encounter_runtime_error(&format!("Undefined property '{}'.", name));
       return Err(Error::RuntimeError(RuntimeError::CalledNonexistentMethod));
     }
     trace_exit!();

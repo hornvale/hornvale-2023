@@ -44,6 +44,10 @@ pub enum Instruction {
   SetProperty(u16),
   /// Invoke a method call with the specified name and argument count.
   Invoke((u16, u8)),
+  /// Get the superclass of the instance.
+  GetSuper(u16),
+  /// Invoke a method call on the superclass with the specified argument count.
+  SuperInvoke((u16, u8)),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.

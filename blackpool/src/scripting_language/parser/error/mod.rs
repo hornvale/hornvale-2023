@@ -51,6 +51,12 @@ pub enum Error {
   /// Attempted to subclass itself.
   #[error("attempted to make a class subclass itself.")]
   AttemptedToDeclareClassAsASubclassOfItself,
+  /// Attempted to use `super` outide of a class context.
+  #[error("attempted to use `super` outside of a class context.")]
+  AttemptedToUseSuperOutsideClass,
+  /// Attempted to use `super` in a base class.
+  #[error("attempted to use `super` in a base class.")]
+  AttemptedToUseSuperInBaseClass,
   /// Compiler error.
   #[error("an error occurred in the compiler ({0})")]
   CompilerError(#[from] CompilerError),

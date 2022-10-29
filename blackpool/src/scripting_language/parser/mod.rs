@@ -196,7 +196,6 @@ impl<'source> Parser<'source> {
     self.declare_variable()?;
     self.emit_instruction(Instruction::Class(name_constant))?;
     self.define_variable(name_constant)?;
-    self.did_name_variable(class_name, false)?;
     let old_class_compiler = self.class_compiler.take();
     let new_class_compiler = ClassCompiler::new(old_class_compiler);
     self.class_compiler.replace(new_class_compiler);
@@ -214,6 +213,7 @@ impl<'source> Parser<'source> {
       self.emit_instruction(Instruction::Inherit)?;
       self.class_compiler.as_mut().unwrap().has_superclass = true;
     }
+    self.did_name_variable(class_name, false)?;
     self.consume(TokenType::LeftBrace, "Expect '{' before class body.")?;
     while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
       self.parse_method_declaration()?;
@@ -230,50 +230,6 @@ impl<'source> Parser<'source> {
     trace_exit!();
     Ok(())
   }
-  /*
-    fn class_declaration(&mut self) {
-      self.consume(TokenType::Identifier, "Expect class name.");
-      let class_name = self.previous;
-      let name_constant = self.identifier_constant(class_name);
-      self.declare_variable();
-      self.emit(Instruction::Class(name_constant));
-      self.define_variable(name_constant);
-
-      let old_class_compiler = self.class_compiler.take();
-      let new_class_compiler = ClassCompiler::new(old_class_compiler);
-      self.class_compiler.replace(new_class_compiler);
-
-      if self.matches(TokenType::Less) {
-          self.consume(TokenType::Identifier, "Expect superclass name.");
-          self.variable(false);
-          if class_name.lexeme == self.previous.lexeme {
-              self.error("A class can't inherit from itself.");
-          }
-          self.begin_scope();
-          self.add_local(Token::synthetic("super"));
-          self.define_variable(0);
-          self.named_variable(class_name, false);
-          self.emit(Instruction::Inherit);
-          self.class_compiler.as_mut().unwrap().has_superclass = true;
-      }
-
-      self.named_variable(class_name, false);
-      self.consume(TokenType::LeftBrace, "Expect '{' before class body.");
-      while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
-          self.method();
-      }
-      self.consume(TokenType::RightBrace, "Expect '}' after class body.");
-      self.emit(Instruction::Pop);
-      if self.class_compiler.as_ref().unwrap().has_superclass {
-          self.end_scope();
-      }
-
-      match self.class_compiler.take() {
-          Some(c) => self.class_compiler = c.enclosing,
-          None => self.class_compiler = None,
-      }
-  }
-  */
 
   /// Method declaration.
   #[named]
@@ -437,6 +393,36 @@ impl<'source> Parser<'source> {
       self.parse_declaration()?;
     }
     self.consume(TokenType::RightBrace, "expected '}' after block")?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Parse `super`.
+  #[named]
+  pub fn parse_super(&mut self, can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(can_assign);
+    if let Some(current_class) = self.class_compiler.as_ref() {
+      if !current_class.has_superclass {
+        self.did_encounter_error("Can't use 'super' in a class with no superclass.");
+        return Err(Error::AttemptedToUseSuperInBaseClass);
+      }
+    } else {
+      self.did_encounter_error("Can't use 'super' outside of a class.");
+      return Err(Error::AttemptedToUseSuperOutsideClass);
+    }
+    self.consume(TokenType::Dot, "Expect '.' after 'super'.")?;
+    self.consume(TokenType::Identifier, "Expect superclass method name.")?;
+    let name = self.get_identifier_constant(self.previous.unwrap())?;
+    self.did_name_variable(Token::synthesize("this"), false)?;
+    if self.r#match(TokenType::LeftParenthesis)? {
+      let argument_count = self.parse_argument_list()?;
+      self.did_name_variable(Token::synthesize("super"), false)?;
+      self.emit_instruction(Instruction::SuperInvoke((name, argument_count)))?;
+    } else {
+      self.did_name_variable(Token::synthesize("super"), false)?;
+      self.emit_instruction(Instruction::GetSuper(name))?;
+    }
     trace_exit!();
     Ok(())
   }

@@ -49,6 +49,9 @@ pub enum RuntimeError {
   /// Tried to subclass something that wasn't a class.
   #[error("attempted to subclass something that wasn't a class")]
   AttemptedToSubclassNonClass,
+  /// Called `super` but couldn't find a superclass.
+  #[error("could not find superclass")]
+  CouldNotFindRequestedSuperclass,
   /// Tried to access an undefined property.
   #[error("attempted to access undefined proeprty '{0}'")]
   UndefinedProperty(String),

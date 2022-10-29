@@ -112,7 +112,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Or, None, Some(Parser::parse_or), Precedence::Or);
     result.add_rule(Print, None, None, Precedence::None);
     result.add_rule(Return, None, None, Precedence::None);
-    result.add_rule(Super, None, None, Precedence::None);
+    result.add_rule(Super, Some(Parser::parse_super), None, Precedence::None);
     result.add_rule(This, Some(Parser::parse_this), None, Precedence::None);
     result.add_rule(True, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(Var, None, None, Precedence::None);
