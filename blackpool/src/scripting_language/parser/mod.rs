@@ -39,13 +39,13 @@ pub struct Parser<'source> {
   /// The garbage collector.
   pub garbage_collector: &'source mut GarbageCollector,
   /// The compiler for the current scope.
-  pub compiler: Box<Compiler>,
+  pub compiler: Box<Compiler<'source>>,
   /// The class compiler.
   pub class_compiler: Option<Box<ClassCompiler>>,
   /// The current token.
-  pub current: Option<Token>,
+  pub current: Option<Token<'source>>,
   /// The last token processed.
-  pub previous: Option<Token>,
+  pub previous: Option<Token<'source>>,
   /// The rules!
   pub rules: Rules<'source>,
   /// Whether we should suppress new errors ("Panic Mode").
@@ -126,8 +126,8 @@ impl<'source> Parser<'source> {
     self.previous = self.current;
     loop {
       self.current = Some(self.scanner.scan_token()?);
-      if let TokenType::ScannerError(message) = self.current.unwrap().r#type {
-        self.did_encounter_error_at_current(message);
+      if let TokenType::Error = self.current.unwrap().r#type {
+        self.did_encounter_error_at_current(self.current.unwrap().lexeme);
       } else {
         break;
       }
@@ -203,12 +203,12 @@ impl<'source> Parser<'source> {
     if self.r#match(TokenType::LessThan)? {
       self.consume(TokenType::Identifier, "Expect superclass name.")?;
       self.parse_variable(false)?;
-      if class_name.get_lexeme(self.scanner.source) == self.previous.unwrap().get_lexeme(self.scanner.source) {
+      if class_name.lexeme == self.previous.unwrap().lexeme {
         self.did_encounter_error("A class can't inherit from itself.");
         return Err(Error::AttemptedToDeclareClassAsASubclassOfItself);
       }
       self.begin_scope()?;
-      self.add_local(Token::synthesize(TokenType::Super))?;
+      self.add_local(Token::synthesize("super"))?;
       self.define_variable(0)?;
       self.did_name_variable(class_name, false)?;
       self.emit_instruction(Instruction::Inherit)?;
@@ -218,11 +218,11 @@ impl<'source> Parser<'source> {
     while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
       self.parse_method_declaration()?;
     }
+    self.consume(TokenType::RightBrace, "Expect '}' after class body.")?;
     self.emit_instruction(Instruction::Pop)?;
     if self.class_compiler.as_ref().unwrap().has_superclass {
       self.end_scope()?;
     }
-    self.consume(TokenType::RightBrace, "Expect '}' after class body.")?;
     match self.class_compiler.take() {
       Some(class_compiler) => self.class_compiler = class_compiler.enclosing,
       None => self.class_compiler = None,
@@ -230,6 +230,50 @@ impl<'source> Parser<'source> {
     trace_exit!();
     Ok(())
   }
+  /*
+    fn class_declaration(&mut self) {
+      self.consume(TokenType::Identifier, "Expect class name.");
+      let class_name = self.previous;
+      let name_constant = self.identifier_constant(class_name);
+      self.declare_variable();
+      self.emit(Instruction::Class(name_constant));
+      self.define_variable(name_constant);
+
+      let old_class_compiler = self.class_compiler.take();
+      let new_class_compiler = ClassCompiler::new(old_class_compiler);
+      self.class_compiler.replace(new_class_compiler);
+
+      if self.matches(TokenType::Less) {
+          self.consume(TokenType::Identifier, "Expect superclass name.");
+          self.variable(false);
+          if class_name.lexeme == self.previous.lexeme {
+              self.error("A class can't inherit from itself.");
+          }
+          self.begin_scope();
+          self.add_local(Token::synthetic("super"));
+          self.define_variable(0);
+          self.named_variable(class_name, false);
+          self.emit(Instruction::Inherit);
+          self.class_compiler.as_mut().unwrap().has_superclass = true;
+      }
+
+      self.named_variable(class_name, false);
+      self.consume(TokenType::LeftBrace, "Expect '{' before class body.");
+      while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
+          self.method();
+      }
+      self.consume(TokenType::RightBrace, "Expect '}' after class body.");
+      self.emit(Instruction::Pop);
+      if self.class_compiler.as_ref().unwrap().has_superclass {
+          self.end_scope();
+      }
+
+      match self.class_compiler.take() {
+          Some(c) => self.class_compiler = c.enclosing,
+          None => self.class_compiler = None,
+      }
+  }
+  */
 
   /// Method declaration.
   #[named]
@@ -238,7 +282,7 @@ impl<'source> Parser<'source> {
     self.consume(TokenType::Identifier, "Expect method name.")?;
     let constant = self.get_identifier_constant(self.previous.unwrap())?;
     trace_var!(constant);
-    let function_type = if self.previous.unwrap().get_lexeme(self.scanner.source) == "init" {
+    let function_type = if self.previous.unwrap().lexeme == "init" {
       FunctionType::Initializer
     } else {
       FunctionType::Method
@@ -325,7 +369,7 @@ impl<'source> Parser<'source> {
         self.compiler.function.arity += 1;
         if self.compiler.function.arity > 255 {
           self.did_encounter_error_at_current("Can't have more than 255 parameters.");
-          return Err(Error::FunctionArityExceededLimit(self.current));
+          return Err(Error::FunctionArityExceededLimit);
         }
         let parameter = self.parse_variable_identifier("expected a parameter identifier")?;
         self.define_variable(parameter)?;
@@ -375,16 +419,11 @@ impl<'source> Parser<'source> {
     self.did_encounter_error = true;
     self.suppress_new_errors = true;
     eprint!("[line {}] Error", token.line_number);
-    let start = token.start;
-    trace_var!(start);
-    let end = start + token.length;
-    trace_var!(end);
-    let string = &self.scanner.source[start..end];
     use TokenType::*;
     match token.r#type {
-      ScannerError(_) => (),
+      Error => (),
       Eof => eprint!(" at end"),
-      _ => eprint!(" at '{}'", string),
+      _ => eprint!(" at '{}'", token.lexeme),
     };
     eprintln!(": {}", message);
     trace_exit!();
@@ -429,7 +468,7 @@ impl<'source> Parser<'source> {
     trace_var!(can_assign);
     if self.class_compiler.is_none() {
       self.did_encounter_error("Can't use 'this' outside of a class.");
-      return Err(Error::AttemptedToUseThisOutsideClass(self.current));
+      return Err(Error::AttemptedToUseThisOutsideClass);
     }
     self.parse_variable(false)?;
     trace_exit!();
@@ -596,7 +635,7 @@ impl<'source> Parser<'source> {
         self.parse_expression()?;
         if count == 255 {
           self.did_encounter_error("Can't have more than 255 arguments.");
-          return Err(Error::FunctionCallArgumentsExceededLimit(self.current));
+          return Err(Error::FunctionCallArgumentsExceededLimit);
         }
         count += 1;
         if !self.r#match(TokenType::Comma)? {
@@ -690,11 +729,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     let previous = self.previous.unwrap();
     trace_var!(previous);
-    let start = previous.start;
-    trace_var!(start);
-    let end = start + previous.length;
-    trace_var!(end);
-    let string = &self.scanner.source[start..end];
+    let string = previous.lexeme;
     trace_var!(string);
     let value = string.parse::<f64>()?;
     trace_var!(value);
@@ -710,11 +745,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     let previous = self.previous.unwrap();
     trace_var!(previous);
-    let start = previous.start + 1;
-    trace_var!(start);
-    let end = start + previous.length - 2;
-    trace_var!(end);
-    let string = &self.scanner.source[start..end];
+    let string = &previous.lexeme[1..(previous.lexeme.len() - 1)];
     trace_var!(string);
     let value = self.garbage_collector.intern(string.to_owned());
     trace_var!(value);
@@ -728,11 +759,7 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn intern_token(&mut self, token: &Token) -> Result<Reference<String>, Error> {
     trace_enter!();
-    let start = token.start;
-    trace_var!(start);
-    let end = start + token.length;
-    trace_var!(end);
-    let string = &self.scanner.source[start..end];
+    let string = token.lexeme;
     trace_var!(string);
     let result = self.garbage_collector.intern(string.to_owned());
     trace_var!(result);
@@ -885,9 +912,9 @@ impl<'source> Parser<'source> {
       return Ok(());
     }
     let token = self.previous.unwrap();
-    if self.compiler.has_local(self.scanner.source, &token) {
+    if self.compiler.has_local(&token) {
       self.did_encounter_error("Already variable with this name in this scope.");
-      return Err(Error::AttemptedToRedeclareVariable(Some(token)));
+      return Err(Error::AttemptedToRedeclareVariable);
     }
     self.add_local(token)?;
     trace_exit!();
@@ -896,7 +923,7 @@ impl<'source> Parser<'source> {
 
   /// Add a local variable.
   #[named]
-  pub fn add_local(&mut self, token: Token) -> Result<(), Error> {
+  pub fn add_local(&mut self, token: Token<'source>) -> Result<(), Error> {
     trace_enter!();
     trace_var!(token);
     self.compiler.locals.push(Local::new(token, -1));
@@ -975,7 +1002,7 @@ impl<'source> Parser<'source> {
         compiler.function
       },
       None => {
-        return Err(Error::TriedToPopTopCompiler(self.current));
+        return Err(Error::TriedToPopTopCompiler);
       },
     };
     trace_var!(result);
@@ -1101,7 +1128,7 @@ impl<'source> Parser<'source> {
     trace_var!(previous_rule);
     if previous_rule.prefix.is_none() {
       self.did_encounter_error("Expect expression.");
-      return Err(Error::ExpectedExpression(self.previous));
+      return Err(Error::ExpectedExpression);
     }
     let prefix = previous_rule.prefix.unwrap();
     let can_assign = precedence <= Precedence::Assignment;
@@ -1114,7 +1141,7 @@ impl<'source> Parser<'source> {
     }
     if can_assign && self.r#match(TokenType::Equal)? {
       self.did_encounter_error("Invalid assignment target.");
-      return Err(Error::InvalidAssignmentTarget(self.previous));
+      return Err(Error::InvalidAssignmentTarget);
     }
     trace_exit!();
     Ok(())
@@ -1175,9 +1202,7 @@ impl<'source> Parser<'source> {
   pub fn resolve_local(&mut self, token: Token) -> Option<u16> {
     trace_enter!();
     trace_var!(token);
-    let result = self
-      .compiler
-      .resolve_local(self.scanner.source, token, &mut self.resolver_errors);
+    let result = self.compiler.resolve_local(token, &mut self.resolver_errors);
     while let Some(error) = self.resolver_errors.pop() {
       self.did_encounter_error(error);
     }
@@ -1189,9 +1214,7 @@ impl<'source> Parser<'source> {
   pub fn resolve_upvalue(&mut self, token: Token) -> Option<u16> {
     trace_enter!();
     trace_var!(token);
-    let result = self
-      .compiler
-      .resolve_upvalue(self.scanner.source, token, &mut self.resolver_errors);
+    let result = self.compiler.resolve_upvalue(token, &mut self.resolver_errors);
     while let Some(error) = self.resolver_errors.pop() {
       self.did_encounter_error(error);
     }

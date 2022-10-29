@@ -4,58 +4,33 @@ use r#type::Type;
 
 /// The `Token` type.
 #[derive(Clone, Copy, Debug, Display, Eq, Error, Hash, PartialEq)]
-#[display(
-  fmt = "type: {}, start: {}, length: {}, line: {}",
-  r#type,
-  start,
-  length,
-  line_number
-)]
-pub struct Token {
+#[display(fmt = "type: {}, lexeme: {}", r#type, lexeme)]
+pub struct Token<'source> {
   /// The type of this token.
   pub r#type: Type,
-  /// The start index.
-  pub start: usize,
-  /// The length of the token.
-  pub length: usize,
+  /// The lexeme.
+  pub lexeme: &'source str,
   /// The line number.
   pub line_number: usize,
 }
 
-impl Token {
+impl<'source> Token<'source> {
   /// Constructor.
   #[named]
-  pub fn synthesize(r#type: Type) -> Self {
+  pub fn synthesize(lexeme: &'source str) -> Self {
     trace_enter!();
+    trace_var!(lexeme);
+    let r#type = Type::Error;
     trace_var!(r#type);
-    let start = 0;
-    trace_var!(start);
-    let length = 0;
-    trace_var!(length);
     let line_number = 0;
     trace_var!(line_number);
-    let result = Token {
+    let result = Self {
       r#type,
-      start,
-      length,
+      lexeme,
       line_number,
     };
     trace_var!(result);
     trace_exit!();
     result
-  }
-
-  /// Get lexeme.
-  #[named]
-  pub fn get_lexeme(&self, string: &str) -> String {
-    trace_enter!();
-    trace_var!(string);
-    let start = self.start;
-    trace_var!(start);
-    let end = start + self.length;
-    trace_var!(end);
-    let result = &string[start..end];
-    trace_exit!();
-    result.to_string()
   }
 }
