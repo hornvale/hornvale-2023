@@ -9,4 +9,8 @@ pub enum FunctionType {
   NativeFunction,
   /// A script!
   Script,
+  /// Class methods.
+  Method,
+  /// Class initializers.
+  Initializer,
 }

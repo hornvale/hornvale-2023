@@ -46,6 +46,12 @@ pub enum Error {
   /// Tried to exit into the surrounding context of an unparented compiler.
   #[error("attempted to pop a compiler without an enclosing copiler {0:#?}")]
   TriedToPopTopCompiler(Option<Token>),
+  /// Attempted to use `this` outside of a class context.
+  #[error("attempted to use `this` outside of a class context.")]
+  AttemptedToUseThisOutsideClass(Option<Token>),
+  /// Attempted to subclass itself.
+  #[error("attempted to make a class subclass itself.")]
+  AttemptedToDeclareClassAsASubclassOfItself,
   /// Compiler error.
   #[error("an error occurred in the compiler ({0})")]
   CompilerError(#[from] CompilerError),

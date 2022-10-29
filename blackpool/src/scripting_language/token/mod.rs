@@ -44,4 +44,18 @@ impl Token {
     trace_exit!();
     result
   }
+
+  /// Get lexeme.
+  #[named]
+  pub fn get_lexeme(&self, string: &str) -> String {
+    trace_enter!();
+    trace_var!(string);
+    let start = self.start;
+    trace_var!(start);
+    let end = start + self.length;
+    trace_var!(end);
+    let result = &string[start..end];
+    trace_exit!();
+    result.to_string()
+  }
 }

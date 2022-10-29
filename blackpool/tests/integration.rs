@@ -95,50 +95,40 @@ fn parse_comments(path: &PathBuf) -> Expected {
   expected
 }
 
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/assignment/*.lox")]
+#[test_resources("blackpool/tests/integration/assignment/*.lox")]
 #[test_resources("blackpool/tests/integration/block/*.lox")]
 #[test_resources("blackpool/tests/integration/bool/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/call/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/class/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/closure/*.lox")]
+#[test_resources("blackpool/tests/integration/call/*.lox")]
+#[test_resources("blackpool/tests/integration/class/*.lox")]
+#[test_resources("blackpool/tests/integration/closure/*.lox")]
 #[test_resources("blackpool/tests/integration/comments/*.lox")]
-// Chapter 27
+// Chapter 28
 // #[test_resources("blackpool/tests/integration/constructor/*.lox")]
 // Chapter 27
-// #[test_resources("blackpool/tests/integration/field/*.lox")]
-// FAIL (two error messages, mebbe synchronization?)
-// #[test_resources("blackpool/tests/integration/for/*.lox")]
-// FAIL
-// #[test_resources("blackpool/tests/integration/function/*.lox")]
+#[test_resources("blackpool/tests/integration/field/*.lox")]
+#[test_resources("blackpool/tests/integration/for/*.lox")]
+#[test_resources("blackpool/tests/integration/function/*.lox")]
 #[test_resources("blackpool/tests/integration/if/*.lox")]
 // Chapter 27
-// #[test_resources("blackpool/tests/integration/inheritance/*.lox")]
+#[test_resources("blackpool/tests/integration/inheritance/*.lox")]
 // FAIL
 // #[test_resources("blackpool/tests/integration/limit/*.lox")]
 #[test_resources("blackpool/tests/integration/logical_operator/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/method/*.lox")]
+#[test_resources("blackpool/tests/integration/method/*.lox")]
 #[test_resources("blackpool/tests/integration/nil/*.lox")]
-// FAIL
-// #[test_resources("blackpool/tests/integration/number/*.lox")]
+#[test_resources("blackpool/tests/integration/number/*.lox")]
 // FAIL
 // #[test_resources("blackpool/tests/integration/operator/*.lox")]
 #[test_resources("blackpool/tests/integration/print/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/regression/*.lox")]
-// Chapter 27
-// #[test_resources("blackpool/tests/integration/return/*.lox")]
+#[test_resources("blackpool/tests/integration/regression/*.lox")]
+#[test_resources("blackpool/tests/integration/return/*.lox")]
 // FAIL
-// #[test_resources("blackpool/tests/integration/string/*.lox")]
-// Chapter 27
+#[test_resources("blackpool/tests/integration/string/*.lox")]
+// Chapter 28
 // #[test_resources("blackpool/tests/integration/super/*.lox")]
 // Chapter 27
 // #[test_resources("blackpool/tests/integration/this/*.lox")]
-// FAIL
+// Chapter 28
 // #[test_resources("blackpool/tests/integration/variable/*.lox")]
 #[test_resources("blackpool/tests/integration/while/*.lox")]
 fn run_file_test(filename: &str) {

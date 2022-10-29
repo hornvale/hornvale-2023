@@ -7,7 +7,6 @@
 ///! I learned a lot from reading his code and his blog.  A lot about garbage
 ///! collection. A lot about Rust.  And a lot about love.
 pub mod collector;
-pub mod object;
 pub mod object_header;
 pub mod reference;
 pub mod trace;

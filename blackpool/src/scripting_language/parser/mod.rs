@@ -1,5 +1,6 @@
 use std::mem::replace;
 
+use crate::scripting_language::class_compiler::ClassCompiler;
 use crate::scripting_language::compiler::function_type::FunctionType;
 use crate::scripting_language::compiler::Compiler;
 use crate::scripting_language::function::Function;
@@ -39,6 +40,8 @@ pub struct Parser<'source> {
   pub garbage_collector: &'source mut GarbageCollector,
   /// The compiler for the current scope.
   pub compiler: Box<Compiler>,
+  /// The class compiler.
+  pub class_compiler: Option<Box<ClassCompiler>>,
   /// The current token.
   pub current: Option<Token>,
   /// The last token processed.
@@ -76,6 +79,8 @@ impl<'source> Parser<'source> {
     trace_var!(did_encounter_error);
     let resolver_errors = Vec::new();
     trace_var!(resolver_errors);
+    let class_compiler = None;
+    trace_var!(class_compiler);
     let result = Self {
       scanner,
       garbage_collector,
@@ -86,6 +91,7 @@ impl<'source> Parser<'source> {
       suppress_new_errors,
       did_encounter_error,
       resolver_errors,
+      class_compiler,
     };
     trace_var!(result);
     trace_exit!();
@@ -190,7 +196,9 @@ impl<'source> Parser<'source> {
   #[named]
   pub fn parse_declaration(&mut self) -> Result<(), Error> {
     trace_enter!();
-    if self.r#match(TokenType::Function)? {
+    if self.r#match(TokenType::Class)? {
+      self.parse_class_declaration()?;
+    } else if self.r#match(TokenType::Function)? {
       self.parse_function_declaration()?;
     } else if self.r#match(TokenType::Var)? {
       self.parse_variable_declaration()?;
@@ -200,6 +208,71 @@ impl<'source> Parser<'source> {
     if self.suppress_new_errors {
       self.synchronize()?;
     }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Class declaration.
+  #[named]
+  pub fn parse_class_declaration(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    self.consume(TokenType::Identifier, "Expect class name.")?;
+    let class_name = self.previous.unwrap();
+    trace_var!(class_name);
+    let name_constant = self.get_identifier_constant(class_name)?;
+    trace_var!(name_constant);
+    self.declare_variable()?;
+    self.emit_instruction(Instruction::Class(name_constant))?;
+    self.define_variable(name_constant)?;
+    self.did_name_variable(class_name, false)?;
+    let old_class_compiler = self.class_compiler.take();
+    let new_class_compiler = ClassCompiler::new(old_class_compiler);
+    self.class_compiler.replace(new_class_compiler);
+    if self.r#match(TokenType::LessThan)? {
+      self.consume(TokenType::Identifier, "Expect superclass name.")?;
+      self.parse_variable(false)?;
+      if class_name.get_lexeme(self.scanner.source) == self.previous.unwrap().get_lexeme(self.scanner.source) {
+        self.did_encounter_error("A class can't inherit from itself.");
+        return Err(Error::AttemptedToDeclareClassAsASubclassOfItself);
+      }
+      self.begin_scope()?;
+      self.add_local(Token::synthesize(TokenType::Super))?;
+      self.define_variable(0)?;
+      self.did_name_variable(class_name, false)?;
+      self.emit_instruction(Instruction::Inherit)?;
+      self.class_compiler.as_mut().unwrap().has_superclass = true;
+    }
+    self.consume(TokenType::LeftBrace, "Expect '{' before class body.")?;
+    while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
+      self.parse_method_declaration()?;
+    }
+    self.emit_instruction(Instruction::Pop)?;
+    if self.class_compiler.as_ref().unwrap().has_superclass {
+      self.end_scope()?;
+    }
+    self.consume(TokenType::RightBrace, "Expect '}' after class body.")?;
+    match self.class_compiler.take() {
+      Some(class_compiler) => self.class_compiler = class_compiler.enclosing,
+      None => self.class_compiler = None,
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Method declaration.
+  #[named]
+  pub fn parse_method_declaration(&mut self) -> Result<(), Error> {
+    trace_enter!();
+    self.consume(TokenType::Identifier, "Expect method name.")?;
+    let constant = self.get_identifier_constant(self.previous.unwrap())?;
+    trace_var!(constant);
+    let function_type = if self.previous.unwrap().get_lexeme(self.scanner.source) == "init" {
+      FunctionType::Initializer
+    } else {
+      FunctionType::Method
+    };
+    self.parse_function(function_type)?;
+    self.emit_instruction(Instruction::Method(constant))?;
     trace_exit!();
     Ok(())
   }
@@ -352,6 +425,40 @@ impl<'source> Parser<'source> {
       self.parse_declaration()?;
     }
     self.consume(TokenType::RightBrace, "expected '}' after block")?;
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Dots for method calls, etc.
+  #[named]
+  pub fn parse_dot(&mut self, can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(can_assign);
+    self.consume(TokenType::Identifier, "Expect property name after '.'.")?;
+    let name = self.get_identifier_constant(self.previous.unwrap())?;
+    if can_assign && self.r#match(TokenType::Equal)? {
+      self.parse_expression()?;
+      self.emit_instruction(Instruction::SetProperty(name))?;
+    } else if self.r#match(TokenType::LeftParenthesis)? {
+      let argument_count = self.parse_argument_list()?;
+      self.emit_instruction(Instruction::Invoke((name, argument_count)))?;
+    } else {
+      self.emit_instruction(Instruction::GetProperty(name))?;
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Parse `this`.
+  #[named]
+  pub fn parse_this(&mut self, can_assign: bool) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(can_assign);
+    if self.class_compiler.is_none() {
+      self.did_encounter_error_at_current("Can't use 'this' outside of a class.");
+      return Err(Error::AttemptedToUseThisOutsideClass(self.current));
+    }
+    self.parse_variable(false)?;
     trace_exit!();
     Ok(())
   }

@@ -69,7 +69,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(LeftBrace, None, None, Precedence::None);
     result.add_rule(RightBrace, None, None, Precedence::None);
     result.add_rule(Comma, None, None, Precedence::None);
-    result.add_rule(Dot, None, None, Precedence::None);
+    result.add_rule(Dot, None, Some(Parser::parse_dot), Precedence::Call);
     result.add_rule(
       Minus,
       Some(Parser::parse_unary),
@@ -113,7 +113,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Print, None, None, Precedence::None);
     result.add_rule(Return, None, None, Precedence::None);
     result.add_rule(Super, None, None, Precedence::None);
-    result.add_rule(This, None, None, Precedence::None);
+    result.add_rule(This, Some(Parser::parse_this), None, Precedence::None);
     result.add_rule(True, Some(Parser::parse_literal), None, Precedence::None);
     result.add_rule(Var, None, None, Precedence::None);
     result.add_rule(While, None, None, Precedence::None);

@@ -2,13 +2,16 @@ use cpu_time::ProcessTime;
 use std::collections::hash_map::Entry;
 use std::fmt::Debug;
 
+use crate::scripting_language::bound_method::BoundMethod;
 use crate::scripting_language::chunk::Chunk;
+use crate::scripting_language::class::Class as ClassStruct;
 use crate::scripting_language::closure::upvalue::Upvalue;
 use crate::scripting_language::closure::Closure as ClosureStruct;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::formatter::Formatter as TraceFormatter;
 use crate::scripting_language::garbage_collection::trace::Trace;
+use crate::scripting_language::instance::Instance;
 use crate::scripting_language::instruction::Instruction;
 use crate::scripting_language::interpreter::Interpreter;
 use crate::scripting_language::native_function::NativeFunction;
@@ -237,6 +240,7 @@ impl VirtualMachine {
             Some(&value) => self.push(value)?,
             None => {
               let identifier = self.garbage_collector.deref(identifier);
+              self.did_encounter_runtime_error(&format!("Undefined variable '{}'.", identifier));
               return Err(Error::RuntimeError(RuntimeError::UndefinedVariable(
                 identifier.to_string(),
               )));
@@ -249,6 +253,8 @@ impl VirtualMachine {
           if let Entry::Occupied(mut entry) = self.globals.entry(identifier) {
             entry.insert(value);
           } else {
+            let global_name = self.garbage_collector.deref(identifier);
+            self.did_encounter_runtime_error(&format!("Undefined variable '{}'.", global_name));
             return Err(Error::RuntimeError(RuntimeError::UndefinedVariable(
               identifier.to_string(),
             )));
@@ -324,6 +330,69 @@ impl VirtualMachine {
         },
         Call(argument_count) => {
           self.call_value(argument_count as usize)?;
+        },
+        Instruction::Class(index) => {
+          let class_name = self.get_current_chunk().read_string(index);
+          trace_var!(class_name);
+          let class_object = ClassStruct::new(class_name);
+          trace_var!(class_object);
+          let class_reference = self.alloc(class_object);
+          trace_var!(class_reference);
+          self.push(Value::Class(class_reference))?;
+        },
+        Method(index) => {
+          let method_name = self.get_current_chunk().read_string(index);
+          self.define_method(method_name)?;
+        },
+        Invoke((name_index, argument_count)) => {
+          let name = self.get_current_chunk().read_string(name_index);
+          self.invoke(name, argument_count as usize)?;
+        },
+        SetProperty(index) => {
+          if let Value::Instance(instance_reference) = self.peek(1)? {
+            let property_name = self.get_current_chunk().read_string(index);
+            let value = self.pop()?;
+            let instance = self.garbage_collector.deref_mut(instance_reference);
+            instance.fields.insert(property_name, value);
+            self.pop()?;
+            self.push(value)?;
+          } else {
+            self.did_encounter_runtime_error("Only instances have fields.");
+            return Err(Error::RuntimeError(RuntimeError::AccessedPropertyOnNonInstance));
+          }
+        },
+        GetProperty(index) => {
+          if let Value::Instance(instance_reference) = self.peek(0)? {
+            let instance = self.garbage_collector.deref(instance_reference);
+            let class = instance.class;
+            let property_name = self.get_current_chunk().read_string(index);
+            let value = instance.fields.get(&property_name);
+            match value {
+              Some(&value) => {
+                self.pop()?;
+                self.push(value)?;
+              },
+              None => {
+                self.bind_method(class, property_name)?;
+              },
+            }
+          } else {
+            self.did_encounter_runtime_error("Only instances have properties.");
+            return Err(Error::RuntimeError(RuntimeError::AccessedPropertyOnNonInstance));
+          }
+        },
+        Inherit => {
+          let pair = (self.peek(0)?, self.peek(1)?);
+          if let (Value::Class(subclass_reference), Value::Class(superclass_reference)) = pair {
+            let superclass = self.garbage_collector.deref(superclass_reference);
+            let methods = superclass.methods.clone();
+            let mut subclass = self.garbage_collector.deref_mut(subclass_reference);
+            subclass.methods = methods;
+            self.pop()?;
+          } else {
+            self.did_encounter_runtime_error("Superclass must be a class.");
+            return Err(Error::RuntimeError(RuntimeError::AttemptedToSubclassNonClass));
+          }
         },
       }
     }
@@ -406,6 +475,19 @@ impl VirtualMachine {
     trace_var!(result);
     trace_exit!();
     Ok(result)
+  }
+
+  /// Set a value in the stack directly.
+  #[named]
+  pub fn set_in_stack(&mut self, offset: usize, value: Value) {
+    trace_enter!();
+    trace_var!(offset);
+    trace_var!(value);
+    let max_index = self.stack.len() - 1;
+    trace_var!(max_index);
+    let index = max_index - offset;
+    self.stack[index] = value;
+    trace_exit!();
   }
 
   /// Is this "falsey" or not?
@@ -582,7 +664,89 @@ impl VirtualMachine {
         self.stack.truncate(start - 1);
         self.push(result)?;
       },
-      value => return Err(Error::RuntimeError(RuntimeError::CalledUncallableValue(value))),
+      Value::Class(class_reference) => {
+        let instance_object = Instance::new(class_reference);
+        trace_var!(instance_object);
+        let instance_reference = self.alloc(instance_object);
+        trace_var!(instance_reference);
+        self.set_in_stack(argument_count, Value::Instance(instance_reference));
+        let class = self.garbage_collector.deref(class_reference);
+        if let Some(&initializer) = class.methods.get(&self.init_string) {
+          if let Value::Closure(initializer) = initializer {
+            return self.call(initializer, argument_count);
+          }
+          self.did_encounter_runtime_error("Initializer is not closure");
+          return Err(Error::RuntimeError(RuntimeError::ClassInitializerWasNotAClosure));
+        } else if argument_count > 0 {
+          let message = format!("Expected 0 arguments but got {}.", argument_count);
+          self.did_encounter_runtime_error(&message);
+          return Err(Error::RuntimeError(RuntimeError::ClassInitializerCalledWithArguments(
+            argument_count,
+          )));
+        }
+      },
+      value => {
+        self.did_encounter_runtime_error("Can only call functions and classes.");
+        return Err(Error::RuntimeError(RuntimeError::CalledUncallableValue(value)));
+      },
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Invoke a method with arguments.
+  #[named]
+  pub fn invoke(&mut self, name: Reference<String>, argument_count: usize) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(name);
+    trace_var!(argument_count);
+    let receiver = self.peek(argument_count)?;
+    trace_var!(receiver);
+    if let Value::Instance(instance_reference) = receiver {
+      let instance = self.garbage_collector.deref(instance_reference);
+      trace_var!(instance);
+      if let Some(&field) = instance.fields.get(&name) {
+        trace_var!(field);
+        self.set_in_stack(argument_count, field);
+        self.call_value(argument_count)?;
+      } else {
+        let class = instance.class;
+        trace_var!(class);
+        self.invoke_from_class(class, name, argument_count)?;
+      }
+    } else {
+      self.did_encounter_runtime_error("Only instances have methods.");
+      return Err(Error::RuntimeError(RuntimeError::CalledMethodOnNonInstance));
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Invoke a method call via class.
+  #[named]
+  fn invoke_from_class(
+    &mut self,
+    class_reference: Reference<ClassStruct>,
+    name_reference: Reference<String>,
+    argument_count: usize,
+  ) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(class_reference);
+    trace_var!(name_reference);
+    trace_var!(argument_count);
+    let class = self.garbage_collector.deref(class_reference);
+    trace_var!(class);
+    if let Some(&method_value) = class.methods.get(&name_reference) {
+      if let Value::Closure(closure_reference) = method_value {
+        self.call(closure_reference, argument_count)?;
+      } else {
+        return Err(Error::RuntimeError(RuntimeError::CalledNonClosureMethod));
+      }
+    } else {
+      let name = self.garbage_collector.deref(name_reference);
+      let message = format!("Undefined property '{}'.", name);
+      self.did_encounter_runtime_error(&message);
+      return Err(Error::RuntimeError(RuntimeError::CalledNonexistentMethod));
     }
     trace_exit!();
     Ok(())
@@ -673,6 +837,59 @@ impl VirtualMachine {
     let line_number = chunk.instructions.line_numbers[frame.instruction_pointer - 1];
     eprintln!("[line {}] in script", line_number);
     trace_exit!();
+  }
+
+  /// Bind a method to a class.
+  #[named]
+  pub fn bind_method(
+    &mut self,
+    class_reference: Reference<ClassStruct>,
+    name_reference: Reference<String>,
+  ) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(class_reference);
+    trace_var!(name_reference);
+    let class = self.garbage_collector.deref(class_reference);
+    trace_var!(class);
+    if let Some(method) = class.methods.get(&name_reference) {
+      let receiver = self.peek(0)?;
+      trace_var!(receiver);
+      let method = match method {
+        Value::Closure(closure) => *closure,
+        _ => panic!("Inconsistent state. Method is not closure"),
+      };
+      trace_var!(method);
+      let bound = BoundMethod::new(receiver, method);
+      trace_var!(bound);
+      let bound_reference = self.alloc(bound);
+      trace_var!(bound_reference);
+      self.pop()?;
+      self.push(Value::BoundMethod(bound_reference))?;
+    } else {
+      let name = self.garbage_collector.deref(name_reference);
+      trace_var!(name);
+      self.did_encounter_runtime_error(&format!("Undefined property '{}'.", name));
+      return Err(Error::RuntimeError(RuntimeError::UndefinedProperty(name.to_string())));
+    }
+    trace_exit!();
+    Ok(())
+  }
+
+  /// Defines a method.
+  #[named]
+  pub fn define_method(&mut self, name: Reference<String>) -> Result<(), Error> {
+    trace_enter!();
+    trace_var!(name);
+    let method_value = self.peek(0)?;
+    if let Value::Class(class_reference) = self.peek(1)? {
+      let class_object = self.garbage_collector.deref_mut(class_reference);
+      class_object.methods.insert(name, method_value);
+      self.pop()?;
+    } else {
+      return Err(Error::RuntimeError(RuntimeError::DefinedMethodOutsideClassContext));
+    }
+    trace_exit!();
+    Ok(())
   }
 }
 

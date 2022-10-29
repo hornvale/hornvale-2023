@@ -1,30 +1,39 @@
 use std::any::Any;
 use std::fmt::{Formatter, Result as FmtResult};
 
+use crate::scripting_language::bound_method::BoundMethod;
+use crate::scripting_language::class::Class;
 use crate::scripting_language::closure::Closure;
 use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::collector::Collector as GarbageCollector;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::garbage_collection::trace::Trace;
+use crate::scripting_language::instance::Instance;
 use crate::scripting_language::native_function::NativeFunction;
 
 /// The `Value` enum.
 #[derive(Clone, Copy, Debug, Display, PartialEq)]
 pub enum Value {
+  /// Nil.
+  Nil,
   /// Boolean.
   Boolean(bool),
-  /// Closure!
-  Closure(Reference<Closure>),
-  /// Function!
-  Function(Reference<Function>),
   /// A native function.
   NativeFunction(NativeFunction),
   /// Number is a double.
   Number(f64),
+  /// Bound methods.
+  BoundMethod(Reference<BoundMethod>),
+  /// Closure!
+  Closure(Reference<Closure>),
+  /// Function!
+  Function(Reference<Function>),
+  /// Class instances.
+  Instance(Reference<Instance>),
   /// String.
   String(Reference<String>),
-  /// Nil.
-  Nil,
+  /// Class.
+  Class(Reference<Class>),
 }
 
 impl Value {
@@ -54,11 +63,11 @@ impl Trace for Value {
     use Value::*;
     let result = match self {
       Boolean(value) => write!(f, "{}", value),
-      // BoundMethod(value) => gc.deref(*value).format(f, garbage_collector),
-      // Class(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      BoundMethod(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      Class(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       Closure(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       Function(value) => garbage_collector.deref(*value).format(f, garbage_collector),
-      // Instance(value) => garbage_collector.deref(*value).format(f, garbage_collector),
+      Instance(value) => garbage_collector.deref(*value).format(f, garbage_collector),
       NativeFunction(_) => write!(f, "<native fn>"),
       Nil => write!(f, "nil"),
       Number(value) => write!(f, "{}", value),
@@ -84,11 +93,11 @@ impl Trace for Value {
     trace_enter!();
     trace_var!(garbage_collector);
     match self {
-      // Value::BoundMethod(value) => garbage_collector.mark_object(*value),
-      // Value::Class(value) => garbage_collector.mark_object(*value),
+      Value::BoundMethod(value) => garbage_collector.mark_object(*value),
+      Value::Class(value) => garbage_collector.mark_object(*value),
       Value::Closure(value) => garbage_collector.mark_object(*value),
       Value::Function(value) => garbage_collector.mark_object(*value),
-      // Value::Instance(value) => garbage_collector.mark_object(*value),
+      Value::Instance(value) => garbage_collector.mark_object(*value),
       Value::String(value) => garbage_collector.mark_object(*value),
       _ => (),
     };

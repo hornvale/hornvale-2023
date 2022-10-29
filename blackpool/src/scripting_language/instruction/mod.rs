@@ -34,6 +34,16 @@ pub enum Instruction {
   Closure(u16),
   /// A function call and the number of arguments.
   Call(u8),
+  /// A class declaration and index of its name.
+  Class(u16),
+  /// A method declaration and index of its name.
+  Method(u16),
+  /// Get an instance property.
+  GetProperty(u16),
+  /// Set an instance property.
+  SetProperty(u16),
+  /// Invoke a method call with the specified name and argument count.
+  Invoke((u16, u8)),
   /// Unary negate operation, performed on the top of the stack.
   Negate,
   /// Add the two values on the top of the stack.
@@ -70,6 +80,8 @@ pub enum Instruction {
   Print,
   /// Pop the value off the stack.
   Pop,
+  /// Inherit from a superclass.
+  Inherit,
 }
 
 impl Instruction {
