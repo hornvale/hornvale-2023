@@ -72,7 +72,7 @@ impl VirtualMachine {
       start_time,
     };
     result
-      .define_native_function("uptime", NativeFunction(standard_library::uptime))
+      .define_native_function("clock", NativeFunction(standard_library::uptime))
       .unwrap();
     trace_var!(result);
     trace_exit!();
@@ -263,6 +263,33 @@ impl VirtualMachine {
           let index = index as usize + self.get_current_frame().index;
           let value = self.peek(0)?;
           self.stack[index] = value;
+        },
+        GetUpvalue(index) => {
+          let value = {
+            let upvalue_reference = self.get_current_closure().upvalues[index as usize];
+            let upvalue = self.garbage_collector.deref(upvalue_reference);
+            if let Some(value) = upvalue.closed {
+              value
+            } else {
+              self.stack[upvalue.location]
+            }
+          };
+          self.push(value)?;
+        },
+        SetUpvalue(index) => {
+          let upvalue_reference = self.get_current_closure().upvalues[index as usize];
+          let value = self.peek(0)?;
+          let mut upvalue = self.garbage_collector.deref_mut(upvalue_reference);
+          if upvalue.closed.is_none() {
+            self.stack[upvalue.location] = value;
+          } else {
+            upvalue.closed = Some(value);
+          }
+        },
+        CloseUpvalue => {
+          let stack_top = self.stack.len() - 1;
+          self.close_upvalues(stack_top)?;
+          self.pop()?;
         },
         Jump(offset) => {
           self.get_current_frame_mut().instruction_pointer += offset as usize;
@@ -463,12 +490,10 @@ impl VirtualMachine {
     for &frame in &self.call_frames {
       self.garbage_collector.mark_object(frame.closure)
     }
-    /*
     debug!("marking upvalues for garbage collection");
     for &upvalue in &self.open_upvalues {
-        self.garbage_collector.mark_object(upvalue);
+      self.garbage_collector.mark_object(upvalue);
     }
-    */
     debug!("marking {} global variables for garbage collection", self.globals.len());
     self.garbage_collector.mark_table(&self.globals);
     self.garbage_collector.mark_object(self.init_string);
@@ -574,6 +599,8 @@ impl VirtualMachine {
     let function = self.garbage_collector.deref(closure.function);
     trace_var!(function);
     if argument_count != function.arity {
+      let message = format!("Expected {} arguments but got {}.", function.arity, argument_count);
+      self.did_encounter_runtime_error(&message);
       return Err(Error::RuntimeError(
         RuntimeError::CalledFunctionWithWrongNumberOfArguments(argument_count, function.arity),
       ));
@@ -597,7 +624,7 @@ impl VirtualMachine {
     Ok(())
   }
 
-  /// Zap upvalues from callstack.
+  /// Close upvalues; that is, move them from the stack to the heap.
   #[named]
   pub fn close_upvalues(&mut self, last: usize) -> Result<(), Error> {
     trace_enter!();
@@ -631,6 +658,21 @@ impl VirtualMachine {
       .insert(name_reference, Value::NativeFunction(native_function));
     trace_exit!();
     Ok(())
+  }
+
+  /// Encountered an error.
+  #[named]
+  pub fn did_encounter_runtime_error(&self, message: &str) {
+    trace_enter!();
+    trace_var!(message);
+    let frame = self.get_current_frame();
+    trace_var!(frame);
+    eprintln!("{}", message);
+    let chunk = self.get_current_chunk();
+    trace_var!(chunk);
+    let line_number = chunk.instructions.line_numbers[frame.instruction_pointer - 1];
+    eprintln!("[line {}] in script", line_number);
+    trace_exit!();
   }
 }
 

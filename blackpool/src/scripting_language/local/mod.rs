@@ -7,6 +7,8 @@ pub struct Local {
   pub token: Token,
   /// The scope depth of this variable.
   pub depth: i32,
+  /// Whether this is captured or not.
+  pub is_captured: bool,
 }
 
 impl Local {
@@ -16,7 +18,13 @@ impl Local {
     trace_enter!();
     trace_var!(token);
     trace_var!(depth);
-    let result = Local { token, depth };
+    let is_captured = false;
+    trace_var!(is_captured);
+    let result = Local {
+      token,
+      depth,
+      is_captured,
+    };
     trace_var!(result);
     trace_exit!();
     result

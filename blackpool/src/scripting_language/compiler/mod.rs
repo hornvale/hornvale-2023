@@ -1,3 +1,4 @@
+use crate::scripting_language::function::upvalue::Upvalue as FunctionUpvalue;
 use crate::scripting_language::function::Function;
 use crate::scripting_language::garbage_collection::reference::Reference;
 use crate::scripting_language::local::Local;
@@ -5,7 +6,6 @@ use crate::scripting_language::token::r#type::Type as TokenType;
 use crate::scripting_language::token::Token;
 
 pub mod error;
-use error::Error;
 pub mod function_type;
 use function_type::FunctionType;
 
@@ -76,7 +76,7 @@ impl Compiler {
 
   /// Resolve a local variable.
   #[named]
-  pub fn resolve_local(&mut self, source: &str, token: Token) -> Result<Option<u16>, Error> {
+  pub fn resolve_local(&mut self, source: &str, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
     trace_enter!();
     trace_var!(token);
     let token_name = &source[token.start..(token.start + token.length)];
@@ -86,13 +86,51 @@ impl Compiler {
       trace_var!(local_name);
       if token_name == local_name {
         if local.depth == -1 {
-          return Err(Error::AttemptedToReadVariableInOwnInitializer(Some(token)));
-        } else {
-          return Ok(Some(i as u16));
+          errors.push("Can't read local variable in its own initializer.");
         }
+        return Some(i as u16);
       }
     }
-    Ok(None)
+    None
+  }
+
+  /// Resolve an upvalue.
+  #[named]
+  pub fn resolve_upvalue(&mut self, source: &str, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
+    trace_enter!();
+    trace_var!(source);
+    trace_var!(token);
+    if let Some(enclosing) = self.enclosing.as_mut() {
+      if let Some(index) = enclosing.resolve_local(source, token, errors) {
+        enclosing.locals[index as usize].is_captured = true;
+        return Some(self.add_upvalue(index, true, errors));
+      }
+      if let Some(index) = enclosing.resolve_upvalue(source, token, errors) {
+        return Some(self.add_upvalue(index, false, errors));
+      }
+    }
+    trace_exit!();
+    None
+  }
+
+  /// Create a new upvalue.
+  #[named]
+  pub fn add_upvalue(&mut self, index: u16, is_local: bool, errors: &mut Vec<&'static str>) -> u16 {
+    trace_enter!();
+    trace_var!(index);
+    trace_var!(is_local);
+    trace_var!(errors);
+    for (i, upvalue) in self.function.upvalues.iter().enumerate() {
+      if upvalue.index == index && upvalue.is_local == is_local {
+        return i as u16;
+      }
+    }
+    let result = self.function.upvalues.len() as u16;
+    let upvalue = FunctionUpvalue { index, is_local };
+    self.function.upvalues.push(upvalue);
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 }
 

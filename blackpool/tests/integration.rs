@@ -22,7 +22,6 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
-use std::path::Path;
 use std::path::PathBuf;
 use std::{env, fs, process::Command};
 
@@ -96,33 +95,52 @@ fn parse_comments(path: &PathBuf) -> Expected {
   expected
 }
 
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/assignment/*.lox")]
-// #[test_resources("blackpool/tests/integration/block/*.lox")]
-// #[test_resources("blackpool/tests/integration/bool/*.lox")]
+#[test_resources("blackpool/tests/integration/block/*.lox")]
+#[test_resources("blackpool/tests/integration/bool/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/call/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/class/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/closure/*.lox")]
-// #[test_resources("blackpool/tests/integration/comments/*.lox")]
+#[test_resources("blackpool/tests/integration/comments/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/constructor/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/field/*.lox")]
+// FAIL (two error messages, mebbe synchronization?)
 // #[test_resources("blackpool/tests/integration/for/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/function/*.lox")]
-// #[test_resources("blackpool/tests/integration/if/*.lox")]
+#[test_resources("blackpool/tests/integration/if/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/inheritance/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/limit/*.lox")]
-// #[test_resources("blackpool/tests/integration/logical_operator/*.lox")]
+#[test_resources("blackpool/tests/integration/logical_operator/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/method/*.lox")]
-// #[test_resources("blackpool/tests/integration/nil/*.lox")]
+#[test_resources("blackpool/tests/integration/nil/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/number/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/operator/*.lox")]
-// #[test_resources("blackpool/tests/integration/print/*.lox")]
+#[test_resources("blackpool/tests/integration/print/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/regression/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/return/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/string/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/super/*.lox")]
+// Chapter 27
 // #[test_resources("blackpool/tests/integration/this/*.lox")]
+// FAIL
 // #[test_resources("blackpool/tests/integration/variable/*.lox")]
-// #[test_resources("blackpool/tests/integration/while/*.lox")]
+#[test_resources("blackpool/tests/integration/while/*.lox")]
 fn run_file_test(filename: &str) {
   let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
   path.push(filename.replace("blackpool/", ""));
@@ -157,6 +175,11 @@ fn run_file_test(filename: &str) {
   }
 
   if let Some(e) = expected.runtime_err {
+    assert!(
+      err.len() > 0,
+      "Should have a message like {}, had diddly-squat",
+      e.message
+    );
     assert_eq!(e.message, err[0], "Runtime error should match");
     assert_eq!(
       err[1][0..e.line_prefix.len()],

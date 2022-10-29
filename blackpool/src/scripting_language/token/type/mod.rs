@@ -115,7 +115,7 @@ impl FromStr for Type {
       "class" => Ok(Class),
       "else" => Ok(Else),
       "false" => Ok(False),
-      "fun" | "func" | "fn" | "function" => Ok(Function),
+      "fun" | "fn" | "function" => Ok(Function),
       "for" => Ok(For),
       "if" => Ok(If),
       "nil" => Ok(Nil),

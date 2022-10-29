@@ -111,7 +111,6 @@ impl Trace for Value {
 #[cfg(test)]
 pub mod test {
 
-  use super::*;
   use crate::test::*;
 
   #[named]
@@ -119,7 +118,6 @@ pub mod test {
   pub fn test_math() {
     init();
     trace_enter!();
-    use crate::scripting_language::value::Value::*;
     test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
     test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
     // The order of the following binary operations can be a bit counterintuitive.

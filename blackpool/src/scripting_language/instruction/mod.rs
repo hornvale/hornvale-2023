@@ -18,6 +18,12 @@ pub enum Instruction {
   SetLocal(u16),
   /// Get a particular local.
   GetLocal(u16),
+  /// Close an upvalue.
+  CloseUpvalue,
+  /// Set a particular upvalue.
+  SetUpvalue(u16),
+  /// Get a particular upvalue.
+  GetUpvalue(u16),
   /// Jump unconditionally.
   Jump(u16),
   /// Jump if the top value on the stack is falsey.

@@ -49,6 +49,8 @@ pub struct Parser<'source> {
   pub suppress_new_errors: bool,
   /// Whether we have actually encountered an error.
   pub did_encounter_error: bool,
+  /// Errors that arise in the process of resolving locals and upvalues.
+  pub resolver_errors: Vec<&'static str>,
 }
 
 impl<'source> Parser<'source> {
@@ -72,6 +74,8 @@ impl<'source> Parser<'source> {
     trace_var!(suppress_new_errors);
     let did_encounter_error = false;
     trace_var!(did_encounter_error);
+    let resolver_errors = Vec::new();
+    trace_var!(resolver_errors);
     let result = Self {
       scanner,
       garbage_collector,
@@ -81,6 +85,7 @@ impl<'source> Parser<'source> {
       rules,
       suppress_new_errors,
       did_encounter_error,
+      resolver_errors,
     };
     trace_var!(result);
     trace_exit!();
@@ -92,14 +97,20 @@ impl<'source> Parser<'source> {
   pub fn compile(mut self) -> Result<Reference<Function>, Error> {
     trace_enter!();
     self.advance()?;
+    let mut first_error = None;
     while !self.r#match(TokenType::Eof)? {
-      self.parse_declaration()?;
+      if let (None, Err(error)) = (&first_error, self.parse_declaration()) {
+        first_error = Some(error);
+      }
     }
     self.emit_return()?;
-    let result = self.garbage_collector.alloc(self.compiler.function);
+    let result = match self.did_encounter_error {
+      false => Ok(self.garbage_collector.alloc(self.compiler.function)),
+      true => Err(first_error.unwrap()),
+    };
     trace_var!(result);
     trace_exit!();
-    Ok(result)
+    result
   }
 
   /// Advance!
@@ -107,6 +118,15 @@ impl<'source> Parser<'source> {
   pub fn advance(&mut self) -> Result<(), Error> {
     trace_enter!();
     self.previous = self.current;
+    loop {
+      self.current = Some(self.scanner.scan_token()?);
+      if let TokenType::ScannerError(message) = self.current.unwrap().r#type {
+        self.did_encounter_error_at_current(message);
+      } else {
+        break;
+      }
+    }
+    /*
     let mut errors = Vec::new();
     loop {
       match self.scanner.scan_token() {
@@ -133,6 +153,8 @@ impl<'source> Parser<'source> {
     trace_var!(result);
     trace_exit!();
     result
+    */
+    Ok(())
   }
 
   /// Consume.
@@ -341,7 +363,11 @@ impl<'source> Parser<'source> {
     self.compiler.depth -= 1;
     for i in (0..self.compiler.locals.len()).rev() {
       if self.compiler.locals[i].depth > self.compiler.depth {
-        self.emit_instruction(Instruction::Pop)?;
+        if self.compiler.locals[i].is_captured {
+          self.emit_instruction(Instruction::CloseUpvalue)?;
+        } else {
+          self.emit_instruction(Instruction::Pop)?;
+        }
         self.compiler.locals.pop();
       }
     }
@@ -354,7 +380,7 @@ impl<'source> Parser<'source> {
   pub fn parse_print_statement(&mut self) -> Result<(), Error> {
     trace_enter!();
     self.parse_expression()?;
-    self.consume(TokenType::Semicolon, "expected ';' after the expression")?;
+    self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
     self.emit_instruction(Instruction::Print)?;
     trace_exit!();
     Ok(())
@@ -558,7 +584,7 @@ impl<'source> Parser<'source> {
   pub fn parse_expression_statement(&mut self) -> Result<(), Error> {
     trace_enter!();
     self.parse_expression()?;
-    self.consume(TokenType::Semicolon, "expected ';' after the expression")?;
+    self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
     self.emit_instruction(Instruction::Pop)?;
     trace_exit!();
     Ok(())
@@ -689,7 +715,7 @@ impl<'source> Parser<'source> {
     trace_enter!();
     let operator_type = self.previous.unwrap().r#type;
     let rule = self.get_rule(&operator_type);
-    self.parse_precedence(rule.unwrap().precedence.next().unwrap())?;
+    self.parse_precedence(rule.unwrap().precedence.next())?;
     use TokenType::*;
     match operator_type {
       BangEqual => self.emit_instruction(Instruction::NotEqual)?,
@@ -713,7 +739,7 @@ impl<'source> Parser<'source> {
   pub fn parse_unary(&mut self, _can_assign: bool) -> Result<(), Error> {
     trace_enter!();
     let operator_type = self.previous.unwrap().r#type;
-    self.parse_expression()?;
+    self.parse_precedence(Precedence::Unary)?;
     use TokenType::*;
     match operator_type {
       Minus => self.emit_instruction(Instruction::Negate)?,
@@ -957,9 +983,12 @@ impl<'source> Parser<'source> {
     trace_var!(name);
     let get_op;
     let set_op;
-    if let Some(index) = self.compiler.resolve_local(self.scanner.source, name)? {
+    if let Some(index) = self.resolve_local(name) {
       get_op = Instruction::GetLocal(index);
       set_op = Instruction::SetLocal(index);
+    } else if let Some(index) = self.resolve_upvalue(name) {
+      get_op = Instruction::GetUpvalue(index);
+      set_op = Instruction::SetUpvalue(index);
     } else {
       let index = self.get_identifier_constant(name)?;
       get_op = Instruction::GetGlobal(index);
@@ -990,20 +1019,31 @@ impl<'source> Parser<'source> {
     let prefix = previous_rule.prefix.unwrap();
     let can_assign = precedence <= Precedence::Assignment;
     prefix(self, can_assign)?;
-    while precedence <= self.get_current_rule().unwrap().precedence {
+    while self.is_lower_precedence(precedence) {
       self.advance()?;
       let previous_rule = self.get_previous_rule().unwrap();
-      if previous_rule.infix.is_none() {
-        return Err(Error::ExpectedExpression(self.previous));
-      }
       let infix = previous_rule.infix.unwrap();
       infix(self, can_assign)?;
     }
     if can_assign && self.r#match(TokenType::Equal)? {
+      self.did_encounter_error("Invalid assignment target.");
       return Err(Error::InvalidAssignmentTarget(self.previous));
     }
     trace_exit!();
     Ok(())
+  }
+
+  /// Is this current operation lower precedence?
+  #[named]
+  pub fn is_lower_precedence(&self, precedence: Precedence) -> bool {
+    trace_enter!();
+    trace_var!(precedence);
+    let current_precedence = self.get_current_rule().unwrap().precedence;
+    trace_var!(current_precedence);
+    let result = precedence <= current_precedence;
+    trace_var!(result);
+    trace_exit!();
+    result
   }
 
   /// Get the previous rule.
@@ -1038,6 +1078,36 @@ impl<'source> Parser<'source> {
     trace_enter!();
     trace_var!(token_type);
     let result = self.rules.rules.get(token_type).cloned();
+    trace_var!(result);
+    trace_exit!();
+    result
+  }
+
+  /// Resolve a local reference.
+  #[named]
+  pub fn resolve_local(&mut self, token: Token) -> Option<u16> {
+    trace_enter!();
+    trace_var!(token);
+    let result = self
+      .compiler
+      .resolve_local(self.scanner.source, token, &mut self.resolver_errors);
+    while let Some(error) = self.resolver_errors.pop() {
+      self.did_encounter_error(error);
+    }
+    result
+  }
+
+  /// Resolve an upvalue.
+  #[named]
+  pub fn resolve_upvalue(&mut self, token: Token) -> Option<u16> {
+    trace_enter!();
+    trace_var!(token);
+    let result = self
+      .compiler
+      .resolve_upvalue(self.scanner.source, token, &mut self.resolver_errors);
+    while let Some(error) = self.resolver_errors.pop() {
+      self.did_encounter_error(error);
+    }
     trace_var!(result);
     trace_exit!();
     result

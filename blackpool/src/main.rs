@@ -77,7 +77,10 @@ fn main() -> Result<(), Error> {
           // println!("{:#?}", error);
           exit(70);
         },
-        _ => {},
+        _ => {
+          eprintln!("{:#?}", error);
+          exit(144);
+        },
       });
       Ok(())
     },

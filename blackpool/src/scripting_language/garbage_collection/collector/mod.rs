@@ -68,10 +68,14 @@ impl Collector {
     let size = object.get_size() + size_of::<ObjectHeader>();
     trace_var!(size);
     self.bytes_allocated += size;
+    let is_marked = false;
+    trace_var!(is_marked);
+    let object = Box::new(object);
+    trace_var!(object);
     let entry = ObjectHeader {
-      is_marked: false,
+      is_marked,
       size,
-      object: Box::new(object),
+      object,
     };
     trace_var!(entry);
     let index = match self.free_slots.pop() {
