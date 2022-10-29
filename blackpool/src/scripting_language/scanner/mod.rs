@@ -197,12 +197,12 @@ impl<'source> Scanner<'source> {
       }
       self.advance();
     }
-    if self.is_at_end() {
-      self.inject_error_token("Unterminated string.");
-      return Err(Error::UnterminatedString(self.line_number));
-    }
-    self.advance();
-    let result = self.make_token(TokenType::String);
+    let result = if self.is_at_end() {
+      self.get_error_token("Unterminated string.")
+    } else {
+      self.advance();
+      self.make_token(TokenType::String)
+    };
     trace_var!(result);
     trace_exit!();
     Ok(result)
@@ -258,7 +258,7 @@ impl<'source> Scanner<'source> {
   }
 
   #[named]
-  pub fn inject_error_token(&self, message: &'static str) -> Token<'source> {
+  pub fn get_error_token(&self, message: &'static str) -> Token<'source> {
     trace_enter!();
     trace_var!(message);
     let mut result = Token::synthesize(message);
