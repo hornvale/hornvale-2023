@@ -891,7 +891,7 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "blackpool"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "assert_approx_eq",
  "cpu-time",
@@ -1530,6 +1530,16 @@ name = "downcast-rs"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
+
+[[package]]
+name = "downdelving"
+version = "0.1.0"
+dependencies = [
+ "function_name",
+ "log",
+ "pretty_env_logger",
+ "volmark",
+]
 
 [[package]]
 name = "dreadfort"
@@ -2223,7 +2233,7 @@ checksum = "4217ad341ebadf8d8e724e264f13e593e0648f5b3e94b3896a5df283be015ecc"
 
 [[package]]
 name = "ivyhall"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "appleton",
  "blackpool",
