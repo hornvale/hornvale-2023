@@ -6,6 +6,10 @@
 
 - ["Hello, Sailor!"](goldengrove/hello_sailor.md)
 
+# 💻 Blackpool
+
+- [_Quake_ and _Minecraft_](blackpool/quake_and_minecraft.md)
+
 # 💫 Starfall
 
 - [_Cosmos_ and Tatooine](starfall/cosmos_and_tatooine.md)
@@ -20,7 +24,6 @@
 
 <!--
 # 🧬 Appleton
-# 💻 Blackpool
 # 🏦 Casterlyrock
 # 🧍‍♂️ Dreadfort
 # 🌿 Ivyhall

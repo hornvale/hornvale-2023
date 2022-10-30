@@ -2,7 +2,7 @@
 
 One of my favorite gaming experiences of all time is from a Hungarian MUD, _After the Plague II_.  I was lost in the woods, southwest of Elements City, walking into dead ends, running low on food, probably walking in circles.  I saw (high perception score) a hidden path to the south, between thorn bushes.  I walked through (getting cut up in the process), and happened upon this:
 
-![Goblin Village](images/goblin_village_1.png)
+![Goblin Village](images/goblin_village.png)
 
 Now, this in itself isn't the greatest thing, but a couple rooms south you find two goblin children who play and fight with one another.  If their ball is retrieved for them from a nearby quest, they'll play catch with each other, and with you.  If it is winter, and there is snow on the ground, they will have a snowball fight with you.  Having a snowball fight with goblin children is a fond memory of mine.
 
