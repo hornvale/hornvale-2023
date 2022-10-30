@@ -1,4 +1,4 @@
-# Quake and Minecraft
+# Programmable Realities
 
 It probably seems obvious now, but the Quake console kind of blew my mind when I first saw it.
 

@@ -1,7 +1,7 @@
 [package]
 name = "ivyhall"
 description = "Frontend and connective logic for my Hornvale project."
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Nathan Douglas <github@darkdell.net>"]
 license = "Unlicense"

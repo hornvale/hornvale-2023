@@ -4,27 +4,32 @@
 
 # 📜 Goldengrove
 
-- ["Hello, Sailor!"](goldengrove/hello_sailor.md)
+- ["Hello, Sailor!": Procedural Interactive Fiction?](goldengrove/_introduction.md)
 
 # 💻 Blackpool
 
-- [_Quake_ and _Minecraft_](blackpool/quake_and_minecraft.md)
+- [Programmable Realities: Quake, Minecraft, and LPMUDS](blackpool/_introduction.md)
+
+# ⛏️ Downdelving
+
+- [Dungeons and the Underdark](downdelving/_introduction.md)
 
 # 💫 Starfall
 
-- [_Cosmos_ and Tatooine](starfall/cosmos_and_tatooine.md)
+- [_Cosmos_ and Tatooine](starfall/_introduction.md)
 
 # 👻 Ramsgate
 
-- [_The Golden Bough_](ramsgate/the_golden_bough.md)
+- [_The Golden Bough_ and Procedural Comparative Religion](ramsgate/_introduction.md)
 
 # 🧑‍🤝‍🧑 Weepingtown
 
-- [The Goblin Village](weepingtown/goblin_village.md)
+- [The Sociology of the Goblin Village](weepingtown/_introduction.md)
 
 <!--
 # 🧬 Appleton
 # 🏦 Casterlyrock
+# ⛏️ Downdelving
 # 🧍‍♂️ Dreadfort
 # 🌿 Ivyhall
 # 🪦 Kingsgrave

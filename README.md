@@ -24,6 +24,7 @@ I know these names are somewhat opaque, but my thinking is that I decouple the n
 - [🧬 Appleton](./appleton/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
 - [💻 Blackpool](./blackpool/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
 - [🏦 Casterlyrock](./casterlyrock/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
+- [⛏️ Downdelving](./downdelving/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Dungeons, mining, and the Underdark.
 - [🧍‍♂️ Dreadfort](./dreadfort/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
 - [📜 Goldengrove](./goldengrove/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
 - [📖 Harlaw](./harlaw/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.

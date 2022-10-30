@@ -4,6 +4,7 @@ members = [
   "appleton",
   "blackpool",
   "casterlyrock",
+  "downdelving",
   "dreadfort",
   "goldengrove",
   "honeyholt",
@@ -34,8 +35,9 @@ serde = { version = "1.0.147", features = ["derive"] }
 serde_json = "1.0.87"
 thiserror = "1.0"
 appleton = { version = "0.1.0", path = "./appleton" }
-blackpool = { version = "0.1.0", path = "./blackpool" }
+blackpool = { version = "0.2.0", path = "./blackpool" }
 casterlyrock = { version = "0.1.0", path = "./casterlyrock" }
+downdelving = { version = "0.1.0", path = "./downdelving" }
 dreadfort = { version = "0.1.0", path = "./dreadfort" }
 goldengrove = { version = "0.1.0", path = "./goldengrove" }
 honeyholt = { version = "0.1.0", path = "./honeyholt" }
