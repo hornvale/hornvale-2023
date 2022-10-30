@@ -10,7 +10,7 @@ extern crate thiserror;
 extern crate volmark;
 pub use volmark::*;
 
-pub mod planning;
+pub mod goap;
 
 #[cfg(test)]
 pub mod test {

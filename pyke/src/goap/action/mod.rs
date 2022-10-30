@@ -1,4 +1,4 @@
-use crate::planning::state::State;
+use crate::goap::state::State;
 
 /// An action.
 #[derive(Clone, Debug, Deserialize, Serialize)]

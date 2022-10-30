@@ -1,9 +1,9 @@
-use crate::planning::action::Action;
-use crate::planning::error::Error;
-use crate::planning::node::Node;
-use crate::planning::nodes::Nodes;
-use crate::planning::plan::Plan;
-use crate::planning::state::State;
+use crate::goap::action::Action;
+use crate::goap::error::Error;
+use crate::goap::node::Node;
+use crate::goap::nodes::Nodes;
+use crate::goap::plan::Plan;
+use crate::goap::state::State;
 
 /// A planner, using the famous A* pathfinding algorithm.
 #[derive(Clone, Debug)]

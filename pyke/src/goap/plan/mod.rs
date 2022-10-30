@@ -1,4 +1,4 @@
-use crate::planning::state::State;
+use crate::goap::state::State;
 
 /// The `Plan` type.
 ///

@@ -1,6 +1,6 @@
-use crate::planning::error::Error;
-use crate::planning::node::Node;
-use crate::planning::state::State;
+use crate::goap::error::Error;
+use crate::goap::node::Node;
+use crate::goap::state::State;
 
 /// The `Nodes` type.
 ///

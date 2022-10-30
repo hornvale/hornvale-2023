@@ -1,4 +1,4 @@
-use crate::planning::state::State;
+use crate::goap::state::State;
 
 /// An individual A* node.
 #[derive(Clone, Debug, Eq, Hash, PartialEq, Deserialize, Serialize)]
