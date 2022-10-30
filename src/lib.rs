@@ -25,12 +25,20 @@ extern crate thiserror;
 pub mod debug_macros;
 pub use debug_macros::*;
 
-/// Astronomy and Astrophysics
+pub mod anatomy;
 pub mod astronomy;
-// Goal-Oriented Action Planning
+pub mod biology;
+pub mod combat;
+pub mod downdelving;
+pub mod economics;
+pub mod geology;
 pub mod goap;
-// Embedded Scripting Language
+pub mod linguistics;
+pub mod mythopoetics;
 pub mod scripting_language;
+pub mod sociology;
+pub mod supernatural;
+pub mod ui;
 
 #[cfg(test)]
 pub mod test {
