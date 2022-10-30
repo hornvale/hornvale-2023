@@ -21,23 +21,23 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
 ## Hornvale Subprojects
 I know these names are somewhat opaque, but my thinking is that I decouple the name from a concrete name like "astronomy" and gain some flexibility with the borders.
 
-- [🧬 Appleton](./appleton/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
-- [💻 Blackpool](./blackpool/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
-- [🏦 Casterlyrock](./casterlyrock/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
-- [⛏️ Downdelving](./downdelving/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Dungeons, mining, and the Underdark.
-- [🧍‍♂️ Dreadfort](./dreadfort/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
-- [📜 Goldengrove](./goldengrove/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
-- [📖 Harlaw](./harlaw/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
-- [🍯 Honeyholt](./honeyholt/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
-- [🌿 Ivyhall](./ivyhall/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Frontend and connective logic.  As little as possible.
-- [🪦 Kingsgrave](./kingsgrave/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Combat system, some closely related topics.
-- [💬 Lemonwood](./lemonwood/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Linguistics system permitting communication, bidirectional translation, etc.
-- [🧠 Pyke](./pyke/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Psychology and Artificial Intelligence.
-- [👻 Ramsgate](./ramsgate/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Supernatural and metaphysical concepts, the thermodynamics of spirit.
-- [💫 Starfall](./starfall/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Astronomical sciences, from the galaxy to the moon.
-- [🌋 Stonedance](./stonedance/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Geology and physical geography.
-- [🐛 Volmark](./volmark/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Debugging and other macros.
-- [🧑‍🤝‍🧑 Weepingtown](./weepingtown/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
+- [🧬 Appleton](./crates/appleton/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
+- [💻 Blackpool](./crates/blackpool/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
+- [🏦 Casterlyrock](./crates/casterlyrock/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
+- [⛏️ Downdelving](./crates/downdelving/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Dungeons, mining, and the Underdark.
+- [🧍‍♂️ Dreadfort](./crates/dreadfort/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
+- [📜 Goldengrove](./crates/goldengrove/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
+- [📖 Harlaw](https://ndouglas.github.io/hornvale/)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
+- [🍯 Honeyholt](./crates/honeyholt/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Tool for humanizing numbers, concepts, etc.  Syntactic sugar.
+- [🌿 Ivyhall](./crates/ivyhall/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Frontend and connective logic.  As little as possible.
+- [🪦 Kingsgrave](./crates/kingsgrave/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Combat system, some closely related topics.
+- [💬 Lemonwood](./crates/lemonwood/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Linguistics system permitting communication, bidirectional translation, etc.
+- [🧠 Pyke](./crates/pyke/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Psychology and Artificial Intelligence.
+- [👻 Ramsgate](./crates/ramsgate/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Supernatural and metaphysical concepts, the thermodynamics of spirit.
+- [💫 Starfall](./crates/starfall/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Astronomical sciences, from the galaxy to the moon.
+- [🌋 Stonedance](./crates/stonedance/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Geology and physical geography.
+- [🐛 Volmark](./crates/volmark/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Debugging and other macros.
+- [🧑‍🤝‍🧑 Weepingtown](./crates/weepingtown/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
 
 **Status**: These indicators' meanings are subject to change as I progress.
  - <sup><sub><sub>🔴</sub></sub></sup>: I haven't even started.

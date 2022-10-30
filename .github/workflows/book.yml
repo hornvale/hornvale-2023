@@ -32,12 +32,12 @@ jobs:
           mdbook-version: "0.4.7"
       - name: Generate book from markdown
         run: |
-          cd harlaw
+          cd docs
           mdbook build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './harlaw/book/'
+          path: './docs/book/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

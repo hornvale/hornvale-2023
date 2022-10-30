@@ -1,20 +1,7 @@
 [workspace]
 
 members = [
-  "appleton",
-  "blackpool",
-  "casterlyrock",
-  "downdelving",
-  "dreadfort",
-  "goldengrove",
-  "honeyholt",
-  "ivyhall",
-  "kingsgrave",
-  "lemonwood",
-  "ramsgate",
-  "starfall",
-  "stonedance",
-  "volmark",
+  "crates/*",
 ]
 
 resolver="2"
@@ -34,18 +21,18 @@ rand_distr = "0.4.3"
 serde = { version = "1.0.147", features = ["derive"] }
 serde_json = "1.0.87"
 thiserror = "1.0"
-appleton = { version = "0.1.0", path = "./appleton" }
-blackpool = { version = "0.2.0", path = "./blackpool" }
-casterlyrock = { version = "0.1.0", path = "./casterlyrock" }
-downdelving = { version = "0.1.0", path = "./downdelving" }
-dreadfort = { version = "0.1.0", path = "./dreadfort" }
-goldengrove = { version = "0.1.0", path = "./goldengrove" }
-honeyholt = { version = "0.1.0", path = "./honeyholt" }
-kingsgrave = { version = "0.1.0", path = "./kingsgrave" }
-lemonwood = { version = "0.1.0", path = "./lemonwood" }
-pyke = { version = "0.1.0", path = "./pyke" }
-ramsgate = { version = "0.1.0", path = "./ramsgate" }
-starfall = { version = "0.1.0", path = "./starfall" }
-stonedance = { version = "0.1.0", path = "./stonedance" }
-volmark = { version = "0.1.0", path = "./volmark" }
-weepingtown = { version = "0.1.0", path = "./weepingtown" }
+appleton = { version = "0.1.0", path = "./crates/appleton" }
+blackpool = { version = "0.2.0", path = "./crates/blackpool" }
+casterlyrock = { version = "0.1.0", path = "./crates/casterlyrock" }
+downdelving = { version = "0.1.0", path = "./crates/downdelving" }
+dreadfort = { version = "0.1.0", path = "./crates/dreadfort" }
+goldengrove = { version = "0.1.0", path = "./crates/goldengrove" }
+honeyholt = { version = "0.1.0", path = "./crates/honeyholt" }
+kingsgrave = { version = "0.1.0", path = "./crates/kingsgrave" }
+lemonwood = { version = "0.1.0", path = "./crates/lemonwood" }
+pyke = { version = "0.1.0", path = "./crates/pyke" }
+ramsgate = { version = "0.1.0", path = "./crates/ramsgate" }
+starfall = { version = "0.1.0", path = "./crates/starfall" }
+stonedance = { version = "0.1.0", path = "./crates/stonedance" }
+volmark = { version = "0.1.0", path = "./crates/volmark" }
+weepingtown = { version = "0.1.0", path = "./crates/weepingtown" }
