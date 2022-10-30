@@ -1,5 +1,5 @@
-# Starfall
-Starfall is a library for environmental procedural content generation and related tools related to astronomy.
+# Astronomy
+This is a library for environmental procedural content generation and related tools related to astronomy.
 
 The general idea is that I want to be able to create maps, rooms, weather phenomena, geological features, astronomical features, constellations, that sort of thing.  Natural and artificial locations.  Tides!  Moons!  Crap like that.
 

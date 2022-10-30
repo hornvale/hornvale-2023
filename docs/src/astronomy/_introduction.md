@@ -28,6 +28,6 @@ Ultimately, this sort of text game needs to convey what is happening concisely, 
 
 _Nevertheless_, I do want to take into account the effects of different astronomical configurations.  How might goblins on Tatooine differ from goblins on Yavin IV?  Or Hoth?
 
-**Starfall** is intended to make this kind of thing possible, by actually generating a plausible habitable star system where an adventure might take place.  Create a sun -- or binary, or even a ternary or quaternary configuration.  Put a planet in orbit around it, with variable characteristics like axial tilt and mass and composition and albedo and water content.  Perhaps give it a moon, or two, or not.
+The astronomy system (formerly known as **Starfall**) is intended to make this kind of thing possible, by actually generating a plausible habitable star system where an adventure might take place.  Create a sun -- or binary, or even a ternary or quaternary configuration.  Put a planet in orbit around it, with variable characteristics like axial tilt and mass and composition and albedo and water content.  Perhaps give it a moon, or two, or not.
 
 Now: what is the atmosphere like?  Does it have seasons?  How long are the day, the month, the year?  What does the day look like?  The night sky?
