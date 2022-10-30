@@ -2,29 +2,29 @@
 
 [Introduction](front_matter/introduction.md)
 
-# 📜 Goldengrove
+# 📜 Mythopoetics
 
-- ["Hello, Sailor!": Procedural Interactive Fiction?](goldengrove/_introduction.md)
+- ["Hello, Sailor!"](mythopoetics/_introduction.md)
 
-# 💻 Blackpool
+# 💻 Scripting Language
 
-- [Programmable Realities: Quake, Minecraft, and LPMUDS](blackpool/_introduction.md)
+- [Programmable Realities](scripting_language/_introduction.md)
 
-# ⛏️ Downdelving
+# ⛏️ Dungeons and the Underdark
 
 - [Dungeons and the Underdark](downdelving/_introduction.md)
 
-# 💫 Starfall
+# 💫 Astronomy
 
-- [_Cosmos_ and Tatooine](starfall/_introduction.md)
+- [_Cosmos_ and Tatooine](astronomy/_introduction.md)
 
-# 👻 Ramsgate
+# 👻 Supernatural
 
-- [_The Golden Bough_ and Procedural Comparative Religion](ramsgate/_introduction.md)
+- [_The Golden Bough_ and Procedural Comparative Religion](supernatural/_introduction.md)
 
-# 🧑‍🤝‍🧑 Weepingtown
+# 🧑‍🤝‍🧑 Sociology
 
-- [The Sociology of the Goblin Village](weepingtown/_introduction.md)
+- [The Sociology of the Goblin Village](sociology/_introduction.md)
 
 <!--
 # 🧬 Appleton
