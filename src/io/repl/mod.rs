@@ -1,4 +1,7 @@
-use std::io::{self, BufRead, Error as IoError, StdinLock, Stdout, Write};
+use crate::io::error::Error;
+use crate::io::interpreter::reverse::Reverse;
+use crate::io::interpreter::Interpreter;
+use std::io::{self, BufRead, StdinLock, Stdout, Write};
 
 /// The `Repl` type.
 ///
@@ -11,19 +14,25 @@ use std::io::{self, BufRead, Error as IoError, StdinLock, Stdout, Write};
 /// for simple demonstrations and early development, it should be sufficient.
 #[derive(Clone, Derivative)]
 #[derivative(Debug)]
-pub struct Repl<R: BufRead, W: Write> {
+pub struct Repl<R: BufRead, W: Write, I: Interpreter> {
   #[derivative(Debug = "ignore")]
   pub input: R,
   #[derivative(Debug = "ignore")]
   pub output: W,
+  #[derivative(Debug = "ignore")]
+  pub interpreter: I,
 }
 
-impl<R: BufRead, W: Write> Repl<R, W> {
+impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   /// Constructor.
   #[named]
-  pub fn new(input: R, output: W) -> Self {
+  pub fn new(input: R, output: W, interpreter: I) -> Self {
     trace_enter!();
-    let result = Self { input, output };
+    let result = Self {
+      input,
+      output,
+      interpreter,
+    };
     trace_var!(result);
     trace_exit!();
     result
@@ -31,8 +40,9 @@ impl<R: BufRead, W: Write> Repl<R, W> {
 
   /// Runloop.
   #[named]
-  pub fn run(&mut self) -> Result<(), IoError> {
+  pub fn run(&mut self) -> Result<(), Error> {
     trace_enter!();
+    write!(&mut self.output, "{}", self.interpreter.get_initial_text())?;
     loop {
       write!(&mut self.output, "> ")?;
       self.output.flush()?;
@@ -42,21 +52,24 @@ impl<R: BufRead, W: Write> Repl<R, W> {
         break;
       }
       trace_var!(line);
-      writeln!(&mut self.output, "{}", line)?;
+      let response = self.interpreter.interpret(&line)?;
+      trace_var!(response);
+      writeln!(&mut self.output, "{}", response)?;
     }
     trace_exit!();
     Ok(())
   }
 }
 
-impl Default for Repl<StdinLock<'_>, Stdout> {
+impl Default for Repl<StdinLock<'_>, Stdout, Reverse> {
   #[named]
   fn default() -> Self {
     trace_enter!();
     let stdio = io::stdin();
     let input = stdio.lock();
     let output = io::stdout();
-    let result = Self::new(input, output);
+    let interpreter = Reverse {};
+    let result = Self::new(input, output, interpreter);
     trace_var!(result);
     trace_exit!();
     result
