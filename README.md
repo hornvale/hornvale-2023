@@ -34,6 +34,8 @@ A previous iteration, purely exploratory, can be found [here](https://github.com
 - [💫 Astronomy](./src/astronomy/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Astronomical sciences, from the galaxy to the moon.
 - [🌋 Geology](./src/geology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Geology and physical geography, for terrain generation at a macro and local scale.
 - [🧑‍🤝‍🧑 Sociology](./src/sociology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
+- [📍 Room](./src/room/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: The Room concept and related tools.
+- [🔗 Input/Output](./src/io/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Various forms of Input/Output.
 
 **Status**: These indicators' meanings are subject to change as I progress.
  - <sup><sub><sub>🔴</sub></sub></sup>: I haven't even started.
