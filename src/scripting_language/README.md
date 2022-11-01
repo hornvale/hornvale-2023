@@ -1,4 +1,4 @@
-# Blackpool
+# Scripting Language
 
 Blackpool is an experimental programming language, VM, and domain-specific library.
 

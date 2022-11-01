@@ -1,4 +1,5 @@
-# Ramsgate
+# Supernatural
+
 Supernatural and metaphysical concepts, the thermodynamics of spirit.
 
 Major deity generation.  How would this work?  Maybe it works in different ways and we pick one randomly.

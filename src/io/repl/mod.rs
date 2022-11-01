@@ -1,7 +1,9 @@
-use crate::io::error::Error;
-use crate::io::interpreter::reverse::Reverse;
-use crate::io::interpreter::Interpreter;
 use std::io::{self, BufRead, StdinLock, Stdout, Write};
+
+use crate::io::error::Error;
+use crate::io::interpreter::parser::Parser as ParserInterpreter;
+use crate::io::interpreter::Interpreter;
+use crate::parsing::two_word::TwoWord;
 
 /// The `Repl` type.
 ///
@@ -42,7 +44,8 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   #[named]
   pub fn run(&mut self) -> Result<(), Error> {
     trace_enter!();
-    write!(&mut self.output, "{}", self.interpreter.get_initial_text())?;
+    let initial_text = self.interpreter.get_initial_text()?;
+    writeln!(&mut self.output, "{}", initial_text.unwrap_or_default())?;
     loop {
       write!(&mut self.output, "> ")?;
       self.output.flush()?;
@@ -55,21 +58,21 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
       // Note that the string comes in with a trailing newline.
       let response = self.interpreter.interpret(line.trim())?;
       trace_var!(response);
-      writeln!(&mut self.output, "{}", response)?;
+      writeln!(&mut self.output, "{}", response.unwrap_or_default())?;
     }
     trace_exit!();
     Ok(())
   }
 }
 
-impl Default for Repl<StdinLock<'_>, Stdout, Reverse> {
+impl Default for Repl<StdinLock<'_>, Stdout, ParserInterpreter<TwoWord>> {
   #[named]
   fn default() -> Self {
     trace_enter!();
     let stdio = io::stdin();
     let input = stdio.lock();
     let output = io::stdout();
-    let interpreter = Reverse {};
+    let interpreter = ParserInterpreter::new(TwoWord {});
     let result = Self::new(input, output, interpreter);
     trace_var!(result);
     trace_exit!();

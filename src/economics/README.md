@@ -1,2 +1,1 @@
-# Casterly Rock
-Economics!
+# Economics

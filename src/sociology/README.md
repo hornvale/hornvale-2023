@@ -1,4 +1,5 @@
-# Weepingtown
+# Sociology
+
 Social psychology and sociology, individual and group behavior.
 
 Take the biological and psychological technology in [Appleton](../../appleton/README.md) and layer on sociology and economics, incorporate the magic energy from [Ramsgate](../../ramsgate/README.md) to form guilds: traders, thieves, wizards, farmers, merchants.  Create families, biological imperatives, honor systems, and create motives and goals that span generations.  

@@ -1,4 +1,5 @@
-# Appleton
+# Biology
+
 Artificial life, social/factional/economic simulation and procedural content generation and tools.
 
 The general hope here is that I can generate something like a goblin village and its environs (probably leaning on [Starfall](../astronomy/README.md) for the latter part), run it for forty years, and provide the player with the resulting situation.
