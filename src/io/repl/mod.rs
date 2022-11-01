@@ -52,7 +52,8 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
         break;
       }
       trace_var!(line);
-      let response = self.interpreter.interpret(&line)?;
+      // Note that the string comes in with a trailing newline.
+      let response = self.interpreter.interpret(line.trim())?;
       trace_var!(response);
       writeln!(&mut self.output, "{}", response)?;
     }

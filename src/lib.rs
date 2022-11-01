@@ -36,6 +36,7 @@ pub mod goap;
 pub mod io;
 pub mod linguistics;
 pub mod mythopoetics;
+pub mod parser;
 pub mod room;
 pub mod scripting_language;
 pub mod sociology;
