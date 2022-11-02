@@ -2,7 +2,7 @@ use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
 
 /// Get the radius of a main-sequence star in Rsol based on its Msol.
-#[named]
+
 pub fn star_mass_to_radius(mass: f64) -> Result<f64, Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
@@ -25,7 +25,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_ms_star_mass_to_radius() -> Result<(), Error> {
     init();

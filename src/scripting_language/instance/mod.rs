@@ -20,7 +20,7 @@ pub struct Instance {
 
 impl Instance {
   /// Constructor.
-  #[named]
+
   pub fn new(class: Reference<Class>) -> Self {
     let fields = Table::new();
 
@@ -29,7 +29,6 @@ impl Instance {
 }
 
 impl Trace for Instance {
-  #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let class = garbage_collector.deref(self.class);
 
@@ -39,20 +38,20 @@ impl Trace for Instance {
 
     result
   }
-  #[named]
+
   fn get_size(&self) -> usize {
     size_of::<Instance>() + self.fields.capacity() * (size_of::<Reference<String>>() + size_of::<Value>())
   }
-  #[named]
+
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     garbage_collector.mark_object(self.class);
     garbage_collector.mark_table(&self.fields);
   }
-  #[named]
+
   fn as_any(&self) -> &dyn Any {
     self as _
   }
-  #[named]
+
   fn as_any_mut(&mut self) -> &mut dyn Any {
     self as _
   }

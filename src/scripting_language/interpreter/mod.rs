@@ -15,7 +15,7 @@ pub struct Interpreter {}
 
 impl Interpreter {
   /// Compile the source.
-  #[named]
+
   pub fn compile<'source>(
     &mut self,
     source: &'source str,
@@ -37,7 +37,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_interpreter() {
     init();

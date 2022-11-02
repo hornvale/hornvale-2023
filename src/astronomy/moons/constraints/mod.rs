@@ -16,7 +16,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(
     &self,
     rng: &mut R,
@@ -86,7 +86,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();

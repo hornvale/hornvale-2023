@@ -26,7 +26,7 @@ impl HostStar {
   /// Retrieve or calculate the age of the stars.
   ///
   /// Calculated in Gyr.
-  #[named]
+
   pub fn get_current_age(&self) -> f64 {
     use HostStar::*;
 
@@ -39,7 +39,7 @@ impl HostStar {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  #[named]
+
   pub fn get_stellar_mass(&self) -> f64 {
     use HostStar::*;
 
@@ -50,7 +50,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-  #[named]
+
   pub fn get_stellar_count(&self) -> u8 {
     use HostStar::*;
 
@@ -61,7 +61,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the frost line.
-  #[named]
+
   pub fn get_frost_line(&self) -> f64 {
     use HostStar::*;
 
@@ -72,7 +72,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the habitable zone.
-  #[named]
+
   pub fn get_habitable_zone(&self) -> (f64, f64) {
     use HostStar::*;
 
@@ -83,7 +83,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the satellite zone.
-  #[named]
+
   pub fn get_satellite_zone(&self) -> (f64, f64) {
     use HostStar::*;
 
@@ -94,7 +94,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the luminosity.
-  #[named]
+
   pub fn get_luminosity(&self) -> f64 {
     use HostStar::*;
 
@@ -105,7 +105,7 @@ impl HostStar {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     use HostStar::*;
     match &self {
@@ -117,7 +117,7 @@ impl HostStar {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,

@@ -7,7 +7,6 @@ use hornvale::astronomy::star::name::{generate_star_name, INFIX, PREFIX, SUFFIX}
 use hornvale::*;
 use rand::prelude::*;
 
-#[named]
 fn main() {
   init_pretty_env_logger();
 

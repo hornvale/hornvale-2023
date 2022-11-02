@@ -13,7 +13,7 @@ pub struct Nodes {
 
 impl Nodes {
   /// Constructor.
-  #[named]
+
   pub fn new() -> Self {
     let nodes = Vec::new();
 
@@ -21,7 +21,7 @@ impl Nodes {
   }
 
   /// Index of node containing matching world state, if any.
-  #[named]
+
   pub fn find_node_matching_state(&self, state: &State) -> Result<usize, Error> {
     {
       for (index, node) in self.nodes.iter().enumerate() {
@@ -34,7 +34,7 @@ impl Nodes {
   }
 
   /// Index of node with the lowest f value.
-  #[named]
+
   pub fn find_cheapest_node(&self) -> Result<usize, Error> {
     let mut lowest_value = usize::MAX;
 
@@ -50,7 +50,7 @@ impl Nodes {
   }
 
   /// Take cheapest node.
-  #[named]
+
   pub fn take_cheapest_node(&mut self) -> Result<Node, Error> {
     let index = self.find_cheapest_node()?;
 
@@ -64,7 +64,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test1() {
     init();
@@ -77,7 +76,6 @@ pub mod test {
     print_var!(nodes);
   }
 
-  #[named]
   #[test]
   pub fn test2() {
     init();

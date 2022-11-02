@@ -5,7 +5,6 @@ extern crate function_name;
 
 use hornvale::*;
 
-#[named]
 fn main() {
   init_pretty_env_logger();
 

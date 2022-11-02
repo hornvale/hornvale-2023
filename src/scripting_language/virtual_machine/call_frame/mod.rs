@@ -14,7 +14,7 @@ pub struct CallFrame {
 
 impl CallFrame {
   /// Constructor.
-  #[named]
+
   pub fn new(closure: Reference<Closure>, index: usize) -> Self {
     let instruction_pointer = 0;
 

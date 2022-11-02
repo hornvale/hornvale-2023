@@ -14,7 +14,7 @@ pub struct SatelliteSystems {
 
 impl SatelliteSystems {
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     let result = {
       let any = self
@@ -31,7 +31,7 @@ impl SatelliteSystems {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,

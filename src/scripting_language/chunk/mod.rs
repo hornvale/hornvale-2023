@@ -19,7 +19,6 @@ pub struct Chunk {
 
 impl Chunk {
   /// Dump the disassembled chunk to a std::fmt::Write object.
-  #[named]
   #[inline]
   pub fn dump_fmt<W: FmtWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
     self.instructions.dump(out)?;
@@ -28,7 +27,6 @@ impl Chunk {
   }
 
   /// Dump the disassembled chunk to a std::io::Write object.
-  #[named]
   #[inline]
   pub fn dump_io<W: IoWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
     let mut string = String::new();
@@ -39,7 +37,6 @@ impl Chunk {
   }
 
   /// Read a string.
-  #[named]
   pub fn read_string(&self, index: u16) -> Reference<String> {
     if let Value::String(string) = self.constants.constants[index as usize] {
       string
@@ -57,17 +54,18 @@ pub mod test {
   use crate::scripting_language::value::Value;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test() {
     init();
 
-    let string = String::new();
+    let mut string = String::new();
     let mut chunk = Chunk::default();
     let const_inst = chunk.constants.push(Value::Number(1.2)).unwrap();
     chunk.instructions.append(const_inst, 1);
     chunk.instructions.append(Instruction::Return, 2);
-    let lines: Vec<&str> = string.split('\n').collect();
+    let result = chunk.dump_fmt(&mut string).unwrap();
+    assert_eq!(result, ());
+    let lines: Vec<&str> = string.split("\n").collect();
     assert_eq!(lines[0], "");
     assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
     assert_eq!(lines[2], "----------------------------------------------");

@@ -16,12 +16,10 @@ impl StarReporter {
     Self {}
   }
 
-  #[named]
   pub fn report_string(&self, indent: usize, string: &str) {
     println!("{:indent$}{}", "", string, indent = indent);
   }
 
-  #[named]
   pub fn report(&self, star: &Star, indent: usize) {
     let new_indent = indent + 2;
     self.report_string(new_indent, &format!("This is a {} class star.", star.class));
@@ -53,7 +51,6 @@ impl StarReporter {
   }
 }
 
-#[named]
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
 

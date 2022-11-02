@@ -22,7 +22,7 @@ pub struct Closure {
 
 impl Closure {
   /// Constructor.
-  #[named]
+
   pub fn new(function: Reference<Function>) -> Self {
     let upvalues = Vec::new();
 
@@ -31,19 +31,16 @@ impl Closure {
 }
 
 impl Trace for Closure {
-  #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let function = garbage_collector.deref(self.function);
 
     function.format(f, garbage_collector)
   }
 
-  #[named]
   fn get_size(&self) -> usize {
     size_of::<Closure>() + self.upvalues.capacity() * size_of::<Reference<Upvalue>>()
   }
 
-  #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     garbage_collector.mark_object(self.function);
     for &upvalue in &self.upvalues {
@@ -51,12 +48,10 @@ impl Trace for Closure {
     }
   }
 
-  #[named]
   fn as_any(&self) -> &dyn Any {
     self as _
   }
 
-  #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
     self as _
   }

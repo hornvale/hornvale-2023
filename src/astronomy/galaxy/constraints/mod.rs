@@ -23,7 +23,7 @@ impl Constraints {
   /// Generate a random stellar neighborhood with the specified constraints.
   ///
   /// This may or may not be habitable.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Galaxy, Error> {
     let stellar_neighborhood_constraints = self.stellar_neighborhood_constraints.unwrap_or_default();
 
@@ -52,7 +52,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
@@ -67,7 +66,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();

@@ -12,7 +12,7 @@ pub struct TwoWord {}
 
 impl Parser for TwoWord {
   /// Parse two (or more) words of input.
-  #[named]
+
   fn parse_input(&mut self, input: &str) -> Result<Option<String>, Error> {
     let words = input.split(' ').map(str::to_string).collect::<Vec<String>>();
 

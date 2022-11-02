@@ -20,7 +20,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable star subsystem.
-  #[named]
+
   pub fn habitable() -> Self {
     Self {
       ..Constraints::default()
@@ -28,7 +28,7 @@ impl Constraints {
   }
 
   /// Generate.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSubsystem, Error> {
     use StarSubsystem::*;
     let distant_binary_probability = self.distant_binary_probability.unwrap_or(DISTANT_BINARY_PROBABILITY);
@@ -71,7 +71,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
@@ -85,7 +84,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();

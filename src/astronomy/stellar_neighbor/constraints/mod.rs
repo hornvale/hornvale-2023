@@ -18,7 +18,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable star system.
-  #[named]
+
   pub fn habitable() -> Self {
     let system_constraints = Some(StarSystemConstraints::habitable());
 
@@ -31,7 +31,7 @@ impl Constraints {
   /// Generate a random stellar neighborhood with the specified constraints.
   ///
   /// This may or may not be habitable.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighbor, Error> {
     // @todo: move this into stellar neighborhood, probably.
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
@@ -82,7 +82,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
@@ -96,7 +95,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();

@@ -48,7 +48,7 @@ pub struct VirtualMachine {
 
 impl VirtualMachine {
   /// Constructor.
-  #[named]
+
   pub fn new() -> Self {
     let call_frames = Vec::with_capacity(CALL_FRAMES_MAX);
 
@@ -81,7 +81,7 @@ impl VirtualMachine {
   }
 
   /// Interpret some source code.
-  #[named]
+
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     let mut interpreter = Interpreter::default();
 
@@ -97,7 +97,7 @@ impl VirtualMachine {
   }
 
   /// Run the chunk.
-  #[named]
+
   pub fn run(&mut self) -> Result<(), Error> {
     loop {
       let instruction =
@@ -399,7 +399,7 @@ impl VirtualMachine {
   }
 
   /// Binary arithmetic operator.
-  #[named]
+
   #[inline]
   pub fn binary_arithmetic_operation<T>(
     &mut self,
@@ -428,7 +428,7 @@ impl VirtualMachine {
   }
 
   /// Push a value to the stack.
-  #[named]
+
   #[inline]
   pub fn push(&mut self, value: Value) -> Result<(), Error> {
     if self.stack.len() > STACK_SIZE_MAX {
@@ -441,7 +441,7 @@ impl VirtualMachine {
   }
 
   /// Push a value to the stack.
-  #[named]
+
   #[inline]
   pub fn pop(&mut self) -> Result<Value, Error> {
     if self.stack.is_empty() {
@@ -454,7 +454,7 @@ impl VirtualMachine {
   }
 
   /// Peek at a value on the stack.
-  #[named]
+
   #[inline]
   pub fn peek(&self, offset: usize) -> Result<Value, Error> {
     if self.stack.is_empty() {
@@ -470,7 +470,7 @@ impl VirtualMachine {
   }
 
   /// Set a value in the stack directly.
-  #[named]
+
   pub fn set_in_stack(&mut self, offset: usize, value: Value) {
     let max_index = self.stack.len() - 1;
 
@@ -479,7 +479,7 @@ impl VirtualMachine {
   }
 
   /// Is this "falsey" or not?
-  #[named]
+
   #[inline]
   pub fn is_falsey(&mut self, value: &Value) -> bool {
     use Value::*;
@@ -492,7 +492,7 @@ impl VirtualMachine {
   }
 
   /// Allocate an object.
-  #[named]
+
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
     self.mark_and_sweep();
 
@@ -500,7 +500,7 @@ impl VirtualMachine {
   }
 
   /// Eliminates duplicate string references.
-  #[named]
+
   pub fn intern(&mut self, name: String) -> Reference<String> {
     self.mark_and_sweep();
 
@@ -522,7 +522,7 @@ impl VirtualMachine {
   /// one.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-  #[named]
+
   pub fn mark_and_sweep(&mut self) {
     if self.garbage_collector.should_collect() {
       debug!("Beginning garbage collection.");
@@ -533,7 +533,7 @@ impl VirtualMachine {
   }
 
   /// Mark roots.
-  #[named]
+
   fn mark_roots(&mut self) {
     // Mark everything on the stack as a root object.
     debug!("marking {} values on stack for garbage collection", self.stack.len());
@@ -555,7 +555,7 @@ impl VirtualMachine {
   }
 
   /// Get current frame.
-  #[named]
+
   pub fn get_current_frame(&self) -> &CallFrame {
     let result = self.call_frames.last().unwrap();
 
@@ -563,7 +563,7 @@ impl VirtualMachine {
   }
 
   /// Get current frame mutable.
-  #[named]
+
   pub fn get_current_frame_mut(&mut self) -> &mut CallFrame {
     let result = self.call_frames.last_mut().unwrap();
 
@@ -571,7 +571,7 @@ impl VirtualMachine {
   }
 
   /// Get current closure.
-  #[named]
+
   pub fn get_current_closure(&self) -> &ClosureStruct {
     let closure = self.get_current_frame().closure;
 
@@ -579,7 +579,7 @@ impl VirtualMachine {
   }
 
   /// Get current chunk.
-  #[named]
+
   pub fn get_current_chunk(&self) -> &Chunk {
     let closure = self.get_current_closure();
 
@@ -589,7 +589,7 @@ impl VirtualMachine {
   }
 
   /// Capture an upvalue.
-  #[named]
+
   pub fn capture_upvalue(&mut self, location: usize) -> Result<Reference<Upvalue>, Error> {
     for &upvalue_ref in &self.open_upvalues {
       let upvalue = self.garbage_collector.deref(upvalue_ref);
@@ -608,7 +608,7 @@ impl VirtualMachine {
   }
 
   /// Call the value on top of the stack as a function.
-  #[named]
+
   pub fn call_value(&mut self, argument_count: usize) -> Result<(), Error> {
     let callee = self.peek(argument_count)?;
     match callee {
@@ -663,7 +663,7 @@ impl VirtualMachine {
   }
 
   /// Invoke a method with arguments.
-  #[named]
+
   pub fn invoke(&mut self, name: Reference<String>, argument_count: usize) -> Result<(), Error> {
     let receiver = self.peek(argument_count)?;
 
@@ -687,7 +687,7 @@ impl VirtualMachine {
   }
 
   /// Invoke a method call via class.
-  #[named]
+
   fn invoke_from_class(
     &mut self,
     class_reference: Reference<ClassStruct>,
@@ -712,7 +712,7 @@ impl VirtualMachine {
   }
 
   /// Call a closure.
-  #[named]
+
   pub fn call(&mut self, closure_reference: Reference<ClosureStruct>, argument_count: usize) -> Result<(), Error> {
     let closure = self.garbage_collector.deref(closure_reference);
 
@@ -745,7 +745,7 @@ impl VirtualMachine {
   }
 
   /// Close upvalues; that is, move them from the stack to the heap.
-  #[named]
+
   pub fn close_upvalues(&mut self, last: usize) -> Result<(), Error> {
     let mut i = 0;
     while i != self.open_upvalues.len() {
@@ -764,7 +764,7 @@ impl VirtualMachine {
   }
 
   /// Define a native function.
-  #[named]
+
   pub fn define_native_function(&mut self, name: &str, native_function: NativeFunction) -> Result<(), Error> {
     let name_reference = self.garbage_collector.intern(name.to_owned());
 
@@ -776,7 +776,7 @@ impl VirtualMachine {
   }
 
   /// Encountered an error.
-  #[named]
+
   pub fn did_encounter_runtime_error(&self, message: &str) {
     let frame = self.get_current_frame();
 
@@ -788,7 +788,7 @@ impl VirtualMachine {
   }
 
   /// Bind a method to a class.
-  #[named]
+
   pub fn bind_method(
     &mut self,
     class_reference: Reference<ClassStruct>,
@@ -821,7 +821,7 @@ impl VirtualMachine {
   }
 
   /// Defines a method.
-  #[named]
+
   pub fn define_method(&mut self, name: Reference<String>) -> Result<(), Error> {
     let method_value = self.peek(0)?;
     if let Value::Class(class_reference) = self.peek(1)? {
@@ -837,7 +837,6 @@ impl VirtualMachine {
 }
 
 impl Default for VirtualMachine {
-  #[named]
   fn default() -> Self {
     Self::new()
   }
@@ -849,13 +848,11 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_vm() {
     init();
   }
 
-  #[named]
   #[test]
   pub fn test_vm2() {
     init();
@@ -865,7 +862,6 @@ pub mod test {
     vm.interpret(&line).unwrap();
   }
 
-  #[named]
   #[test]
   #[should_panic]
   pub fn test_vm3() {
@@ -877,7 +873,6 @@ pub mod test {
     vm.interpret(&line).unwrap();
   }
 
-  #[named]
   #[test]
   pub fn test_vm4() -> Result<(), Error> {
     init();

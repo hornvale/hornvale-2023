@@ -26,7 +26,7 @@ pub struct DistantBinaryStar {
 
 impl DistantBinaryStar {
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     self.primary.check_habitable()?;
     self.secondary.check_habitable()?;
@@ -35,7 +35,7 @@ impl DistantBinaryStar {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -46,13 +46,13 @@ impl DistantBinaryStar {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  #[named]
+
   pub fn get_stellar_mass(&self) -> f64 {
     self.primary.get_stellar_mass() + self.secondary.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-  #[named]
+
   pub fn get_stellar_count(&self) -> u8 {
     self.primary.get_stellar_count() + self.secondary.get_stellar_count()
   }

@@ -35,7 +35,7 @@ pub fn lsol_to_watts(lsol: f64) -> f64 {
 }
 
 /// Get the luminosity of a main-sequence star in Lsol based on its Msol.
-#[named]
+
 pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
   if mass < MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
@@ -60,7 +60,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_ergs_to_lsol() {
     init();
@@ -69,7 +68,6 @@ pub mod test {
     assert_approx_eq!(lsol_to_ergs(1.0), ERGS_PER_SEC_PER_LSOL);
   }
 
-  #[named]
   #[test]
   pub fn test_joules_to_lsol() {
     init();
@@ -78,7 +76,6 @@ pub mod test {
     assert_approx_eq!(lsol_to_joules(1.0), JOULES_PER_SEC_PER_LSOL);
   }
 
-  #[named]
   #[test]
   pub fn test_watts_to_lsol() {
     init();
@@ -87,7 +84,6 @@ pub mod test {
     assert_approx_eq!(lsol_to_watts(1.0), JOULES_PER_SEC_PER_LSOL);
   }
 
-  #[named]
   #[test]
   #[should_panic]
   pub fn test_star_mass_to_luminosity1() {
@@ -96,7 +92,6 @@ pub mod test {
     star_mass_to_luminosity(0.0000001).unwrap();
   }
 
-  #[named]
   #[test]
   #[should_panic]
   pub fn test_star_mass_to_luminosity2() {
@@ -105,7 +100,6 @@ pub mod test {
     star_mass_to_luminosity(350.0).unwrap();
   }
 
-  #[named]
   #[test]
   pub fn test_star_mass_to_luminosity3() {
     init();
@@ -113,7 +107,6 @@ pub mod test {
     star_mass_to_luminosity(MAXIMUM_MASS).unwrap();
   }
 
-  #[named]
   #[test]
   pub fn test_ms_star_mass_to_luminosity() -> Result<(), Error> {
     init();

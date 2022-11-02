@@ -18,7 +18,7 @@ pub struct Upvalue {
 
 impl Upvalue {
   /// Constructor.
-  #[named]
+
   pub fn new(location: usize) -> Self {
     let closed = None;
 
@@ -27,31 +27,26 @@ impl Upvalue {
 }
 
 impl Trace for Upvalue {
-  #[named]
   fn format(&self, f: &mut Formatter, _garbage_collector: &GarbageCollector) -> FmtResult {
     let result = write!(f, "upvalue");
 
     result
   }
 
-  #[named]
   fn get_size(&self) -> usize {
     size_of::<Upvalue>()
   }
 
-  #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     if let Some(object) = self.closed {
       garbage_collector.mark_value(object);
     }
   }
 
-  #[named]
   fn as_any(&self) -> &dyn Any {
     self as _
   }
 
-  #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
     self as _
   }

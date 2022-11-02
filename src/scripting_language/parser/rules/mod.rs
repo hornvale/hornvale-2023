@@ -16,7 +16,7 @@ pub struct Rules<'source> {
 
 impl<'source> Rules<'source> {
   /// Constructor.
-  #[named]
+
   pub fn new() -> Self {
     let rules = HashMap::new();
 
@@ -24,7 +24,7 @@ impl<'source> Rules<'source> {
   }
 
   /// Add a new rule.
-  #[named]
+
   pub fn add_rule(
     &mut self,
     token_type: TokenType,
@@ -45,7 +45,7 @@ impl<'source> Rules<'source> {
 
 impl<'source> Default for Rules<'source> {
   /// No constraints, just let it all hang out.
-  #[named]
+
   fn default() -> Self {
     let mut result = Rules::new();
 
@@ -120,7 +120,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_rules() {
     init();

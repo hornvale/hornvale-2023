@@ -50,7 +50,6 @@ pub enum Type {
 }
 
 impl Type {
-  #[named]
   pub fn get_all() -> Vec<Self> {
     use Type::*;
     vec![
@@ -138,7 +137,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test() {
     init();

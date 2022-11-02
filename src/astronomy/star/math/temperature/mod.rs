@@ -4,7 +4,7 @@ use crate::astronomy::star::math::luminosity::star_mass_to_luminosity;
 use crate::astronomy::star::math::radius::star_mass_to_radius;
 
 /// Get the temperature of a main-sequence star in Kelvin based on its Msol.
-#[named]
+
 pub fn star_mass_to_temperature(mass: f64) -> Result<f64, Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
@@ -25,7 +25,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_ms_star_mass_to_temperature() -> Result<(), Error> {
     init();

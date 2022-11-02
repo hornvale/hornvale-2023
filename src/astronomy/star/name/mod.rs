@@ -22,7 +22,6 @@ pub const SUFFIX: &[&str] = &[
   "yria",
 ];
 
-#[named]
 pub fn generate_star_name<R: Rng + ?Sized>(rng: &mut R) -> String {
   let first = PREFIX[rng.gen_range(0..PREFIX.len())];
   let second = INFIX[rng.gen_range(0..INFIX.len())];
@@ -39,7 +38,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_name_star() {
     init();

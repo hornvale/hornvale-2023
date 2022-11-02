@@ -15,7 +15,6 @@ pub struct Reference<T: Trace> {
 
 /// Clone implementation.
 impl<T: Trace> Clone for Reference<T> {
-  #[named]
   #[inline]
   fn clone(&self) -> Reference<T> {
     *self
@@ -27,7 +26,6 @@ impl<T: Trace> Copy for Reference<T> {}
 
 /// Debug implementation.
 impl<T: Trace> Debug for Reference<T> {
-  #[named]
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let full_name = type_name::<T>();
 
@@ -40,7 +38,6 @@ impl<T: Trace> Debug for Reference<T> {
 
 /// Display implementation.
 impl<T: Trace> Display for Reference<T> {
-  #[named]
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let result = write!(f, "{:?}", self);
 
@@ -53,7 +50,6 @@ impl<T: Trace> Eq for Reference<T> {}
 
 /// Hash implementation.
 impl Hash for Reference<String> {
-  #[named]
   fn hash<H: Hasher>(&self, state: &mut H) {
     self.index.hash(state);
   }
@@ -61,7 +57,6 @@ impl Hash for Reference<String> {
 
 /// PartialEq implementation.
 impl<T: Trace> PartialEq for Reference<T> {
-  #[named]
   fn eq(&self, other: &Self) -> bool {
     self.index == other.index
   }

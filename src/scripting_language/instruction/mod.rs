@@ -90,7 +90,7 @@ pub enum Instruction {
 
 impl Instruction {
   /// Show the disassembled version of the instruction.
-  #[named]
+
   pub fn dump<W: Write>(
     &self,
     index: usize,
@@ -135,7 +135,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_fmt() {
     init();
@@ -145,7 +144,6 @@ pub mod test {
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");
   }
 
-  #[named]
   #[test]
   pub fn test() {
     init();
@@ -156,7 +154,6 @@ pub mod test {
     assert_eq!(string, "    0   0x0000       0            Return     0\n");
   }
 
-  #[named]
   #[test]
   pub fn test2() {
     init();
@@ -167,7 +164,6 @@ pub mod test {
     assert_eq!(string, "   16   0x0017      72            Return     0\n");
   }
 
-  #[named]
   #[test]
   pub fn test3() {
     init();

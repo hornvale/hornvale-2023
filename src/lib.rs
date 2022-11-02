@@ -9,8 +9,6 @@ extern crate derivative;
 #[macro_use]
 extern crate derive_more;
 #[macro_use]
-extern crate function_name;
-#[macro_use]
 extern crate log;
 pub use log::*;
 extern crate pretty_env_logger;
@@ -59,7 +57,6 @@ pub mod test {
   #[allow(unused_imports)]
   use super::*;
 
-  #[named]
   pub fn init() {
     let _ = builder().is_test(true).try_init();
     set_var("RUST_BACKTRACE", "1");

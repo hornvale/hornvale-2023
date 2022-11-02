@@ -9,7 +9,7 @@ pub const GREENHOUSE_EFFECT: f64 = 0.5841;
 /// Calculate the equilibrium temperature for a planet based on the host star's
 /// luminosity, distance, etc.
 /// Answer in Kelvin.
-#[named]
+
 pub fn get_equilibrium_temperature(
   bond_albedo: f64,
   greenhouse_effect: f64,

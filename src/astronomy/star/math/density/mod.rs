@@ -16,7 +16,7 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
+
   #[test]
   pub fn test_grams_to_dsol() {
     init();

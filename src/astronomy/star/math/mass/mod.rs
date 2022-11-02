@@ -17,7 +17,7 @@ pub fn kg_to_msol(kg: f64) -> f64 {
 }
 
 /// Get a (weighted) random mass for a star.
-#[named]
+
 pub fn get_random_stellar_mass<R: Rng + ?Sized>(rng: &mut R) -> f64 {
   let spectral_class = get_random_spectral_class(rng);
 
@@ -27,7 +27,7 @@ pub fn get_random_stellar_mass<R: Rng + ?Sized>(rng: &mut R) -> f64 {
 }
 
 /// Get a (weighted) habitable random mass for a star.
-#[named]
+
 pub fn get_random_habitable_stellar_mass<R: Rng + ?Sized>(rng: &mut R) -> f64 {
   let spectral_class = get_random_habitable_spectral_class(rng);
 
@@ -42,7 +42,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_msol_to_kg() {
     init();

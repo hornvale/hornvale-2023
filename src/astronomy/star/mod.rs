@@ -58,7 +58,7 @@ pub struct Star {
 /// Implementation of Star.
 impl Star {
   /// Generate a random main-sequence star from a given mass.
-  #[named]
+
   pub fn from_mass<R: Rng + ?Sized>(rng: &mut R, mass: f64) -> Result<Star, Error> {
     let temperature = star_mass_to_temperature(mass)?;
 
@@ -111,7 +111,7 @@ impl Star {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     if self.mass < MINIMUM_HABITABLE_MASS {
       return Err(Error::MassTooLowToSupportLife);
@@ -127,7 +127,7 @@ impl Star {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -145,7 +145,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn get_random_main_sequence() -> Result<(), Error> {
     init();

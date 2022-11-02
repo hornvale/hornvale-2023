@@ -24,7 +24,7 @@ pub struct Scanner<'source> {
 
 impl<'source> Scanner<'source> {
   /// Constructor.
-  #[named]
+
   pub fn new(source: &'source str) -> Self {
     let start = 0;
 
@@ -44,7 +44,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Scan a token.
-  #[named]
+
   pub fn scan_token(&mut self) -> Result<Token<'source>, Error> {
     self.skip_whitespace();
     self.start = self.current;
@@ -91,7 +91,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Advance one character through the source and return it.
-  #[named]
+
   #[inline]
   pub fn advance(&mut self) -> char {
     let position = self.current;
@@ -102,13 +102,13 @@ impl<'source> Scanner<'source> {
   }
 
   /// Are we at the end of the source?
-  #[named]
+
   pub fn is_at_end(&self) -> bool {
     self.current >= self.source.len()
   }
 
   /// Create a token based on a token type.
-  #[named]
+
   pub fn make_token(&self, r#type: TokenType) -> Token<'source> {
     let lexeme = self.get_lexeme();
 
@@ -122,13 +122,13 @@ impl<'source> Scanner<'source> {
   }
 
   /// Get the lexeme from the start and current position.
-  #[named]
+
   pub fn get_lexeme(&self) -> &'source str {
     &self.source[self.start..self.current] as _
   }
 
   /// Does the current character match the one specified?
-  #[named]
+
   pub fn match_current(&mut self, char: char) -> bool {
     if self.is_at_end() {
       return false;
@@ -142,7 +142,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Try to match and create a token out of a number.
-  #[named]
+
   pub fn match_number(&mut self) -> Result<Token<'source>, Error> {
     while self.is_digit(self.peek()) {
       self.advance();
@@ -161,7 +161,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Try to match and create a token out of a string.
-  #[named]
+
   pub fn match_string(&mut self) -> Result<Token<'source>, Error> {
     while self.peek() != '"' && !self.is_at_end() {
       if self.peek() == '\n' {
@@ -179,7 +179,6 @@ impl<'source> Scanner<'source> {
     Ok(result)
   }
 
-  #[named]
   pub fn match_identifier(&mut self) -> Result<Token<'source>, Error> {
     while self.is_alpha_numeric(self.peek()) {
       self.advance();
@@ -196,22 +195,18 @@ impl<'source> Scanner<'source> {
     Ok(result)
   }
 
-  #[named]
   pub fn is_digit(&self, char: char) -> bool {
     ('0'..='9').contains(&char)
   }
 
-  #[named]
   pub fn is_alpha(&self, char: char) -> bool {
     ('a'..='z').contains(&char) || ('A'..='Z').contains(&char) || char == '_'
   }
 
-  #[named]
   pub fn is_alpha_numeric(&self, char: char) -> bool {
     self.is_digit(char) || self.is_alpha(char)
   }
 
-  #[named]
   pub fn get_error_token(&self, message: &'static str) -> Token<'source> {
     let mut result = Token::synthesize(message);
     result.line_number = self.line_number;
@@ -220,7 +215,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Match a single-line comment.
-  #[named]
+
   pub fn match_line_comment(&mut self) {
     while self.peek() != '\n' && !self.is_at_end() {
       self.advance();
@@ -228,7 +223,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Match a multi-line comment.
-  #[named]
+
   pub fn match_multiline_comment(&mut self) {
     while !(self.is_at_end() || self.peek_next() == '*' && self.peek_at_offset(2) == '/') {
       self.advance();
@@ -242,19 +237,19 @@ impl<'source> Scanner<'source> {
   }
 
   /// Peek at the current character, but don't advance.
-  #[named]
+
   pub fn peek(&self) -> char {
     self.peek_at_offset(0)
   }
 
   /// Peek at the next character.
-  #[named]
+
   pub fn peek_next(&self) -> char {
     self.peek_at_offset(1)
   }
 
   /// Peek at a character at a specified offset.
-  #[named]
+
   pub fn peek_at_offset(&self, offset: usize) -> char {
     match self.current + offset >= self.source.len() {
       true => '\0',
@@ -263,7 +258,7 @@ impl<'source> Scanner<'source> {
   }
 
   /// Skip all the whitespace!
-  #[named]
+
   pub fn skip_whitespace(&mut self) {
     loop {
       match self.peek() {
@@ -291,7 +286,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_scanner() {
     init();

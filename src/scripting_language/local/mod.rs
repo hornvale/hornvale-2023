@@ -13,7 +13,7 @@ pub struct Local<'source> {
 
 impl<'source> Local<'source> {
   /// Constructor.
-  #[named]
+
   pub fn new(token: Token<'source>, depth: i32) -> Self {
     let is_captured = false;
 

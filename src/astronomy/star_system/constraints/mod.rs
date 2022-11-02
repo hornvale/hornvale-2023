@@ -57,7 +57,7 @@ impl Constraints {
   /// Generate a random star system with the specified constraints.
   ///
   /// This may or may not be habitable.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSystem, Error> {
     let star_subsystem_constraints = self.star_subsystem_constraints.unwrap_or_default();
     let star_subsystem = {
@@ -105,7 +105,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
@@ -119,7 +118,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
@@ -136,7 +134,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable_close_binary() -> Result<(), Error> {
     init();
@@ -150,7 +147,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable_distant_binary() -> Result<(), Error> {
     init();
@@ -164,7 +160,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_main_sequence() -> Result<(), Error> {
     init();

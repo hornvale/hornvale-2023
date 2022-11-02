@@ -57,7 +57,6 @@ pub struct TerrestrialPlanet {
 }
 
 impl TerrestrialPlanet {
-  #[named]
   pub fn from_mass(mass: f64) -> Result<Self, Error> {
     let core_mass_fraction: f64 = 0.35;
 
@@ -126,7 +125,7 @@ impl TerrestrialPlanet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     {
       if self.equilibrium_temperature <= MINIMUM_HABITABLE_TEMPERATURE {
@@ -160,7 +159,7 @@ impl TerrestrialPlanet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -175,7 +174,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_from_mass() -> Result<(), Error> {
     init();

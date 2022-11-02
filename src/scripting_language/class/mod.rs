@@ -18,7 +18,7 @@ pub struct Class {
 
 impl Class {
   /// Constructor.
-  #[named]
+
   pub fn new(name: Reference<String>) -> Self {
     let methods = Table::new();
 
@@ -27,7 +27,6 @@ impl Class {
 }
 
 impl Trace for Class {
-  #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let name = garbage_collector.deref(self.name);
 
@@ -35,20 +34,20 @@ impl Trace for Class {
 
     result
   }
-  #[named]
+
   fn get_size(&self) -> usize {
     size_of::<Class>()
   }
-  #[named]
+
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     garbage_collector.mark_object(self.name);
     garbage_collector.mark_table(&self.methods);
   }
-  #[named]
+
   fn as_any(&self) -> &dyn Any {
     self as _
   }
-  #[named]
+
   fn as_any_mut(&mut self) -> &mut dyn Any {
     self as _
   }

@@ -21,7 +21,6 @@ impl StarSystemReporter {
   }
 }
 
-#[named]
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
 

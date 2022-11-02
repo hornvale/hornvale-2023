@@ -70,7 +70,6 @@ pub struct Moon {
 }
 
 impl Moon {
-  #[named]
   pub fn from_environment(
     mass: f64,
     host_star: &HostStar,

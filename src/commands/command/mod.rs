@@ -12,7 +12,7 @@ pub enum Command {
 
 impl Command {
   /// Execute.
-  #[named]
+
   pub fn execute(&mut self) -> Result<Option<String>, Error> {
     use Command::*;
     let result = match &self {

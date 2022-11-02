@@ -31,7 +31,7 @@ impl Constraints {
   }
 
   /// Generate.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Star, Error> {
     let mass = match self.make_habitable {
       true => get_random_habitable_stellar_mass(rng),
@@ -75,7 +75,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn get_random_main_sequence() -> Result<(), Error> {
     init();
@@ -89,7 +88,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();

@@ -14,7 +14,6 @@ pub type FunctionType = fn(&VirtualMachine, &[Value]) -> Result<Value, Error>;
 pub struct NativeFunction(pub FunctionType);
 
 impl Debug for NativeFunction {
-  #[named]
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let result = write!(f, "<native fn>");
 
@@ -23,7 +22,6 @@ impl Debug for NativeFunction {
 }
 
 impl Display for NativeFunction {
-  #[named]
   fn fmt(&self, f: &mut Formatter) -> FmtResult {
     let result = write!(f, "{:#?}", self);
 
@@ -32,7 +30,6 @@ impl Display for NativeFunction {
 }
 
 impl PartialEq for NativeFunction {
-  #[named]
   fn eq(&self, other: &Self) -> bool {
     eq(self, other)
   }

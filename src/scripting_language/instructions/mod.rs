@@ -15,7 +15,6 @@ pub struct Instructions {
 
 impl Instructions {
   /// Append an instruction to the chunk.
-  #[named]
   pub fn append(&mut self, instruction: Instruction, line_number: usize) {
     assert_eq!(self.instructions.len(), self.line_numbers.len());
     self.instructions.push(instruction);
@@ -23,7 +22,6 @@ impl Instructions {
   }
 
   /// Dump the disassembled memory.
-  #[named]
   pub fn dump<W: Write>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
     writeln!(out)?;
     writeln!(
@@ -51,17 +49,18 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test() {
     init();
 
-    let string = String::new();
+    let mut string = String::new();
     let instruction = Instruction::Return;
     let mut instructions = Instructions::default();
     instructions.append(instruction, 1);
+    let result = instructions.dump(&mut string).unwrap();
+    assert_eq!(result, ());
     println!("{}", string);
-    let lines: Vec<&str> = string.split('\n').collect();
+    let lines: Vec<&str> = string.split("\n").collect();
     assert_eq!(lines[0], "");
     assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
     assert_eq!(lines[2], "----------------------------------------------");

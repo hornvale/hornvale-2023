@@ -17,7 +17,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable star subsystem.
-  #[named]
+
   pub fn habitable() -> Self {
     let host_star_constraints = Some(HostStarConstraints::habitable());
     let satellite_systems_constraints = Some(SatelliteSystemsConstraints::habitable());
@@ -29,7 +29,7 @@ impl Constraints {
   }
 
   /// Generate.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<PlanetarySystem, Error> {
     let host_star_constraints = self.host_star_constraints.unwrap_or_default();
 
@@ -68,7 +68,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
@@ -91,7 +90,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();

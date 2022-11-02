@@ -19,7 +19,7 @@ pub struct Node {
 
 impl Node {
   /// Constructor for start node.
-  #[named]
+
   pub fn new_start(state: State, goal: State) -> Self {
     let parent_state = None;
 
@@ -31,7 +31,7 @@ impl Node {
   }
 
   /// Constructor.
-  #[named]
+
   pub fn new(state: State, parent_state: Option<State>, goal: State, action_name: Option<String>, g: usize) -> Self {
     let h = state.get_distance(&goal);
 
@@ -54,7 +54,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_new_start() {
     init();
@@ -65,7 +64,6 @@ pub mod test {
     print_var!(node);
   }
 
-  #[named]
   #[test]
   pub fn test_new() {
     init();

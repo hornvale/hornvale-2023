@@ -1,4 +1,3 @@
-#[named]
 pub fn get_average_distances_from_barycenter(
   average_separation: f64,
   primary_mass: f64,
@@ -12,7 +11,6 @@ pub fn get_average_distances_from_barycenter(
   (d1, d2)
 }
 
-#[named]
 pub fn get_minimum_distances_from_barycenter(
   average_separation: f64,
   primary_mass: f64,
@@ -28,7 +26,6 @@ pub fn get_minimum_distances_from_barycenter(
   (d1, d2)
 }
 
-#[named]
 pub fn get_maximum_distances_from_barycenter(
   average_separation: f64,
   primary_mass: f64,

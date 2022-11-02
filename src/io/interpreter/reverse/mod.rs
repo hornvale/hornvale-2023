@@ -8,13 +8,12 @@ use crate::io::interpreter::Interpreter;
 pub struct Reverse {}
 
 impl Interpreter for Reverse {
-  #[named]
   fn get_initial_text(&self) -> Result<Option<String>, Error> {
     let result = None;
 
     Ok(result)
   }
-  #[named]
+
   fn interpret(&mut self, input: &str) -> Result<Option<String>, Error> {
     let result = Some(input.chars().rev().collect::<String>());
 

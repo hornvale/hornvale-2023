@@ -6,7 +6,7 @@
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 /// let five = 5;
 ///
@@ -32,7 +32,7 @@ macro_rules! trace_var {
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 /// let five = 5;
 /// debug_var!(five);
@@ -58,7 +58,7 @@ macro_rules! debug_var {
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 /// let five = 5;
 /// info_var!(five);
@@ -84,7 +84,7 @@ macro_rules! info_var {
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 /// let five = 5;
 /// print_var!(five);
@@ -110,7 +110,7 @@ macro_rules! print_var {
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 ///
 /// # }
@@ -135,7 +135,7 @@ macro_rules! trace_enter {
 /// # #[macro_use] extern crate function_name;
 /// # #[macro_use] extern crate hornvale;
 /// # use hornvale::*;
-/// # #[named]
+/// #
 /// # fn main() {
 ///
 /// # }

@@ -63,7 +63,7 @@ pub struct CloseBinaryStar {
 
 impl CloseBinaryStar {
   /// Create from a pair of stars, average separation, and orbital eccentricity.
-  #[named]
+
   pub fn from_stars<R: Rng + ?Sized>(
     _rng: &mut R,
     primary: Star,
@@ -127,7 +127,7 @@ impl CloseBinaryStar {
   /// Retrieve or calculate the age of the stars.
   ///
   /// Calculated in Gyr.
-  #[named]
+
   pub fn get_current_age(&self) -> f64 {
     self.primary.current_age
   }
@@ -135,18 +135,17 @@ impl CloseBinaryStar {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  #[named]
+
   pub fn get_stellar_mass(&self) -> f64 {
     self.primary.mass + self.secondary.mass
   }
 
   /// Measured in Lsol.
-  #[named]
+
   pub fn get_luminosity(&self) -> f64 {
     self.primary.luminosity + self.secondary.luminosity
   }
 
-  #[named]
   pub fn get_name(&self) -> String {
     let result = format!("{}-{}", self.primary.name, self.secondary.name);
 
@@ -154,7 +153,7 @@ impl CloseBinaryStar {
   }
 
   /// Indicate whether this StarSubsystem is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     if self.habitable_zone_is_forbidden {
       return Err(Error::HabitableZoneContainedWithinForbiddenZone);
@@ -174,7 +173,7 @@ impl CloseBinaryStar {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -192,7 +191,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_whatever() -> Result<(), Error> {
     init();

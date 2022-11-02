@@ -12,14 +12,12 @@ pub struct Formatter<'garbage, T: Trace> {
 }
 
 impl<'garbage, T: Trace> Formatter<'garbage, T> {
-  #[named]
   pub fn new(object: T, collector: &'garbage Collector) -> Self {
     Formatter { object, collector }
   }
 }
 
 impl<'garbage, T: Trace> Display for Formatter<'garbage, T> {
-  #[named]
   fn fmt(&self, f: &mut FmtFormatter) -> FmtResult {
     self.object.format(f, self.collector)
   }

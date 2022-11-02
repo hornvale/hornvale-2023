@@ -16,7 +16,7 @@ pub struct Token<'source> {
 
 impl<'source> Token<'source> {
   /// Constructor.
-  #[named]
+
   pub fn synthesize(lexeme: &'source str) -> Self {
     let r#type = Type::Error;
 

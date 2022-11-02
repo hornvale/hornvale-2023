@@ -96,7 +96,6 @@ pub mod test {
     set_var("RUST_BACKTRACE", "1");
   }
 
-  #[named]
   #[test]
   #[should_panic]
   pub fn test() {
@@ -106,7 +105,6 @@ pub mod test {
     run_file(&mut vm, "nonexistent file.txt").unwrap();
   }
 
-  #[named]
   #[test]
   pub fn test2() {
     init();

@@ -18,7 +18,7 @@ pub struct PlanetarySystem {
 
 impl PlanetarySystem {
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn check_habitable(&self) -> Result<(), Error> {
     {
       self.host_star.check_habitable()?;
@@ -28,7 +28,7 @@ impl PlanetarySystem {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-  #[named]
+
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -39,13 +39,13 @@ impl PlanetarySystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  #[named]
+
   pub fn get_stellar_mass(&self) -> f64 {
     self.host_star.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-  #[named]
+
   pub fn get_stellar_count(&self) -> u8 {
     self.host_star.get_stellar_count()
   }

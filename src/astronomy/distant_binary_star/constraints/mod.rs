@@ -21,7 +21,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a distant binary star with at least one habitable system.
-  #[named]
+
   pub fn habitable() -> Self {
     Self {
       ..Constraints::default()
@@ -29,7 +29,7 @@ impl Constraints {
   }
 
   /// Generate.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<DistantBinaryStar, Error> {
     let primary_constraints = PlanetarySystemConstraints::default();
 
@@ -69,7 +69,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
@@ -83,7 +82,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();

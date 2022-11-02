@@ -17,7 +17,6 @@ pub enum Precedence {
 }
 
 impl Precedence {
-  #[named]
   pub fn next(&self) -> Precedence {
     use Precedence::*;
 
@@ -43,7 +42,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_precedence() {
     init();

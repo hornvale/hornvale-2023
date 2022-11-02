@@ -27,7 +27,7 @@ pub struct Repl<R: BufRead, W: Write, I: Interpreter> {
 
 impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   /// Constructor.
-  #[named]
+
   pub fn new(input: R, output: W, interpreter: I) -> Self {
     Self {
       input,
@@ -37,7 +37,7 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   }
 
   /// Runloop.
-  #[named]
+
   pub fn run(&mut self) -> Result<(), Error> {
     let initial_text = self.interpreter.get_initial_text()?;
     writeln!(&mut self.output, "{}", initial_text.unwrap_or_default())?;
@@ -61,7 +61,6 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
 }
 
 impl Default for Repl<StdinLock<'_>, Stdout, ParserInterpreter<TwoWord>> {
-  #[named]
   fn default() -> Self {
     let stdio = io::stdin();
     let input = stdio.lock();

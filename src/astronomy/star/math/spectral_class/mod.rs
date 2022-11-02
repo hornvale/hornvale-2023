@@ -7,7 +7,7 @@ use crate::astronomy::star::error::Error;
 use crate::astronomy::star::math::temperature::star_mass_to_temperature;
 
 /// Get a (weighted) random spectral class.
-#[named]
+
 pub fn get_random_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
   let choices = ['O', 'B', 'A', 'F', 'G', 'K', 'M'];
   let weights = [
@@ -25,7 +25,7 @@ pub fn get_random_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
 }
 
 /// Get a (weighted) random habitable spectral class.
-#[named]
+
 pub fn get_random_habitable_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
   let choices = ['F', 'G', 'K'];
   let weights = [CLASS_F_WEIGHT, CLASS_G_WEIGHT, CLASS_K_WEIGHT];
@@ -35,7 +35,7 @@ pub fn get_random_habitable_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char
 }
 
 /// Get a mass range from a specified spectral class.
-#[named]
+
 pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
   match char {
     'o' | 'O' => 16.0..MAXIMUM_MASS,
@@ -50,7 +50,7 @@ pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
 }
 
 /// Get a mass range from a specified spectral class.
-#[named]
+
 pub fn spectral_class_to_habitable_mass_range(char: char) -> Range<f64> {
   match char {
     'f' | 'F' => 1.04..MAXIMUM_HABITABLE_MASS,
@@ -61,7 +61,7 @@ pub fn spectral_class_to_habitable_mass_range(char: char) -> Range<f64> {
 }
 
 /// Get the spectral class of a main-sequence star in Kelvin based on its Msol.
-#[named]
+
 pub fn star_mass_to_spectral_class(mass: f64) -> Result<String, Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);

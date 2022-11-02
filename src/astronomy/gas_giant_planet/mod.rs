@@ -25,7 +25,6 @@ pub struct GasGiantPlanet {
 }
 
 impl GasGiantPlanet {
-  #[named]
   pub fn from_mass(mass: f64) -> Result<Self, Error> {
     // @todo: fix.
     let density: f64 = 1.0;

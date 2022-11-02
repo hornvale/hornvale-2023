@@ -15,7 +15,7 @@ impl Constants {
   /// Insert a new constant.  This returns the approprite instruction for
   /// loading the constant, which will depend on how many constants have
   /// already been added.
-  #[named]
+
   pub fn push(&mut self, value: Value) -> Result<Instruction, Error> {
     let index = self.constants.len();
     self.constants.push(value);

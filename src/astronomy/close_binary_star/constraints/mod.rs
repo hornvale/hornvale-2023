@@ -47,7 +47,7 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable binary star.
-  #[named]
+
   pub fn habitable() -> Self {
     let minimum_combined_mass = Some(MINIMUM_HABITABLE_COMBINED_MASS);
     let maximum_combined_mass = Some(MAXIMUM_HABITABLE_COMBINED_MASS);
@@ -76,7 +76,7 @@ impl Constraints {
   }
 
   /// Generate a binary star from our constraints.
-  #[named]
+
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<CloseBinaryStar, Error> {
     let mut minimum_combined_mass = self.minimum_combined_mass.unwrap_or(MINIMUM_COMBINED_MASS);
 
@@ -156,7 +156,7 @@ impl Constraints {
 
 impl Default for Constraints {
   /// No constraints, just let it all hang out.
-  #[named]
+
   fn default() -> Self {
     let minimum_combined_mass = Some(MINIMUM_COMBINED_MASS);
     let maximum_combined_mass = Some(MAXIMUM_COMBINED_MASS);
@@ -196,7 +196,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_default() -> Result<(), Error> {
     init();
@@ -210,7 +209,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
@@ -224,7 +222,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_default_bulk() -> Result<(), Error> {
     init();
@@ -249,7 +246,6 @@ pub mod test {
     Ok(())
   }
 
-  #[named]
   #[test]
   pub fn test_habitable_bulk() -> Result<(), Error> {
     init();

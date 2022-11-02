@@ -22,7 +22,7 @@ pub struct Planner {
 
 impl Planner {
   /// Constructor.
-  #[named]
+
   pub fn new(start: State, goal: State, actions: Vec<Action>) -> Self {
     let open = Nodes::new();
     let closed = Nodes::new();
@@ -37,7 +37,7 @@ impl Planner {
   }
 
   /// Reconstruct the plan.
-  #[named]
+
   pub fn reconstruct_plan(&mut self, current: Node) -> Plan {
     let start = self.start;
 
@@ -75,7 +75,7 @@ impl Planner {
   }
 
   /// Plan!
-  #[named]
+
   pub fn plan(&mut self) -> Result<Plan, Error> {
     let node0 = Node::new_start(self.start, self.goal);
 
@@ -143,7 +143,7 @@ impl Planner {
   }
 
   /// Apply an action to the specified state and return the altered state.
-  #[named]
+
   pub fn apply_action(&self, action: &Action, state: &State) -> State {
     let postconditions = action.postconditions;
     let mask = postconditions.mask;
@@ -156,7 +156,7 @@ impl Planner {
   }
 
   /// Get possible state transitions.
-  #[named]
+
   pub fn get_possible_actions(&self, from: &State) -> Vec<Action> {
     let mut result = Vec::new();
     for action in self.actions.iter() {
@@ -176,7 +176,7 @@ pub mod test {
   use crate::test::*;
 
   #[test]
-  #[named]
+
   fn test_1_action_plan() {
     init();
 
@@ -217,7 +217,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_2_action_plan() {
     init();
 
@@ -271,7 +271,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_3_action_plan() {
     init();
 
@@ -337,7 +337,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_3_action_plan_2() {
     init();
 
@@ -403,7 +403,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_4_action_plan() {
     init();
 
@@ -482,7 +482,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_many_simple_action_plan() {
     init();
 
@@ -524,7 +524,7 @@ pub mod test {
   }
 
   #[test]
-  #[named]
+
   fn test_many_complex_action_plan() {
     init();
 

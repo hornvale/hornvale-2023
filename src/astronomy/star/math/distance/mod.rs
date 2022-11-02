@@ -27,7 +27,6 @@ pub mod test {
   use super::*;
   use crate::test::*;
 
-  #[named]
   #[test]
   pub fn test_meters_to_rsol() {
     init();
@@ -36,7 +35,6 @@ pub mod test {
     assert_approx_eq!(rsol_to_meters(1.0), METERS_PER_SOLAR_RADIUS);
   }
 
-  #[named]
   #[test]
   pub fn test_meters_to_au() {
     init();
