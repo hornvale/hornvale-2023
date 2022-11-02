@@ -21,15 +21,10 @@ impl State {
   /// Calculate meaningful distance.
   #[named]
   pub fn get_distance(&self, other: &State) -> usize {
-    trace_enter!();
-    trace_var!(other);
     let matter = self.mask ^ u64::MAX;
-    trace_var!(matter);
+
     let difference = (self.values & matter) ^ (other.values & matter);
-    trace_var!(difference);
-    let result = difference.count_ones() as usize;
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    difference.count_ones() as usize
   }
 }

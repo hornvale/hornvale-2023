@@ -4,14 +4,10 @@ use crate::scripting_language::virtual_machine::VirtualMachine;
 
 /// Get the time since the program started.
 #[named]
-pub fn uptime(vm: &VirtualMachine, args: &[Value]) -> Result<Value, Error> {
-  trace_enter!();
-  trace_var!(vm);
-  trace_var!(args);
+pub fn uptime(vm: &VirtualMachine, _args: &[Value]) -> Result<Value, Error> {
   let time = vm.start_time.elapsed().as_secs_f64();
-  trace_var!(time);
+
   let result = Value::Number(time);
-  trace_var!(result);
-  trace_exit!();
+
   Ok(result)
 }

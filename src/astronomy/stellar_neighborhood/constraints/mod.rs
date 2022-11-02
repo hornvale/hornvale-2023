@@ -33,25 +33,24 @@ impl Constraints {
   /// This may or may not be habitable.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighborhood, Error> {
-    trace_enter!();
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
-    trace_var!(radius);
+
     let density = self.density.unwrap_or(STELLAR_NEIGHBORHOOD_DENSITY);
-    trace_var!(density);
+
     let volume = (4.0 / 3.0) * PI * radius.powf(3.0);
-    trace_var!(volume);
+
     let average_stars = density * volume;
-    trace_var!(average_stars);
+
     let number_of_stars = rng.gen_range((0.875 * average_stars)..(1.125 * average_stars)) as usize;
-    trace_var!(number_of_stars);
+
     let mut neighbors = vec![];
-    trace_var!(neighbors);
+
     let mut star_count = 0;
     let neighbor_constraints = self.neighbor_constraints.unwrap_or(StellarNeighborConstraints {
       radius: Some(radius),
       system_constraints: Some(StarSystemConstraints::default()),
     });
-    trace_var!(neighbor_constraints);
+
     loop {
       let neighbor = neighbor_constraints.generate(rng)?;
       star_count += neighbor.get_stellar_count() as usize;
@@ -60,16 +59,14 @@ impl Constraints {
         break;
       }
     }
-    trace_var!(neighbors);
-    trace_var!(star_count);
+
     let result = StellarNeighborhood {
       radius,
       density,
       neighbors,
       star_count,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -100,14 +97,14 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let constraints = Constraints::default();
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);
     print_var!(stellar_neighborhood);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -115,14 +112,14 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let constraints = Constraints::habitable();
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);
     print_var!(stellar_neighborhood);
-    trace_exit!();
+
     Ok(())
   }
 }

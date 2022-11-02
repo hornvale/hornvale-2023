@@ -17,14 +17,9 @@ where
   /// Constructor.
   #[named]
   pub fn new(parser: P) -> Self {
-    trace_enter!();
-    trace_var!(parser);
     let parser = Box::new(parser);
-    trace_var!(parser);
-    let result = Self { parser };
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Self { parser }
   }
 }
 
@@ -34,19 +29,14 @@ where
 {
   #[named]
   fn get_initial_text(&self) -> Result<Option<String>, Error> {
-    trace_enter!();
     let result = None;
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
   #[named]
   fn interpret(&mut self, input: &str) -> Result<Option<String>, Error> {
-    trace_enter!();
-    trace_var!(input);
     let result = self.parser.parse_input(input)?;
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }

@@ -15,18 +15,12 @@ impl<'source> Local<'source> {
   /// Constructor.
   #[named]
   pub fn new(token: Token<'source>, depth: i32) -> Self {
-    trace_enter!();
-    trace_var!(token);
-    trace_var!(depth);
     let is_captured = false;
-    trace_var!(is_captured);
-    let result = Local {
+
+    Local {
       token,
       depth,
       is_captured,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }

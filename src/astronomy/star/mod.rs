@@ -60,39 +60,37 @@ impl Star {
   /// Generate a random main-sequence star from a given mass.
   #[named]
   pub fn from_mass<R: Rng + ?Sized>(rng: &mut R, mass: f64) -> Result<Star, Error> {
-    trace_enter!();
-    trace_var!(mass);
     let temperature = star_mass_to_temperature(mass)?;
-    trace_var!(temperature);
+
     let luminosity = star_mass_to_luminosity(mass)?;
-    trace_var!(luminosity);
+
     let radius = star_mass_to_radius(mass)?;
-    trace_var!(radius);
+
     let class = star_mass_to_spectral_class(mass)?;
-    trace_var!(class);
+
     let life_expectancy = mass / luminosity * 10.0;
-    trace_var!(life_expectancy);
+
     let lower_bound_age = 0.1 * life_expectancy;
-    trace_var!(lower_bound_age);
+
     let upper_bound_age = 0.9 * life_expectancy;
-    trace_var!(upper_bound_age);
+
     let current_age = rng.gen_range(lower_bound_age..upper_bound_age);
-    trace_var!(current_age);
+
     let density = mass / radius.powf(3.0);
-    trace_var!(density);
+
     let habitable_zone = star_luminosity_to_habitable_zone(luminosity);
-    trace_var!(habitable_zone);
+
     let satellite_inner_bound = get_approximate_innermost_orbit(mass);
-    trace_var!(satellite_inner_bound);
+
     let satellite_outer_bound = get_approximate_outermost_orbit(mass);
-    trace_var!(satellite_outer_bound);
+
     let satellite_zone = (satellite_inner_bound, satellite_outer_bound);
     let frost_line = star_luminosity_to_frost_line(luminosity);
-    trace_var!(frost_line);
+
     let absolute_rgb = star_mass_to_rgb(mass)?;
-    trace_3u8!(absolute_rgb);
+
     let name = generate_star_name(rng);
-    trace_var!(name);
+
     let result = Star {
       class,
       mass,
@@ -108,15 +106,13 @@ impl Star {
       absolute_rgb,
       name,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn check_habitable(&self) -> Result<(), Error> {
-    trace_enter!();
     if self.mass < MINIMUM_HABITABLE_MASS {
       return Err(Error::MassTooLowToSupportLife);
     }
@@ -126,21 +122,17 @@ impl Star {
     if self.current_age < MINIMUM_HABITABLE_AGE {
       return Err(Error::TooYoungToSupportLife);
     }
-    trace_exit!();
+
     Ok(())
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn is_habitable(&self) -> bool {
-    trace_enter!();
-    let result = match self.check_habitable() {
+    match self.check_habitable() {
       Ok(()) => true,
       Err(_) => false,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -157,13 +149,13 @@ pub mod test {
   #[test]
   pub fn get_random_main_sequence() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star = Constraints::default().generate(&mut rng)?;
-    trace_var!(star);
+
     print_var!(star);
-    trace_exit!();
+
     Ok(())
   }
 }

@@ -37,8 +37,6 @@ pub fn lsol_to_watts(lsol: f64) -> f64 {
 /// Get the luminosity of a main-sequence star in Lsol based on its Msol.
 #[named]
 pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
-  trace_enter!();
-  trace_var!(mass);
   if mass < MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
@@ -52,8 +50,7 @@ pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
     mass if mass <= MAXIMUM_MASS => 32_000.0 * mass,
     _ => unreachable!(),
   };
-  trace_var!(result);
-  trace_exit!();
+
   Ok(result)
 }
 
@@ -67,66 +64,60 @@ pub mod test {
   #[test]
   pub fn test_ergs_to_lsol() {
     init();
-    trace_enter!();
+
     assert_approx_eq!(ergs_to_lsol(lsol_to_ergs(1.0)), 1.0);
     assert_approx_eq!(lsol_to_ergs(1.0), ERGS_PER_SEC_PER_LSOL);
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test_joules_to_lsol() {
     init();
-    trace_enter!();
+
     assert_approx_eq!(joules_to_lsol(lsol_to_joules(1.0)), 1.0);
     assert_approx_eq!(lsol_to_joules(1.0), JOULES_PER_SEC_PER_LSOL);
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test_watts_to_lsol() {
     init();
-    trace_enter!();
+
     assert_approx_eq!(watts_to_lsol(lsol_to_watts(1.0)), 1.0);
     assert_approx_eq!(lsol_to_watts(1.0), JOULES_PER_SEC_PER_LSOL);
-    trace_exit!();
   }
 
   #[named]
   #[test]
   #[should_panic]
-  pub fn test_star_mass_to_luminosity1() -> () {
+  pub fn test_star_mass_to_luminosity1() {
     init();
-    trace_enter!();
+
     star_mass_to_luminosity(0.0000001).unwrap();
-    trace_exit!();
   }
 
   #[named]
   #[test]
   #[should_panic]
-  pub fn test_star_mass_to_luminosity2() -> () {
+  pub fn test_star_mass_to_luminosity2() {
     init();
-    trace_enter!();
+
     star_mass_to_luminosity(350.0).unwrap();
-    trace_exit!();
   }
 
   #[named]
   #[test]
-  pub fn test_star_mass_to_luminosity3() -> () {
+  pub fn test_star_mass_to_luminosity3() {
     init();
-    trace_enter!();
+
     star_mass_to_luminosity(MAXIMUM_MASS).unwrap();
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test_ms_star_mass_to_luminosity() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     // Jolly ol' Sol
     let mut mass = 1.0;
     let mut expected = 1.0;
@@ -172,7 +163,7 @@ pub mod test {
     expected = 109375.0;
     actual = star_mass_to_luminosity(mass)?;
     assert_approx_eq!(expected, actual, 1f64);
-    trace_exit!();
+
     Ok(())
   }
 }

@@ -24,7 +24,7 @@ impl HabitablePlanetReporter {
 #[named]
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
-  trace_enter!();
+
   let mut rng = rand::thread_rng();
   let constraints = Constraints::habitable();
   let mut star_system = constraints.generate(&mut rng)?;
@@ -37,6 +37,6 @@ fn main() -> Result<(), Error> {
   }
   let reporter = HabitablePlanetReporter::new();
   reporter.report(&star_system);
-  trace_exit!();
+
   Ok(())
 }

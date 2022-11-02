@@ -19,9 +19,9 @@ pub enum Precedence {
 impl Precedence {
   #[named]
   pub fn next(&self) -> Precedence {
-    trace_enter!();
     use Precedence::*;
-    let result = match self {
+
+    match self {
       None => Assignment,
       Assignment => Or,
       Or => And,
@@ -33,10 +33,7 @@ impl Precedence {
       Unary => Call,
       Call => Primary,
       Primary => None,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -50,11 +47,10 @@ pub mod test {
   #[test]
   pub fn test_precedence() {
     init();
-    trace_enter!();
+
     let mut precedence = Precedence::Assignment;
     while precedence != Precedence::None {
       precedence = precedence.next();
     }
-    trace_exit!();
   }
 }

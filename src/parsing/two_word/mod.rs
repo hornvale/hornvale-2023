@@ -1,5 +1,8 @@
+use crate::commands::command::Command;
+use crate::entity::Entity;
 use crate::parsing::error::Error;
 use crate::parsing::parser::Parser;
+use crate::player::Player;
 
 /// The `TwoWord` type.
 ///
@@ -11,16 +14,18 @@ impl Parser for TwoWord {
   /// Parse two (or more) words of input.
   #[named]
   fn parse_input(&mut self, input: &str) -> Result<Option<String>, Error> {
-    trace_enter!();
     let words = input.split(' ').map(str::to_string).collect::<Vec<String>>();
-    trace_var!(words);
-    let result = match words[0].as_str() {
-      "look" => Some("You see a lot of WTF.".to_owned()),
-      "west" | "w" => Some("You can't go west right now (you're not that smart).".to_owned()),
-      &_ => todo!(),
+
+    let word0 = words.get(0).cloned().unwrap_or_else(|| "".to_string());
+    let word1 = words.get(1).cloned().unwrap_or_else(|| "".to_string());
+    let result = match (word0.as_str(), word1.as_str()) {
+      ("look", _) => Command::Look(Player::new(Entity {})).execute()?,
+      ("west", _) | ("w", _) | ("go", "west") | ("go", "w") => {
+        Some("You can't go west right now (you're not that smart).".to_owned())
+      },
+      (_, _) => todo!(),
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }

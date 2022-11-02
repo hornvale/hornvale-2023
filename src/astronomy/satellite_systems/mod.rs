@@ -16,7 +16,6 @@ impl SatelliteSystems {
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn check_habitable(&self) -> Result<(), Error> {
-    trace_enter!();
     let result = {
       let any = self
         .satellite_systems
@@ -27,21 +26,16 @@ impl SatelliteSystems {
       }
       Ok(())
     };
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn is_habitable(&self) -> bool {
-    trace_enter!();
-    let result = match self.check_habitable() {
+    match self.check_habitable() {
       Ok(()) => true,
       Err(_) => false,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }

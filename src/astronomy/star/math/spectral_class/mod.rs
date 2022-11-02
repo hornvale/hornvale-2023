@@ -9,7 +9,6 @@ use crate::astronomy::star::math::temperature::star_mass_to_temperature;
 /// Get a (weighted) random spectral class.
 #[named]
 pub fn get_random_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
-  trace_enter!();
   let choices = ['O', 'B', 'A', 'F', 'G', 'K', 'M'];
   let weights = [
     CLASS_O_WEIGHT,
@@ -21,31 +20,24 @@ pub fn get_random_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
     CLASS_M_WEIGHT,
   ];
   let dist = WeightedIndex::new(&weights).unwrap();
-  let result = choices[dist.sample(rng)];
-  trace_var!(result);
-  trace_exit!();
-  result
+
+  choices[dist.sample(rng)]
 }
 
 /// Get a (weighted) random habitable spectral class.
 #[named]
 pub fn get_random_habitable_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
-  trace_enter!();
   let choices = ['F', 'G', 'K'];
   let weights = [CLASS_F_WEIGHT, CLASS_G_WEIGHT, CLASS_K_WEIGHT];
   let dist = WeightedIndex::new(&weights).unwrap();
-  let result = choices[dist.sample(rng)];
-  trace_var!(result);
-  trace_exit!();
-  result
+
+  choices[dist.sample(rng)]
 }
 
 /// Get a mass range from a specified spectral class.
 #[named]
 pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
-  trace_enter!();
-  trace_var!(char);
-  let result = match char {
+  match char {
     'o' | 'O' => 16.0..MAXIMUM_MASS,
     'b' | 'B' => 2.1..16.0,
     'a' | 'A' => 1.4..2.1,
@@ -54,33 +46,23 @@ pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
     'k' | 'K' => 0.45..0.8,
     'm' | 'M' => MINIMUM_MASS..0.45,
     _ => unreachable!(),
-  };
-  trace_var!(result);
-  trace_exit!();
-  result
+  }
 }
 
 /// Get a mass range from a specified spectral class.
 #[named]
 pub fn spectral_class_to_habitable_mass_range(char: char) -> Range<f64> {
-  trace_enter!();
-  trace_var!(char);
-  let result = match char {
+  match char {
     'f' | 'F' => 1.04..MAXIMUM_HABITABLE_MASS,
     'g' | 'G' => 0.8..1.04,
     'k' | 'K' => MINIMUM_HABITABLE_MASS..0.8,
     _ => unreachable!(),
-  };
-  trace_var!(result);
-  trace_exit!();
-  result
+  }
 }
 
 /// Get the spectral class of a main-sequence star in Kelvin based on its Msol.
 #[named]
 pub fn star_mass_to_spectral_class(mass: f64) -> Result<String, Error> {
-  trace_enter!();
-  trace_var!(mass);
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
@@ -109,7 +91,6 @@ pub fn star_mass_to_spectral_class(mass: f64) -> Result<String, Error> {
     _ => unreachable!(),
   };
   let result = format!("{}{:.0}V", spectral_type, decile);
-  trace_var!(result);
-  trace_exit!();
+
   Ok(result)
 }

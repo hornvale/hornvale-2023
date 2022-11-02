@@ -22,60 +22,38 @@ impl Instance {
   /// Constructor.
   #[named]
   pub fn new(class: Reference<Class>) -> Self {
-    trace_enter!();
-    trace_var!(class);
     let fields = Table::new();
-    trace_var!(fields);
-    let result = Instance { class, fields };
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Instance { class, fields }
   }
 }
 
 impl Trace for Instance {
   #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
-    trace_enter!();
-    trace_var!(garbage_collector);
     let class = garbage_collector.deref(self.class);
-    trace_var!(class);
+
     let name = garbage_collector.deref(class.name);
-    trace_var!(name);
+
     let result = write!(f, "{} instance", name);
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
   #[named]
   fn get_size(&self) -> usize {
-    trace_enter!();
-    let result = size_of::<Instance>() + self.fields.capacity() * (size_of::<Reference<String>>() + size_of::<Value>());
-    trace_var!(result);
-    trace_exit!();
-    result
+    size_of::<Instance>() + self.fields.capacity() * (size_of::<Reference<String>>() + size_of::<Value>())
   }
   #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
-    trace_enter!();
     garbage_collector.mark_object(self.class);
     garbage_collector.mark_table(&self.fields);
-    trace_exit!();
   }
   #[named]
   fn as_any(&self) -> &dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
   #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
 }

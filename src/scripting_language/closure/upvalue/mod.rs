@@ -20,62 +20,39 @@ impl Upvalue {
   /// Constructor.
   #[named]
   pub fn new(location: usize) -> Self {
-    trace_enter!();
-    trace_var!(location);
     let closed = None;
-    trace_var!(closed);
-    let result = Upvalue { location, closed };
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Upvalue { location, closed }
   }
 }
 
 impl Trace for Upvalue {
   #[named]
-  fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
-    trace_enter!();
-    trace_var!(garbage_collector);
+  fn format(&self, f: &mut Formatter, _garbage_collector: &GarbageCollector) -> FmtResult {
     let result = write!(f, "upvalue");
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 
   #[named]
   fn get_size(&self) -> usize {
-    trace_enter!();
-    let result = size_of::<Upvalue>();
-    trace_var!(result);
-    trace_exit!();
-    result
+    size_of::<Upvalue>()
   }
 
   #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
-    trace_enter!();
-    trace_var!(garbage_collector);
     if let Some(object) = self.closed {
       garbage_collector.mark_value(object);
     }
-    trace_exit!();
   }
 
   #[named]
   fn as_any(&self) -> &dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
 
   #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
 }

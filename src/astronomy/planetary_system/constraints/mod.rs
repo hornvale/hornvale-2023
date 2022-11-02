@@ -19,36 +19,31 @@ impl Constraints {
   /// Generate a habitable star subsystem.
   #[named]
   pub fn habitable() -> Self {
-    trace_enter!();
     let host_star_constraints = Some(HostStarConstraints::habitable());
     let satellite_systems_constraints = Some(SatelliteSystemsConstraints::habitable());
-    let result = Self {
+
+    Self {
       host_star_constraints,
       satellite_systems_constraints,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Generate.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<PlanetarySystem, Error> {
-    trace_enter!();
     let host_star_constraints = self.host_star_constraints.unwrap_or_default();
-    trace_var!(host_star_constraints);
+
     let satellite_systems_constraints = self.satellite_systems_constraints.unwrap_or_default();
-    trace_var!(satellite_systems_constraints);
+
     let host_star = host_star_constraints.generate(rng)?;
-    trace_var!(host_star);
+
     let satellite_systems = satellite_systems_constraints.generate(rng, &host_star)?;
-    trace_var!(satellite_systems);
+
     let result = PlanetarySystem {
       host_star,
       satellite_systems,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -77,9 +72,9 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let mut planetary_system = Constraints::habitable().generate(&mut rng)?;
     let mut is_habitable = planetary_system.is_habitable();
     let mut counter = 0;
@@ -88,11 +83,11 @@ pub mod test {
       is_habitable = planetary_system.is_habitable();
       counter += 1;
     }
-    trace_var!(planetary_system);
+
     print_var!(planetary_system);
     planetary_system.check_habitable()?;
     assert!(planetary_system.is_habitable());
-    trace_exit!();
+
     Ok(())
   }
 
@@ -100,13 +95,13 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let planetary_system = Constraints::default().generate(&mut rng)?;
-    trace_var!(planetary_system);
+
     print_var!(planetary_system);
-    trace_exit!();
+
     Ok(())
   }
 }

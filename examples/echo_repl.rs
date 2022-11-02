@@ -1,5 +1,5 @@
 ///! A simple REPL that echoes your input.
-use std::io::{self, BufRead, StdinLock, Stdout, Write};
+use std::io::{self};
 
 use hornvale::io::interpreter::echo::Echo;
 use hornvale::io::repl::Repl;

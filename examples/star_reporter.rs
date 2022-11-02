@@ -18,21 +18,18 @@ impl StarReporter {
 
   #[named]
   pub fn report_string(&self, indent: usize, string: &str) {
-    trace_enter!();
     println!("{:indent$}{}", "", string, indent = indent);
-    trace_exit!();
   }
 
   #[named]
   pub fn report(&self, star: &Star, indent: usize) {
-    trace_enter!();
     let new_indent = indent + 2;
     self.report_string(new_indent, &format!("This is a {} class star.", star.class));
     self.report_string(
       new_indent,
       &format!("It is about {:.0} times the mass of the sun.", star.mass),
     );
-    self.report_string(new_indent, &format!("It burns."));
+    self.report_string(new_indent, "It burns.");
     let absolute_rgb = star.absolute_rgb;
     self.report_string(
       new_indent,
@@ -43,7 +40,7 @@ impl StarReporter {
     );
     let is_habitable = star.is_habitable();
     if is_habitable {
-      self.report_string(new_indent, &format!("It is habitable."));
+      self.report_string(new_indent, "It is habitable.");
     } else {
       match star.check_habitable() {
         Err(error) => {
@@ -53,19 +50,18 @@ impl StarReporter {
       }
     }
     print_var!(star);
-    trace_exit!();
   }
 }
 
 #[named]
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
-  trace_enter!();
+
   let mut rng = rand::thread_rng();
   let constraints = Constraints::default();
   let star = constraints.generate(&mut rng)?;
   let reporter = StarReporter::new();
   reporter.report(&star, 2);
-  trace_exit!();
+
   Ok(())
 }

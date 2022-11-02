@@ -22,9 +22,8 @@ impl Chunk {
   #[named]
   #[inline]
   pub fn dump_fmt<W: FmtWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
-    trace_enter!();
     self.instructions.dump(out)?;
-    trace_exit!();
+
     Ok(())
   }
 
@@ -32,27 +31,21 @@ impl Chunk {
   #[named]
   #[inline]
   pub fn dump_io<W: IoWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
-    trace_enter!();
     let mut string = String::new();
     self.dump_fmt(&mut string)?;
     write!(out, "{}", string)?;
-    trace_exit!();
+
     Ok(())
   }
 
   /// Read a string.
   #[named]
   pub fn read_string(&self, index: u16) -> Reference<String> {
-    trace_enter!();
-    trace_var!(index);
-    let result = if let Value::String(string) = self.constants.constants[index as usize] {
+    if let Value::String(string) = self.constants.constants[index as usize] {
       string
     } else {
       panic!("Constant is not String!")
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -68,20 +61,17 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-    trace_enter!();
-    let mut string = String::new();
+
+    let string = String::new();
     let mut chunk = Chunk::default();
     let const_inst = chunk.constants.push(Value::Number(1.2)).unwrap();
     chunk.instructions.append(const_inst, 1);
     chunk.instructions.append(Instruction::Return, 2);
-    let result = chunk.dump_fmt(&mut string).unwrap();
-    assert_eq!(result, ());
-    let lines: Vec<&str> = string.split("\n").collect();
+    let lines: Vec<&str> = string.split('\n').collect();
     assert_eq!(lines[0], "");
     assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
     assert_eq!(lines[2], "----------------------------------------------");
     assert_eq!(lines[3], "    0   0x0000       1       Constant(0)     1");
     assert_eq!(lines[4], "    1   0x0002       2            Return     0");
-    trace_exit!();
   }
 }

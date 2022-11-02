@@ -41,16 +41,13 @@ impl Value {
   #[named]
   #[inline]
   pub fn is_falsey(&self) -> bool {
-    trace_enter!();
     use Value::*;
-    let result = match &self {
+
+    match &self {
       Nil => true,
       Boolean(value) => !value,
       _ => false,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -58,8 +55,6 @@ impl Trace for Value {
   /// Format.
   #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
-    trace_enter!();
-    trace_var!(garbage_collector);
     use Value::*;
     let result = match self {
       Boolean(value) => write!(f, "{}", value),
@@ -73,25 +68,18 @@ impl Trace for Value {
       Number(value) => write!(f, "{}", value),
       String(value) => garbage_collector.deref(*value).format(f, garbage_collector),
     };
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
   /// Get the size.
   #[named]
   fn get_size(&self) -> usize {
-    trace_enter!();
-    let result = 0;
-    trace_var!(result);
-    trace_exit!();
-    result
+    0
   }
 
   /// Trace!
   #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
-    trace_enter!();
-    trace_var!(garbage_collector);
     match self {
       Value::BoundMethod(value) => garbage_collector.mark_object(*value),
       Value::Class(value) => garbage_collector.mark_object(*value),
@@ -101,18 +89,15 @@ impl Trace for Value {
       Value::String(value) => garbage_collector.mark_object(*value),
       _ => (),
     };
-    trace_exit!();
   }
   /// Downcast.
   #[named]
   fn as_any(&self) -> &dyn Any {
-    trace_enter!();
     panic!("value should not be allocated");
   }
   /// Downcast.
   #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
-    trace_enter!();
     panic!("value should not be allocated");
   }
 }
@@ -126,7 +111,7 @@ pub mod test {
   #[test]
   pub fn test_math() {
     init();
-    trace_enter!();
+
     test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
     test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
     // The order of the following binary operations can be a bit counterintuitive.
@@ -154,6 +139,5 @@ pub mod test {
     test_instructions!([Divide], [Number(4.0), Number(5.0)] => [Number(1.25)]);
     test_instructions!([Divide], [Number(32.0), Number(-128.0)] => [Number(-4.0)]);
     test_instructions!([Add, Divide, Negate], [Number(1.2), Number(3.4), Number(5.6)] => [Number(-1.2173)]);
-    trace_exit!();
   }
 }

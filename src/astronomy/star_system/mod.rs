@@ -30,44 +30,28 @@ impl StarSystem {
   /// Calculated in Msol.
   #[named]
   pub fn get_stellar_mass(&self) -> f64 {
-    trace_enter!();
-    let result = self.star_subsystem.get_stellar_mass();
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.star_subsystem.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
   #[named]
   pub fn get_stellar_count(&self) -> u8 {
-    trace_enter!();
-    let result = self.star_subsystem.get_stellar_count();
-    trace_u8!(result);
-    trace_exit!();
-    result
+    self.star_subsystem.get_stellar_count()
   }
 
   /// Indicate whether this star system is capable of supporting conventional life.
   #[named]
   pub fn check_habitable(&self) -> Result<(), Error> {
-    trace_enter!();
-    let result = Ok(self.star_subsystem.check_habitable()?);
-    trace_var!(result);
-    trace_exit!();
-    result
+    Ok(self.star_subsystem.check_habitable()?)
   }
 
   /// Indicate whether this star system is capable of supporting conventional life.
   #[named]
   pub fn is_habitable(&self) -> bool {
-    trace_enter!();
-    let result = match self.check_habitable() {
+    match self.check_habitable() {
       Ok(()) => true,
       Err(_) => false,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -84,15 +68,15 @@ pub mod test {
   #[test]
   pub fn get_random() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = Constraints::habitable().generate(&mut rng)?;
     info_var!(star_system);
     print_var!(star_system);
     star_system.get_stellar_mass();
     star_system.is_habitable();
-    trace_exit!();
+
     Ok(())
   }
 }

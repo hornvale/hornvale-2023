@@ -27,24 +27,22 @@ pub struct GasGiantPlanet {
 impl GasGiantPlanet {
   #[named]
   pub fn from_mass(mass: f64) -> Result<Self, Error> {
-    trace_enter!();
-    trace_var!(mass);
     // @todo: fix.
     let density: f64 = 1.0;
-    trace_var!(density);
+
     // @todo: fix.
     let radius: f64 = 1.0;
-    trace_var!(radius);
+
     let semi_major_axis: f64 = 5.2;
-    trace_var!(semi_major_axis);
+
     let orbital_eccentricity = 0.0167;
-    trace_var!(orbital_eccentricity);
+
     let perihelion = (1.0 - orbital_eccentricity) * semi_major_axis;
-    trace_var!(perihelion);
+
     let aphelion = (1.0 + orbital_eccentricity) * semi_major_axis;
-    trace_var!(aphelion);
+
     let orbital_period = semi_major_axis.powf(3.0).sqrt();
-    trace_var!(orbital_period);
+
     let result = Self {
       mass,
       density,
@@ -55,8 +53,7 @@ impl GasGiantPlanet {
       aphelion,
       orbital_period,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }

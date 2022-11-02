@@ -142,10 +142,9 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-    trace_enter!();
+
     let all = Type::get_all();
     print_var!(all);
     println!("{}", all.last().unwrap());
-    trace_exit!();
   }
 }

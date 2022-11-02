@@ -78,63 +78,58 @@ impl Moon {
     planet: &Planet,
     planet_distance: f64,
   ) -> Result<Moon, Error> {
-    trace_enter!();
-    trace_var!(host_star);
-    trace_var!(star_distance);
-    trace_var!(planet);
-    trace_var!(planet_distance);
     let density = 3.34;
-    trace_var!(density);
+
     let radius = (mass / (density / 3.34)).powf(1.0 / 3.0);
-    trace_var!(radius);
+
     // This gives gravity in Earth equivalents, since other units are relative
     // to the Moon, and Gmoon is 0.1654 * Gearth.
     let gravity = (mass / radius.powf(2.0)) * 0.1654;
-    trace_var!(gravity);
+
     // This is in KM/sec.
     let escape_velocity = (mass / radius).sqrt() * 2.380;
-    trace_var!(escape_velocity);
+
     // Peg this to the albedo of the Moon for the time being.
     let bond_albedo = 0.136;
-    trace_var!(bond_albedo);
+
     let semi_major_axis = planet_distance;
-    trace_var!(semi_major_axis);
+
     // Pegged for the time being.
     let orbital_eccentricity = 0.05;
-    trace_var!(orbital_eccentricity);
+
     let periapsis = (1.0 - orbital_eccentricity) * semi_major_axis;
-    trace_var!(periapsis);
+
     let apoapsis = (1.0 + orbital_eccentricity) * semi_major_axis;
-    trace_var!(apoapsis);
+
     // Pegged.
     let orbital_inclination = 5.15;
-    trace_var!(orbital_inclination);
+
     let rotation_direction = RotationDirection::Prograde;
-    trace_var!(rotation_direction);
+
     let sidereal_orbital_period =
       0.0588 * ((semi_major_axis / 12_742.0 * 2.0).powf(3.0) / (planet.get_mass() + mass * 0.0123)).sqrt();
-    trace_var!(sidereal_orbital_period);
+
     let earth_orbital_period = planet.get_orbital_period() * 365.265;
-    trace_var!(earth_orbital_period);
+
     let orbital_period = earth_orbital_period / (earth_orbital_period / sidereal_orbital_period - 1.0);
-    trace_var!(orbital_period);
+
     let lunar_tide = get_lunar_tide(mass, planet.get_radius(), semi_major_axis);
-    trace_var!(lunar_tide);
+
     let solar_tide = get_solar_tide(host_star.get_stellar_mass(), planet.get_radius(), star_distance);
-    trace_var!(solar_tide);
+
     let planetary_tide = get_planetary_tide(mass, radius, semi_major_axis);
-    trace_var!(planetary_tide);
+
     let spring_tide_magnitude = get_spring_tide(lunar_tide, solar_tide);
-    trace_var!(spring_tide_magnitude);
+
     let neap_tide_magnitude = get_neap_tide(lunar_tide, solar_tide);
-    trace_var!(neap_tide_magnitude);
+
     let is_planet_tidally_locked =
       is_planet_tidally_locked(lunar_tide, solar_tide, host_star.get_current_age(), planet.get_mass());
-    trace_var!(is_planet_tidally_locked);
+
     let is_moon_tidally_locked = is_moon_tidally_locked(solar_tide, planetary_tide, host_star.get_current_age(), mass);
-    trace_var!(is_moon_tidally_locked);
+
     let rotation_period = if is_moon_tidally_locked { orbital_period } else { 3.0 };
-    trace_var!(rotation_period);
+
     let result = Moon {
       mass,
       density,
@@ -159,8 +154,7 @@ impl Moon {
       is_planet_tidally_locked,
       is_moon_tidally_locked,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }

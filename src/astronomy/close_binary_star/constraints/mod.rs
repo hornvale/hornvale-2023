@@ -49,7 +49,6 @@ impl Constraints {
   /// Generate a habitable binary star.
   #[named]
   pub fn habitable() -> Self {
-    trace_enter!();
     let minimum_combined_mass = Some(MINIMUM_HABITABLE_COMBINED_MASS);
     let maximum_combined_mass = Some(MAXIMUM_HABITABLE_COMBINED_MASS);
     let minimum_individual_mass = Some(MINIMUM_HABITABLE_INDIVIDUAL_MASS);
@@ -60,7 +59,8 @@ impl Constraints {
     let minimum_age = Some(MINIMUM_HABITABLE_AGE);
     let enforce_habitability = true;
     let star_constraints = Some(StarConstraints::habitable());
-    let result = Self {
+
+    Self {
       minimum_combined_mass,
       maximum_combined_mass,
       minimum_individual_mass,
@@ -72,40 +72,36 @@ impl Constraints {
       enforce_habitability,
       star_constraints,
       ..Constraints::default()
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Generate a binary star from our constraints.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<CloseBinaryStar, Error> {
-    trace_enter!();
     let mut minimum_combined_mass = self.minimum_combined_mass.unwrap_or(MINIMUM_COMBINED_MASS);
-    trace_var!(minimum_combined_mass);
+
     let maximum_combined_mass = self.maximum_combined_mass.unwrap_or(MAXIMUM_COMBINED_MASS);
-    trace_var!(maximum_combined_mass);
-    let minimum_individual_mass = self.minimum_individual_mass.unwrap_or(MINIMUM_INDIVIDUAL_MASS);
-    trace_var!(minimum_individual_mass);
+
+    let _minimum_individual_mass = self.minimum_individual_mass.unwrap_or(MINIMUM_INDIVIDUAL_MASS);
+
     let maximum_individual_mass = self.maximum_individual_mass.unwrap_or(MAXIMUM_INDIVIDUAL_MASS);
-    trace_var!(maximum_individual_mass);
+
     let minimum_orbital_eccentricity = self
       .minimum_orbital_eccentricity
       .unwrap_or(MINIMUM_ORBITAL_ECCENTRICITY);
-    trace_var!(minimum_orbital_eccentricity);
+
     let maximum_orbital_eccentricity = self
       .maximum_orbital_eccentricity
       .unwrap_or(MAXIMUM_ORBITAL_ECCENTRICITY);
-    trace_var!(maximum_orbital_eccentricity);
+
     let minimum_average_separation = self.minimum_average_separation.unwrap_or(MINIMUM_AVERAGE_SEPARATION);
-    trace_var!(minimum_average_separation);
+
     let maximum_average_separation = self.maximum_average_separation.unwrap_or(MAXIMUM_AVERAGE_SEPARATION);
-    trace_var!(maximum_average_separation);
+
     let orbital_eccentricity = rng.gen_range(minimum_orbital_eccentricity..maximum_orbital_eccentricity);
-    trace_var!(orbital_eccentricity);
+
     let average_separation = rng.gen_range(minimum_average_separation..maximum_average_separation);
-    trace_var!(average_separation);
+
     let combined_mass;
     let primary_mass;
     let secondary_mass;
@@ -142,20 +138,18 @@ impl Constraints {
         true => MINIMUM_HABITABLE_AGE,
         false => 0.1 * primary.life_expectancy,
       };
-      trace_var!(minimum_age);
+
       let maximum_age = 0.9 * primary.life_expectancy;
-      trace_var!(maximum_age);
+
       let current_age = rng.gen_range(minimum_age..maximum_age);
-      trace_var!(current_age);
+
       primary.current_age = current_age;
       secondary.current_age = current_age;
       (primary, secondary)
     };
-    trace_var!(primary);
-    trace_var!(secondary);
+
     let result = CloseBinaryStar::from_stars(rng, primary, secondary, average_separation, orbital_eccentricity)?;
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -164,7 +158,6 @@ impl Default for Constraints {
   /// No constraints, just let it all hang out.
   #[named]
   fn default() -> Self {
-    trace_enter!();
     let minimum_combined_mass = Some(MINIMUM_COMBINED_MASS);
     let maximum_combined_mass = Some(MAXIMUM_COMBINED_MASS);
     let minimum_individual_mass = Some(MINIMUM_INDIVIDUAL_MASS);
@@ -177,7 +170,8 @@ impl Default for Constraints {
     let maximum_age = None;
     let enforce_habitability = false;
     let star_constraints = None;
-    let result = Self {
+
+    Self {
       minimum_combined_mass,
       maximum_combined_mass,
       minimum_individual_mass,
@@ -190,10 +184,7 @@ impl Default for Constraints {
       maximum_age,
       enforce_habitability,
       star_constraints,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }
 
@@ -209,13 +200,13 @@ pub mod test {
   #[test]
   pub fn test_default() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let binary = &Constraints::default().generate(&mut rng)?;
-    trace_var!(binary);
+
     print_var!(binary);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -223,13 +214,13 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let binary = &Constraints::habitable().generate(&mut rng)?;
-    trace_var!(binary);
+
     print_var!(binary);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -237,9 +228,9 @@ pub mod test {
   #[test]
   pub fn test_default_bulk() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let mut success = 0;
     let trials = 1000;
     let mut counter = 0;
@@ -254,7 +245,7 @@ pub mod test {
       }
     }
     print_var!(success);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -262,9 +253,9 @@ pub mod test {
   #[test]
   pub fn test_habitable_bulk() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let mut success = 0;
     let trials = 1000;
     let mut counter = 0;
@@ -280,7 +271,7 @@ pub mod test {
     }
     print_var!(success);
     assert_eq!(counter, trials);
-    trace_exit!();
+
     Ok(())
   }
 }

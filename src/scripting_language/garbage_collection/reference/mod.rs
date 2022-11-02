@@ -18,11 +18,7 @@ impl<T: Trace> Clone for Reference<T> {
   #[named]
   #[inline]
   fn clone(&self) -> Reference<T> {
-    trace_enter!();
-    let result = *self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    *self
   }
 }
 
@@ -33,13 +29,11 @@ impl<T: Trace> Copy for Reference<T> {}
 impl<T: Trace> Debug for Reference<T> {
   #[named]
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-    trace_enter!();
     let full_name = type_name::<T>();
-    trace_var!(full_name);
+
     full_name.split("::").last().unwrap();
     let result = write!(f, "ref({}:{})", self.index, full_name);
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 }
@@ -48,10 +42,8 @@ impl<T: Trace> Debug for Reference<T> {
 impl<T: Trace> Display for Reference<T> {
   #[named]
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-    trace_enter!();
     let result = write!(f, "{:?}", self);
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 }
@@ -63,9 +55,7 @@ impl<T: Trace> Eq for Reference<T> {}
 impl Hash for Reference<String> {
   #[named]
   fn hash<H: Hasher>(&self, state: &mut H) {
-    trace_enter!();
     self.index.hash(state);
-    trace_exit!();
   }
 }
 
@@ -73,10 +63,6 @@ impl Hash for Reference<String> {
 impl<T: Trace> PartialEq for Reference<T> {
   #[named]
   fn eq(&self, other: &Self) -> bool {
-    trace_enter!();
-    let result = self.index == other.index;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.index == other.index
   }
 }

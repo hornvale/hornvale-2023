@@ -27,40 +27,35 @@ impl<'source> Compiler<'source> {
   /// Constructor.
   #[named]
   pub fn new(function_name: Reference<String>, function_type: FunctionType) -> Self {
-    trace_enter!();
     let mut locals = Vec::new();
-    trace_var!(locals);
+
     let depth = 0;
-    trace_var!(depth);
+
     let function = Function::new(function_name);
-    trace_var!(function);
+
     let enclosing = None;
-    trace_var!(enclosing);
+
     let token = match function_type {
       FunctionType::Method | FunctionType::Initializer => Token::synthesize("this"),
       _ => Token::synthesize(""),
     };
-    trace_var!(token);
+
     locals.push(Local::new(token, 0));
-    let result = Self {
+
+    Self {
       enclosing,
       locals,
       depth,
       function,
       function_type,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Does a variable with this name exist already in this scope?
   #[named]
   pub fn has_local(&self, token: &Token<'source>) -> bool {
-    trace_enter!();
-    trace_var!(token);
     let token_name = token.lexeme;
-    trace_var!(token_name);
+
     for local in self.locals.iter().rev() {
       // We've entered a new scope, so we're safe.
       if local.depth != -1 && local.depth < self.depth {
@@ -70,17 +65,15 @@ impl<'source> Compiler<'source> {
         return true;
       }
     }
-    trace_exit!();
+
     false
   }
 
   /// Resolve a local variable.
   #[named]
   pub fn resolve_local(&mut self, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
-    trace_enter!();
-    trace_var!(token);
     let token_name = token.lexeme;
-    trace_var!(token_name);
+
     for (i, local) in self.locals.iter().enumerate().rev() {
       if token_name == local.token.lexeme {
         if local.depth == -1 {
@@ -95,8 +88,6 @@ impl<'source> Compiler<'source> {
   /// Resolve an upvalue.
   #[named]
   pub fn resolve_upvalue(&mut self, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
-    trace_enter!();
-    trace_var!(token);
     if let Some(enclosing) = self.enclosing.as_mut() {
       if let Some(index) = enclosing.resolve_local(token, errors) {
         enclosing.locals[index as usize].is_captured = true;
@@ -106,17 +97,13 @@ impl<'source> Compiler<'source> {
         return Some(self.add_upvalue(index, false, errors));
       }
     }
-    trace_exit!();
+
     None
   }
 
   /// Create a new upvalue.
   #[named]
-  pub fn add_upvalue(&mut self, index: u16, is_local: bool, errors: &mut Vec<&'static str>) -> u16 {
-    trace_enter!();
-    trace_var!(index);
-    trace_var!(is_local);
-    trace_var!(errors);
+  pub fn add_upvalue(&mut self, index: u16, is_local: bool, _errors: &mut [&'static str]) -> u16 {
     for (i, upvalue) in self.function.upvalues.iter().enumerate() {
       if upvalue.index == index && upvalue.is_local == is_local {
         return i as u16;
@@ -125,8 +112,7 @@ impl<'source> Compiler<'source> {
     let result = self.function.upvalues.len() as u16;
     let upvalue = FunctionUpvalue { index, is_local };
     self.function.upvalues.push(upvalue);
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 }
@@ -140,7 +126,5 @@ pub mod test {
   #[test]
   pub fn test_compiler() {
     init();
-    trace_enter!();
-    trace_exit!();
   }
 }

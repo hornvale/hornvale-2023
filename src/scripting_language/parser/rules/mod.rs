@@ -18,13 +18,9 @@ impl<'source> Rules<'source> {
   /// Constructor.
   #[named]
   pub fn new() -> Self {
-    trace_enter!();
     let rules = HashMap::new();
-    trace_var!(rules);
-    let result = Self { rules };
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Self { rules }
   }
 
   /// Add a new rule.
@@ -36,9 +32,6 @@ impl<'source> Rules<'source> {
     infix: Option<ParseFn<'source>>,
     precedence: Precedence,
   ) {
-    trace_enter!();
-    trace_var!(token_type);
-    trace_var!(precedence);
     self.rules.insert(
       token_type,
       Rule {
@@ -47,7 +40,6 @@ impl<'source> Rules<'source> {
         precedence,
       },
     );
-    trace_exit!();
   }
 }
 
@@ -55,9 +47,8 @@ impl<'source> Default for Rules<'source> {
   /// No constraints, just let it all hang out.
   #[named]
   fn default() -> Self {
-    trace_enter!();
     let mut result = Rules::new();
-    trace_var!(result);
+
     use TokenType::*;
     result.add_rule(
       LeftParenthesis,
@@ -118,8 +109,7 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Var, None, None, Precedence::None);
     result.add_rule(While, None, None, Precedence::None);
     result.add_rule(Eof, None, None, Precedence::None);
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 }
@@ -134,8 +124,7 @@ pub mod test {
   #[test]
   pub fn test_rules() {
     init();
-    trace_enter!();
+
     let _rules = Rules::default();
-    trace_exit!();
   }
 }

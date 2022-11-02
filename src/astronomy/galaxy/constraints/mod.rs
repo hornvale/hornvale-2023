@@ -25,13 +25,11 @@ impl Constraints {
   /// This may or may not be habitable.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Galaxy, Error> {
-    trace_enter!();
     let stellar_neighborhood_constraints = self.stellar_neighborhood_constraints.unwrap_or_default();
-    trace_var!(stellar_neighborhood_constraints);
+
     let stellar_neighborhood = stellar_neighborhood_constraints.generate(rng)?;
     let result = Galaxy { stellar_neighborhood };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -58,14 +56,14 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let constraints = Constraints::default();
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);
     print_var!(galaxy);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -73,14 +71,14 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let constraints = Constraints::habitable();
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);
     print_var!(galaxy);
-    trace_exit!();
+
     Ok(())
   }
 }

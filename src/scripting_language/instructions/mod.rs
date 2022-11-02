@@ -17,19 +17,14 @@ impl Instructions {
   /// Append an instruction to the chunk.
   #[named]
   pub fn append(&mut self, instruction: Instruction, line_number: usize) {
-    trace_enter!();
-    trace_var!(instruction);
-    trace_var!(line_number);
     assert_eq!(self.instructions.len(), self.line_numbers.len());
     self.instructions.push(instruction);
     self.line_numbers.push(line_number);
-    trace_exit!();
   }
 
   /// Dump the disassembled memory.
   #[named]
   pub fn dump<W: Write>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
-    trace_enter!();
     writeln!(out)?;
     writeln!(
       out,
@@ -45,7 +40,7 @@ impl Instructions {
       offset += instruction.dump(index, offset, line, same_line, out)? + 1;
     }
     writeln!(out)?;
-    trace_exit!();
+
     Ok(())
   }
 }
@@ -60,19 +55,16 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-    trace_enter!();
-    let mut string = String::new();
+
+    let string = String::new();
     let instruction = Instruction::Return;
     let mut instructions = Instructions::default();
     instructions.append(instruction, 1);
-    let result = instructions.dump(&mut string).unwrap();
-    assert_eq!(result, ());
     println!("{}", string);
-    let lines: Vec<&str> = string.split("\n").collect();
+    let lines: Vec<&str> = string.split('\n').collect();
     assert_eq!(lines[0], "");
     assert_eq!(lines[1], "Index   Offset    Line       Instruction  Args");
     assert_eq!(lines[2], "----------------------------------------------");
     assert_eq!(lines[3], "    0   0x0000       1            Return     0");
-    trace_exit!();
   }
 }

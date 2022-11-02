@@ -28,15 +28,12 @@ impl HostStar {
   /// Calculated in Gyr.
   #[named]
   pub fn get_current_age(&self) -> f64 {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.current_age,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_current_age(),
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the total mass of the stars.
@@ -44,112 +41,87 @@ impl HostStar {
   /// Calculated in Msol.
   #[named]
   pub fn get_stellar_mass(&self) -> f64 {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.mass,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_stellar_mass(),
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the total number of stars in the system.
   #[named]
   pub fn get_stellar_count(&self) -> u8 {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(_) => 1,
       CloseBinaryStar(_) => 2,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the frost line.
   #[named]
   pub fn get_frost_line(&self) -> f64 {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.frost_line,
       CloseBinaryStar(close_binary_star) => close_binary_star.frost_line,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the habitable zone.
   #[named]
   pub fn get_habitable_zone(&self) -> (f64, f64) {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.habitable_zone,
       CloseBinaryStar(close_binary_star) => close_binary_star.habitable_zone,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the satellite zone.
   #[named]
   pub fn get_satellite_zone(&self) -> (f64, f64) {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.satellite_zone,
       CloseBinaryStar(close_binary_star) => close_binary_star.satellite_zone,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Retrieve or calculate the luminosity.
   #[named]
   pub fn get_luminosity(&self) -> f64 {
-    trace_enter!();
     use HostStar::*;
-    let result = match &self {
+
+    match &self {
       Star(star) => star.luminosity,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_luminosity(),
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn check_habitable(&self) -> Result<(), Error> {
-    trace_enter!();
     use HostStar::*;
     match &self {
       Star(star) => star.check_habitable()?,
       CloseBinaryStar(close_binary_star) => close_binary_star.check_habitable()?,
     }
-    let result = Ok(());
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Ok(())
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
   #[named]
   pub fn is_habitable(&self) -> bool {
-    trace_enter!();
-    let result = match self.check_habitable() {
+    match self.check_habitable() {
       Ok(()) => true,
       Err(_) => false,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }

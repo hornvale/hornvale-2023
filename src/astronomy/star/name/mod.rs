@@ -24,14 +24,11 @@ pub const SUFFIX: &[&str] = &[
 
 #[named]
 pub fn generate_star_name<R: Rng + ?Sized>(rng: &mut R) -> String {
-  trace_enter!();
   let first = PREFIX[rng.gen_range(0..PREFIX.len())];
   let second = INFIX[rng.gen_range(0..INFIX.len())];
   let third = SUFFIX[rng.gen_range(0..SUFFIX.len())];
-  let result = to_sentence_case(&format!("{}{}{}", first, second, third));
-  trace_var!(result);
-  trace_exit!();
-  result
+
+  to_sentence_case(&format!("{}{}{}", first, second, third))
 }
 
 #[cfg(test)]
@@ -46,12 +43,11 @@ pub mod test {
   #[test]
   pub fn test_name_star() {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let name = generate_star_name(&mut rng);
-    trace_var!(name);
+
     print_var!(name);
-    trace_exit!();
   }
 }

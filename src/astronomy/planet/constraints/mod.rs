@@ -28,21 +28,19 @@ impl Constraints {
   /// Generate.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar, distance: f64) -> Result<Planet, Error> {
-    trace_enter!();
     use Planet::*;
     let result = {
       if distance >= host_star.get_frost_line() {
         let constraints = self.gas_giant_planet_constraints.unwrap_or_default();
-        trace_var!(constraints);
+
         GasGiantPlanet(constraints.generate(rng, host_star, distance)?)
       } else {
         let constraints = self.terrestrial_planet_constraints.unwrap_or_default();
-        trace_var!(constraints);
+
         TerrestrialPlanet(constraints.generate(rng, host_star, distance)?)
       }
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -72,16 +70,16 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-    let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
-    trace_var!(planet);
+    let planet = &Constraints::default().generate(&mut rng, host_star, distance)?;
+
     print_var!(planet);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -89,17 +87,17 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-    let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
-    trace_var!(planet);
+    let planet = &Constraints::habitable().generate(&mut rng, host_star, distance)?;
+
     print_var!(planet);
     planet.is_habitable();
-    trace_exit!();
+
     Ok(())
   }
 }

@@ -29,21 +29,16 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   /// Constructor.
   #[named]
   pub fn new(input: R, output: W, interpreter: I) -> Self {
-    trace_enter!();
-    let result = Self {
+    Self {
       input,
       output,
       interpreter,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Runloop.
   #[named]
   pub fn run(&mut self) -> Result<(), Error> {
-    trace_enter!();
     let initial_text = self.interpreter.get_initial_text()?;
     writeln!(&mut self.output, "{}", initial_text.unwrap_or_default())?;
     loop {
@@ -54,13 +49,13 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
       if &line == "quit" {
         break;
       }
-      trace_var!(line);
+
       // Note that the string comes in with a trailing newline.
       let response = self.interpreter.interpret(line.trim())?;
-      trace_var!(response);
+
       writeln!(&mut self.output, "{}", response.unwrap_or_default())?;
     }
-    trace_exit!();
+
     Ok(())
   }
 }
@@ -68,14 +63,11 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
 impl Default for Repl<StdinLock<'_>, Stdout, ParserInterpreter<TwoWord>> {
   #[named]
   fn default() -> Self {
-    trace_enter!();
     let stdio = io::stdin();
     let input = stdio.lock();
     let output = io::stdout();
     let interpreter = ParserInterpreter::new(TwoWord {});
-    let result = Self::new(input, output, interpreter);
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    Self::new(input, output, interpreter)
   }
 }

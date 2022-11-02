@@ -28,20 +28,12 @@ impl StellarNeighbor {
   /// Calculated in Msol.
   #[named]
   pub fn get_stellar_mass(&self) -> f64 {
-    trace_enter!();
-    let result = self.star_system.get_stellar_mass();
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.star_system.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
   #[named]
   pub fn get_stellar_count(&self) -> u8 {
-    trace_enter!();
-    let result = self.star_system.get_stellar_count();
-    trace_u8!(result);
-    trace_exit!();
-    result
+    self.star_system.get_stellar_count()
   }
 }

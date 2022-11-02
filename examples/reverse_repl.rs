@@ -1,5 +1,5 @@
 ///! A simple REPL that echoes your input, but in reverse.
-use std::io::{self, BufRead, StdinLock, Stdout, Write};
+use std::io::{self};
 
 use hornvale::io::interpreter::reverse::Reverse;
 use hornvale::io::repl::Repl;

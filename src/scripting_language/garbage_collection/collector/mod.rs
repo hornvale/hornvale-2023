@@ -32,52 +32,46 @@ impl Collector {
   /// Constructor.
   #[named]
   pub fn new() -> Self {
-    trace_enter!();
     let bytes_allocated = 0;
-    trace_var!(bytes_allocated);
+
     let next_threshold = 1024; // * 1024;
-    trace_var!(next_threshold);
+
     let free_slots = Vec::new();
-    trace_var!(free_slots);
+
     let objects = Vec::new();
-    trace_var!(objects);
+
     let strings = HashMap::new();
-    trace_var!(strings);
+
     let gray_stack = VecDeque::new();
-    trace_var!(gray_stack);
-    let result = Collector {
+
+    Collector {
       bytes_allocated,
       next_threshold,
       free_slots,
       objects,
       strings,
       gray_stack,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Allocate a chunk of memory.
   #[named]
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
-    trace_enter!();
-    trace_var!(object);
     let repr = format!("{:?}", object).chars().into_iter().take(32).collect::<String>();
-    trace_var!(repr);
+
     let size = object.get_size() + size_of::<ObjectHeader>();
-    trace_var!(size);
+
     self.bytes_allocated += size;
     let is_marked = false;
-    trace_var!(is_marked);
+
     let object = Box::new(object);
-    trace_var!(object);
+
     let entry = ObjectHeader {
       is_marked,
       size,
       object,
     };
-    trace_var!(entry);
+
     let index = match self.free_slots.pop() {
       Some(i) => {
         self.objects[i] = Some(entry);
@@ -88,7 +82,7 @@ impl Collector {
         self.objects.len() - 1
       },
     };
-    trace_var!(index);
+
     debug!(
       "alloc(id: {}, type: {}: repr: {}, bytes: {}, next: {})",
       index,
@@ -97,37 +91,31 @@ impl Collector {
       self.bytes_allocated,
       self.next_threshold,
     );
-    let result = Reference {
+
+    Reference {
       index,
       marker: PhantomData,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Eliminate duplicate string objects.
   #[named]
   pub fn intern(&mut self, name: String) -> Reference<String> {
-    trace_enter!();
     let result = if let Some(&value) = self.strings.get(&name) {
       value
     } else {
       let reference = self.alloc(name.clone());
-      trace_var!(reference);
+
       self.strings.insert(name, reference);
       reference
     };
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 
   /// Dereference.
   #[named]
   pub fn deref<T: Trace + 'static>(&self, reference: Reference<T>) -> &T {
-    trace_enter!();
-    trace_var!(reference);
     let result = self.objects[reference.index]
       .as_ref()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index))
@@ -135,15 +123,13 @@ impl Collector {
       .as_any()
       .downcast_ref()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index));
-    trace_exit!();
+
     result
   }
 
   /// Dereference mutably.
   #[named]
   pub fn deref_mut<T: Trace + 'static>(&mut self, reference: Reference<T>) -> &mut T {
-    trace_enter!();
-    trace_var!(reference);
     let result = self.objects[reference.index]
       .as_mut()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index))
@@ -151,15 +137,13 @@ impl Collector {
       .as_any_mut()
       .downcast_mut()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index));
-    trace_exit!();
+
     result
   }
 
   /// Free up memory that was allocated for a newly-released object.
   #[named]
   pub fn free(&mut self, index: usize) {
-    trace_enter!();
-    trace_var!(index);
     if let Some(old) = self.objects[index].take() {
       debug!("free (id: {}, size: {})", index, old.size);
       self.bytes_allocated -= old.size;
@@ -167,7 +151,6 @@ impl Collector {
     } else {
       panic!("Double free on {}", index);
     }
-    trace_exit!();
   }
 
   /// Collect the garbage.
@@ -204,9 +187,8 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn collect_garbage(&mut self) {
-    trace_enter!();
     let before = self.bytes_allocated;
-    trace_var!(before);
+
     self.trace_references();
     // Strings are handled a bit differently.
     self.remove_white_strings();
@@ -219,7 +201,6 @@ impl Collector {
       self.bytes_allocated,
       self.next_threshold,
     );
-    trace_exit!();
   }
 
   /// Trace references for gray objects.
@@ -234,12 +215,10 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn trace_references(&mut self) {
-    trace_enter!();
     debug!("tracing references");
     while let Some(index) = self.gray_stack.pop_front() {
       self.blacken_object(index);
     }
-    trace_exit!();
   }
 
   /// "Mark" an object as black.
@@ -252,13 +231,11 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn blacken_object(&mut self, index: usize) {
-    trace_enter!();
     debug!("blacken(id: {})", index);
     // Hack to trick the borrow checker to be able to call trace on an element.
     let object = self.objects[index].take();
     object.as_ref().unwrap().object.trace(self);
     self.objects[index] = object;
-    trace_exit!();
   }
 
   /// Mark an object value as gray.
@@ -274,10 +251,7 @@ impl Collector {
   /// tation of `trace()`.
   #[named]
   pub fn mark_value(&mut self, value: Value) {
-    trace_enter!();
-    trace_var!(value);
     value.trace(self);
-    trace_exit!();
   }
 
   /// Mark an object as gray and add it to the stack.
@@ -287,8 +261,6 @@ impl Collector {
   /// objects it references.
   #[named]
   pub fn mark_object<T: Trace>(&mut self, reference: Reference<T>) {
-    trace_enter!();
-    trace_var!(reference);
     if let Some(object) = self.objects[reference.index].as_mut() {
       // If the object is already marked, we don’t mark it again and thus don’t
       // add it to the gray stack. This ensures that an already-gray object is
@@ -309,7 +281,6 @@ impl Collector {
     } else {
       panic!("marking already disposed object {}", reference.index)
     }
-    trace_exit!();
   }
 
   /// Mark the various values that are referenced by a table.
@@ -318,13 +289,10 @@ impl Collector {
   /// by our garbage collection.
   #[named]
   pub fn mark_table(&mut self, table: &Table) {
-    trace_enter!();
-    trace_var!(table);
     for (&key, &value) in table {
       self.mark_object(key);
       self.mark_value(value);
     }
-    trace_exit!();
   }
 
   /// Should we collect?
@@ -348,11 +316,7 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn should_collect(&self) -> bool {
-    trace_enter!();
-    let result = self.bytes_allocated > self.next_threshold;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.bytes_allocated > self.next_threshold
   }
 
   /// Sweep.
@@ -370,7 +334,6 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn sweep(&mut self) {
-    trace_enter!();
     debug!("sweeping");
     for i in 0..self.objects.len() {
       if let Some(mut object) = self.objects[i].as_mut() {
@@ -381,7 +344,6 @@ impl Collector {
         }
       }
     }
-    trace_exit!();
   }
 
   /// Remove strings marked white.
@@ -414,22 +376,16 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   #[named]
   pub fn remove_white_strings(&mut self) {
-    trace_enter!();
     debug!("removing white strings");
     let strings = &mut self.strings;
     let objects = &self.objects;
     strings.retain(|_k, v| objects[v.index].as_ref().unwrap().is_marked);
-    trace_exit!();
   }
 }
 
 impl Default for Collector {
   #[named]
   fn default() -> Self {
-    trace_enter!();
-    let result = Self::new();
-    trace_var!(result);
-    trace_exit!();
-    result
+    Self::new()
   }
 }

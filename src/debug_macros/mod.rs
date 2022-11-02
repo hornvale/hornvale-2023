@@ -9,7 +9,7 @@
 /// # #[named]
 /// # fn main() {
 /// let five = 5;
-/// trace_var!(five);
+///
 /// # }
 /// ```
 #[macro_export]
@@ -112,7 +112,7 @@ macro_rules! print_var {
 /// # use hornvale::*;
 /// # #[named]
 /// # fn main() {
-/// trace_enter!();
+///
 /// # }
 /// ```
 #[macro_export]
@@ -137,7 +137,7 @@ macro_rules! trace_enter {
 /// # use hornvale::*;
 /// # #[named]
 /// # fn main() {
-/// trace_exit!();
+///
 /// # }
 /// ```
 #[macro_export]

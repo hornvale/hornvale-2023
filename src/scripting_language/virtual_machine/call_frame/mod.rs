@@ -16,18 +16,12 @@ impl CallFrame {
   /// Constructor.
   #[named]
   pub fn new(closure: Reference<Closure>, index: usize) -> Self {
-    trace_enter!();
-    trace_var!(closure);
-    trace_var!(index);
     let instruction_pointer = 0;
-    trace_var!(instruction_pointer);
-    let result = CallFrame {
+
+    CallFrame {
       closure,
       instruction_pointer,
       index,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }

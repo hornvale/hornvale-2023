@@ -33,20 +33,16 @@ impl Constraints {
     host_star: &HostStar,
     star_distance: f64,
   ) -> Result<SatelliteSystem, Error> {
-    trace_enter!();
-    trace_var!(host_star);
-    trace_var!(star_distance);
     let planet_constraints = self.planet_constraints.unwrap_or_default();
-    trace_var!(planet_constraints);
+
     let moons_constraints = self.moons_constraints.unwrap_or_default();
-    trace_var!(moons_constraints);
+
     let planet = planet_constraints.generate(rng, host_star, star_distance)?;
-    trace_var!(planet);
+
     let moons = moons_constraints.generate(rng, host_star, star_distance, &planet)?;
-    trace_var!(moons);
+
     let result = SatelliteSystem { planet, moons };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -76,16 +72,16 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let host_star = HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let satellite_system = &Constraints::default().generate(&mut rng, &host_star, distance)?;
-    trace_var!(satellite_system);
+
     print_var!(satellite_system);
-    trace_exit!();
+
     Ok(())
   }
 }

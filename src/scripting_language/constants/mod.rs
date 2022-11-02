@@ -17,13 +17,10 @@ impl Constants {
   /// already been added.
   #[named]
   pub fn push(&mut self, value: Value) -> Result<Instruction, Error> {
-    trace_enter!();
-    trace_var!(value);
     let index = self.constants.len();
     self.constants.push(value);
     let result = Instruction::Constant(index as u16);
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }

@@ -6,17 +6,12 @@
 /// Given that, we can calculate the overall density of the planet in Dearth.
 #[named]
 pub fn get_density(mass: f64, cmf: f64) -> f64 {
-  trace_enter!();
-  trace_var!(mass);
-  trace_var!(cmf);
   let d1 = 5.51 * mass.powf(0.189) / (1.07 - 0.21 * (cmf)).powf(3.0);
   let d2 = 3.5 + 4.37 * cmf;
-  let result = match mass {
+
+  match mass {
     mass if mass > 0.6 => d1,
     _mass if d1 > d2 => d1,
     _ => d2,
-  };
-  trace_var!(result);
-  trace_exit!();
-  result
+  }
 }

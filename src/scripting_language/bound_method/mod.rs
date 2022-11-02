@@ -21,57 +21,32 @@ impl BoundMethod {
   /// Constructor.
   #[named]
   pub fn new(receiver: Value, method: Reference<Closure>) -> Self {
-    trace_enter!();
-    trace_var!(receiver);
-    trace_var!(method);
-    let result = BoundMethod { receiver, method };
-    trace_var!(result);
-    trace_exit!();
-    result
+    BoundMethod { receiver, method }
   }
 }
 
 impl Trace for BoundMethod {
   #[named]
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
-    trace_enter!();
-    trace_var!(garbage_collector);
     let method = garbage_collector.deref(self.method);
-    trace_var!(method);
-    let result = method.format(f, garbage_collector);
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    method.format(f, garbage_collector)
   }
   #[named]
   fn get_size(&self) -> usize {
-    trace_enter!();
-    let result = size_of::<BoundMethod>();
-    trace_var!(result);
-    trace_exit!();
-    result
+    size_of::<BoundMethod>()
   }
   #[named]
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
-    trace_enter!();
     garbage_collector.mark_value(self.receiver);
     garbage_collector.mark_object(self.method);
-    trace_exit!();
   }
   #[named]
   fn as_any(&self) -> &dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
   #[named]
   fn as_any_mut(&mut self) -> &mut dyn Any {
-    trace_enter!();
-    let result = self;
-    trace_var!(result);
-    trace_exit!();
-    result
+    self as _
   }
 }

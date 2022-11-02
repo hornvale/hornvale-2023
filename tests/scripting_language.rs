@@ -158,7 +158,7 @@ fn run_file_test(filename: &str) {
 
   if let Some(e) = expected.runtime_err {
     assert!(
-      err.len() > 0,
+      !err.is_empty(),
       "Should have a message like {}, had diddly-squat",
       e.message
     );

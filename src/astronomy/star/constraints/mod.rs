@@ -33,24 +33,22 @@ impl Constraints {
   /// Generate.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Star, Error> {
-    trace_enter!();
     let mass = match self.make_habitable {
       true => get_random_habitable_stellar_mass(rng),
       false => get_random_stellar_mass(rng),
     };
-    trace_var!(mass);
+
     let mut result = Star::from_mass(rng, mass)?;
-    trace_var!(result);
+
     let minimum_age = match self.make_habitable {
       true => MINIMUM_HABITABLE_AGE,
       false => 0.1 * result.life_expectancy,
     };
-    trace_var!(minimum_age);
+
     let maximum_age = 0.9 * result.life_expectancy;
-    trace_var!(maximum_age);
+
     result.current_age = rng.gen_range(minimum_age..maximum_age);
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -81,13 +79,13 @@ pub mod test {
   #[test]
   pub fn get_random_main_sequence() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star = Constraints::default().generate(&mut rng)?;
-    trace_var!(star);
+
     print_var!(star);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -95,14 +93,14 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star = Constraints::habitable().generate(&mut rng)?;
-    trace_var!(star);
+
     print_var!(star);
     assert!(star.is_habitable());
-    trace_exit!();
+
     Ok(())
   }
 }

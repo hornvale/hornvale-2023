@@ -1,5 +1,5 @@
 use plotters::prelude::*;
-const OUT_FILE_NAME: &'static str = "examples/output-stellar-neighborhood.svg";
+const OUT_FILE_NAME: &str = "examples/output-stellar-neighborhood.svg";
 
 extern crate function_name;
 
@@ -26,8 +26,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .map(|neighbor| neighbor.coordinates)
     .collect::<Vec<(f64, f64, f64)>>();
   let mut chart = ChartBuilder::on(&area)
-    .caption(format!("Stellar Neighborhood"), ("sans", 20))
-    .build_cartesian_3d(x_axis.clone(), y_axis.clone(), z_axis.clone())?;
+    .caption("Stellar Neighborhood", ("sans", 20))
+    .build_cartesian_3d(x_axis, y_axis, z_axis)?;
   chart.with_projection(|mut pb| {
     pb.yaw = 0.5;
     pb.scale = 1.0;

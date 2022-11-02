@@ -26,32 +26,26 @@ impl<'source> Scanner<'source> {
   /// Constructor.
   #[named]
   pub fn new(source: &'source str) -> Self {
-    trace_enter!();
-    trace_var!(source);
     let start = 0;
-    trace_var!(start);
+
     let current = 0;
-    trace_var!(current);
+
     let line_number = 1;
-    trace_var!(line_number);
+
     let source_bytes = source.as_bytes().to_vec();
-    trace_var!(source_bytes);
-    let result = Self {
+
+    Self {
       start,
       current,
       line_number,
       source,
       source_bytes,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Scan a token.
   #[named]
   pub fn scan_token(&mut self) -> Result<Token<'source>, Error> {
-    trace_enter!();
     self.skip_whitespace();
     self.start = self.current;
     use TokenType::*;
@@ -92,8 +86,7 @@ impl<'source> Scanner<'source> {
       char if self.is_alpha(char) => self.match_identifier()?,
       _ => return Err(error::Error::UnexpectedCharacter(char)),
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 
@@ -101,60 +94,42 @@ impl<'source> Scanner<'source> {
   #[named]
   #[inline]
   pub fn advance(&mut self) -> char {
-    trace_enter!();
     let position = self.current;
-    trace_var!(position);
+
     self.current += 1;
-    let result = self.source_bytes[position] as char;
-    trace_var!(result);
-    trace_exit!();
-    result
+
+    self.source_bytes[position] as char
   }
 
   /// Are we at the end of the source?
   #[named]
   pub fn is_at_end(&self) -> bool {
-    trace_enter!();
-    let result = self.current >= self.source.len();
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.current >= self.source.len()
   }
 
   /// Create a token based on a token type.
   #[named]
   pub fn make_token(&self, r#type: TokenType) -> Token<'source> {
-    trace_enter!();
-    trace_var!(r#type);
     let lexeme = self.get_lexeme();
-    trace_var!(lexeme);
+
     let line_number = self.line_number;
-    trace_var!(line_number);
-    let result = Token {
+
+    Token {
       r#type,
       lexeme,
       line_number,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Get the lexeme from the start and current position.
   #[named]
   pub fn get_lexeme(&self) -> &'source str {
-    trace_enter!();
-    let result = &self.source[self.start..self.current];
-    trace_var!(result);
-    trace_exit!();
-    result
+    &self.source[self.start..self.current] as _
   }
 
   /// Does the current character match the one specified?
   #[named]
   pub fn match_current(&mut self, char: char) -> bool {
-    trace_enter!();
-    trace_var!(char);
     if self.is_at_end() {
       return false;
     }
@@ -162,14 +137,13 @@ impl<'source> Scanner<'source> {
       return false;
     }
     self.current += 1;
-    trace_exit!();
+
     true
   }
 
   /// Try to match and create a token out of a number.
   #[named]
   pub fn match_number(&mut self) -> Result<Token<'source>, Error> {
-    trace_enter!();
     while self.is_digit(self.peek()) {
       self.advance();
     }
@@ -179,18 +153,16 @@ impl<'source> Scanner<'source> {
         self.advance();
       }
     }
-    let value = &self.source[self.start..self.current];
-    trace_var!(value);
+    let _value = &self.source[self.start..self.current];
+
     let result = self.make_token(TokenType::Number);
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 
   /// Try to match and create a token out of a string.
   #[named]
   pub fn match_string(&mut self) -> Result<Token<'source>, Error> {
-    trace_enter!();
     while self.peek() != '"' && !self.is_at_end() {
       if self.peek() == '\n' {
         self.line_number += 1;
@@ -203,85 +175,61 @@ impl<'source> Scanner<'source> {
       self.advance();
       self.make_token(TokenType::String)
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 
   #[named]
   pub fn match_identifier(&mut self) -> Result<Token<'source>, Error> {
-    trace_enter!();
     while self.is_alpha_numeric(self.peek()) {
       self.advance();
     }
     let value = &self.source[self.start..self.current];
-    trace_var!(value);
+
     let value_type = match TokenType::from_str(value) {
       Ok(token_type) => token_type,
       Err(_) => TokenType::Identifier,
     };
-    trace_var!(value_type);
+
     let result = self.make_token(value_type);
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 
   #[named]
   pub fn is_digit(&self, char: char) -> bool {
-    trace_enter!();
-    trace_var!(char);
-    let result = ('0'..='9').contains(&char);
-    trace_var!(result);
-    trace_exit!();
-    result
+    ('0'..='9').contains(&char)
   }
 
   #[named]
   pub fn is_alpha(&self, char: char) -> bool {
-    trace_enter!();
-    trace_var!(char);
-    let result = ('a'..='z').contains(&char) || ('A'..='Z').contains(&char) || char == '_';
-    trace_var!(result);
-    trace_exit!();
-    result
+    ('a'..='z').contains(&char) || ('A'..='Z').contains(&char) || char == '_'
   }
 
   #[named]
   pub fn is_alpha_numeric(&self, char: char) -> bool {
-    trace_enter!();
-    trace_var!(char);
-    let result = self.is_digit(char) || self.is_alpha(char);
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.is_digit(char) || self.is_alpha(char)
   }
 
   #[named]
   pub fn get_error_token(&self, message: &'static str) -> Token<'source> {
-    trace_enter!();
-    trace_var!(message);
     let mut result = Token::synthesize(message);
     result.line_number = self.line_number;
-    trace_var!(result);
-    trace_exit!();
+
     result
   }
 
   /// Match a single-line comment.
   #[named]
   pub fn match_line_comment(&mut self) {
-    trace_enter!();
     while self.peek() != '\n' && !self.is_at_end() {
       self.advance();
     }
-    trace_exit!();
   }
 
   /// Match a multi-line comment.
   #[named]
   pub fn match_multiline_comment(&mut self) {
-    trace_enter!();
     while !(self.is_at_end() || self.peek_next() == '*' && self.peek_at_offset(2) == '/') {
       self.advance();
     }
@@ -291,46 +239,32 @@ impl<'source> Scanner<'source> {
     self.advance();
     // Trailing forward slash.
     self.advance();
-    trace_exit!();
   }
 
   /// Peek at the current character, but don't advance.
   #[named]
   pub fn peek(&self) -> char {
-    trace_enter!();
-    let result = self.peek_at_offset(0);
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.peek_at_offset(0)
   }
 
   /// Peek at the next character.
   #[named]
   pub fn peek_next(&self) -> char {
-    trace_enter!();
-    let result = self.peek_at_offset(1);
-    trace_var!(result);
-    trace_exit!();
-    result
+    self.peek_at_offset(1)
   }
 
   /// Peek at a character at a specified offset.
   #[named]
   pub fn peek_at_offset(&self, offset: usize) -> char {
-    trace_enter!();
-    let result = match self.current + offset >= self.source.len() {
+    match self.current + offset >= self.source.len() {
       true => '\0',
       false => self.source_bytes[self.current + offset] as char,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Skip all the whitespace!
   #[named]
   pub fn skip_whitespace(&mut self) {
-    trace_enter!();
     loop {
       match self.peek() {
         '\n' => {
@@ -348,7 +282,6 @@ impl<'source> Scanner<'source> {
         _ => break,
       }
     }
-    trace_exit!();
   }
 }
 
@@ -362,9 +295,9 @@ pub mod test {
   #[test]
   pub fn test_scanner() {
     init();
-    trace_enter!();
+
     test_scanner_tokens!(
-      "".into(),
+      "",
       [Ok(Token {
         r#type: TokenType::Eof,
         lexeme: "",
@@ -394,7 +327,7 @@ pub mod test {
         string,
         [Ok(Token {
           r#type: *r#type,
-          lexeme: &string,
+          lexeme: string,
           line_number: 1,
         })]
       );
@@ -410,7 +343,7 @@ pub mod test {
         string,
         [Ok(Token {
           r#type: *r#type,
-          lexeme: &string,
+          lexeme: string,
           line_number: 1,
         })]
       );
@@ -470,6 +403,5 @@ pub mod test {
         line_number: 2,
       })]
     );
-    trace_exit!();
   }
 }

@@ -6,8 +6,6 @@ use crate::astronomy::star::math::radius::star_mass_to_radius;
 /// Get the temperature of a main-sequence star in Kelvin based on its Msol.
 #[named]
 pub fn star_mass_to_temperature(mass: f64) -> Result<f64, Error> {
-  trace_enter!();
-  trace_var!(mass);
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
@@ -17,8 +15,7 @@ pub fn star_mass_to_temperature(mass: f64) -> Result<f64, Error> {
   let luminosity = star_mass_to_luminosity(mass)?;
   let radius = star_mass_to_radius(mass)?;
   let result = (luminosity / radius.powf(2.0)).powf(0.25) * 5776.0;
-  trace_var!(result);
-  trace_exit!();
+
   Ok(result)
 }
 
@@ -32,7 +29,7 @@ pub mod test {
   #[test]
   pub fn test_ms_star_mass_to_temperature() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     // Jolly ol' Sol
     let mut mass = 1.0;
     let mut expected = 5776.0;
@@ -73,7 +70,7 @@ pub mod test {
     expected = 41970.0;
     actual = star_mass_to_temperature(mass)?;
     assert_approx_eq!(expected, actual, 1f64);
-    trace_exit!();
+
     Ok(())
   }
 }

@@ -59,7 +59,6 @@ impl Constraints {
   /// This may or may not be habitable.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSystem, Error> {
-    trace_enter!();
     let star_subsystem_constraints = self.star_subsystem_constraints.unwrap_or_default();
     let star_subsystem = {
       let mut retries = self.retries.unwrap_or(10);
@@ -77,12 +76,11 @@ impl Constraints {
       }
       star_subsystem
     };
-    trace_var!(star_subsystem);
+
     let name = "Steve".to_string();
-    trace_var!(name);
+
     let result = StarSystem { star_subsystem, name };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -111,13 +109,13 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = &Constraints::default().generate(&mut rng)?;
-    trace_var!(star_system);
+
     print_var!(star_system);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -125,16 +123,16 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = &Constraints::habitable().generate(&mut rng)?;
-    trace_var!(star_system);
+
     print_var!(star_system);
     star_system.get_stellar_count();
     star_system.get_stellar_mass();
     star_system.is_habitable();
-    trace_exit!();
+
     Ok(())
   }
 
@@ -142,13 +140,13 @@ pub mod test {
   #[test]
   pub fn test_habitable_close_binary() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = &Constraints::habitable_close_binary().generate(&mut rng)?;
-    trace_var!(star_system);
+
     print_var!(star_system);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -156,13 +154,13 @@ pub mod test {
   #[test]
   pub fn test_habitable_distant_binary() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = &Constraints::habitable_distant_binary().generate(&mut rng)?;
-    trace_var!(star_system);
+
     print_var!(star_system);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -170,13 +168,13 @@ pub mod test {
   #[test]
   pub fn test_main_sequence() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let star_system = &Constraints::main_sequence().generate(&mut rng)?;
-    trace_var!(star_system);
+
     print_var!(star_system);
-    trace_exit!();
+
     Ok(())
   }
 }

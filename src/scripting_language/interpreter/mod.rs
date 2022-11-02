@@ -21,14 +21,12 @@ impl Interpreter {
     source: &'source str,
     garbage_collector: &mut GarbageCollector,
   ) -> Result<Reference<Function>, Error> {
-    trace_enter!();
-    trace_var!(source);
     let scanner = Scanner::new(source);
-    trace_var!(scanner);
+
     let parser = Parser::new(scanner, garbage_collector);
-    trace_var!(parser);
+
     let result = parser.compile()?;
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -43,9 +41,8 @@ pub mod test {
   #[test]
   pub fn test_interpreter() {
     init();
-    trace_enter!();
+
     let interpreter = Interpreter::default();
     print_var!(interpreter);
-    trace_exit!();
   }
 }

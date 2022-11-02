@@ -31,19 +31,17 @@ pub mod test {
   #[test]
   pub fn test_meters_to_rsol() {
     init();
-    trace_enter!();
+
     assert_approx_eq!(meters_to_rsol(rsol_to_meters(1.0)), 1.0);
     assert_approx_eq!(rsol_to_meters(1.0), METERS_PER_SOLAR_RADIUS);
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test_meters_to_au() {
     init();
-    trace_enter!();
+
     assert_approx_eq!(meters_to_au(au_to_meters(1.0)), 1.0);
     assert_approx_eq!(au_to_meters(1.0), METERS_PER_AU);
-    trace_exit!();
   }
 }

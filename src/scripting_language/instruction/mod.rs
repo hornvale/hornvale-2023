@@ -99,10 +99,6 @@ impl Instruction {
     same_line: bool,
     out: &mut W,
   ) -> Result<usize, Box<dyn StdError>> {
-    trace_enter!();
-    trace_var!(index);
-    trace_var!(offset);
-    trace_var!(line);
     use Instruction::*;
     let result = match &self {
       Constant(_) | DefineGlobal(_) | SetGlobal(_) | GetGlobal(_) => 1,
@@ -122,8 +118,7 @@ impl Instruction {
       self.to_string(),
       result,
     )?;
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -144,46 +139,42 @@ pub mod test {
   #[test]
   pub fn test_fmt() {
     init();
-    trace_enter!();
+
     assert_eq!(Instruction::Negate.to_string(), "Negate");
     assert_eq!(Instruction::Return.to_string(), "Return");
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test() {
     init();
-    trace_enter!();
+
     let mut string = String::new();
     let result = Instruction::Return.dump(0, 0, 0, false, &mut string).unwrap();
     assert_eq!(result, 0);
     assert_eq!(string, "    0   0x0000       0            Return     0\n");
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test2() {
     init();
-    trace_enter!();
+
     let mut string = String::new();
     let result = Instruction::Return.dump(16, 23, 72, false, &mut string).unwrap();
     assert_eq!(result, 0);
     assert_eq!(string, "   16   0x0017      72            Return     0\n");
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test3() {
     init();
-    trace_enter!();
+
     let mut string = String::new();
     let result = Instruction::Return.dump(16, 23, 72, true, &mut string).unwrap();
     assert_eq!(result, 0);
     assert_eq!(string, "   16   0x0017       |            Return     0\n");
-    trace_exit!();
   }
 }

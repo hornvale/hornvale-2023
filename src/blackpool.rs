@@ -4,9 +4,6 @@ use std::io::{self, BufRead, Error as IoError, Write};
 use std::process::exit;
 
 #[macro_use]
-extern crate function_name;
-
-#[macro_use]
 extern crate thiserror;
 
 use hornvale::scripting_language::virtual_machine::error::Error as VirtualMachineError;
@@ -24,13 +21,11 @@ pub enum Error {
   VirtualMachineError(#[from] VirtualMachineError),
 }
 
-#[named]
 pub fn repl<R, W>(vm: &mut VirtualMachine, mut input: R, mut output: W) -> Result<(), Error>
 where
   R: BufRead,
   W: Write,
 {
-  trace_enter!();
   loop {
     write!(&mut output, "> ")?;
     output.flush()?;
@@ -39,20 +34,17 @@ where
     if line.is_empty() {
       break;
     }
-    trace_var!(line);
+
     match vm.interpret(&line) {
       Ok(_) => writeln!(&mut output, "OK")?,
       Err(error) => writeln!(&mut output, "Error: {}", error)?,
     }
   }
-  trace_exit!();
+
   Ok(())
 }
 
-#[named]
 pub fn run_file(vm: &mut VirtualMachine, path: &str) -> Result<(), Error> {
-  trace_enter!();
-  trace_var!(path);
   let source = read_to_string(path)?;
   vm.interpret(&source)?;
   Ok(())
@@ -109,21 +101,19 @@ pub mod test {
   #[should_panic]
   pub fn test() {
     init();
-    trace_enter!();
+
     let mut vm = VirtualMachine::new();
     run_file(&mut vm, "nonexistent file.txt").unwrap();
-    trace_exit!();
   }
 
   #[named]
   #[test]
   pub fn test2() {
     init();
-    trace_enter!();
+
     let mut vm = VirtualMachine::new();
     let output = Vec::new();
     let input = b"3 + 4";
     repl(&mut vm, &input[..], output).unwrap();
-    trace_exit!();
   }
 }

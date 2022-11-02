@@ -20,22 +20,18 @@ impl Constraints {
   /// Generate a habitable host star.
   #[named]
   pub fn habitable() -> Self {
-    trace_enter!();
     let star_constraints = Some(StarConstraints::habitable());
     let close_binary_star_constraints = Some(CloseBinaryStarConstraints::habitable());
-    let result = Self {
+
+    Self {
       star_constraints,
       close_binary_star_constraints,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Generate.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<HostStar, Error> {
-    trace_enter!();
     use HostStar::*;
     let is_solitary: bool = rng.gen_range(0.0..=1.0) > BINARY_STAR_PROBABILITY;
     let result = if is_solitary {
@@ -45,8 +41,7 @@ impl Constraints {
       let constraints = self.close_binary_star_constraints.unwrap_or_default();
       CloseBinaryStar(Box::new(constraints.generate(rng)?))
     };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -75,13 +70,13 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let host_star = Constraints::default().generate(&mut rng)?;
-    trace_var!(host_star);
+
     print_var!(host_star);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -89,20 +84,19 @@ pub mod test {
   #[test]
   pub fn test_random() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let mut binary_count = 0;
     for _ in 1..10 {
       if let Ok(host_star) = Constraints::default().generate(&mut rng) {
-        trace_var!(host_star);
         if let HostStar::CloseBinaryStar(_) = host_star {
           binary_count += 1;
         }
       }
     }
     print_var!(binary_count);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -110,13 +104,12 @@ pub mod test {
   #[test]
   pub fn find_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let mut habitable_count = 0;
     for _ in 1..1000 {
       if let Ok(host_star) = Constraints::habitable().generate(&mut rng) {
-        trace_var!(host_star);
         if host_star.is_habitable() {
           habitable_count += 1;
         } else {
@@ -128,7 +121,7 @@ pub mod test {
       }
     }
     print_var!(habitable_count);
-    trace_exit!();
+
     Ok(())
   }
 }

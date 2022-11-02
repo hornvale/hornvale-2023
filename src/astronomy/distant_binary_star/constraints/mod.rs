@@ -23,30 +23,24 @@ impl Constraints {
   /// Generate a distant binary star with at least one habitable system.
   #[named]
   pub fn habitable() -> Self {
-    trace_enter!();
-    let result = Self {
+    Self {
       ..Constraints::default()
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 
   /// Generate.
   #[named]
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<DistantBinaryStar, Error> {
-    trace_enter!();
     let primary_constraints = PlanetarySystemConstraints::default();
-    trace_var!(primary_constraints);
+
     let primary = primary_constraints.generate(rng)?;
-    trace_var!(primary);
+
     let secondary_constraints = PlanetarySystemConstraints::default();
-    trace_var!(secondary_constraints);
+
     let secondary = secondary_constraints.generate(rng)?;
-    trace_var!(secondary);
+
     let result = DistantBinaryStar { primary, secondary };
-    trace_var!(result);
-    trace_exit!();
+
     Ok(result)
   }
 }
@@ -79,13 +73,13 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let distant_binary_star = Constraints::default().generate(&mut rng)?;
-    trace_var!(distant_binary_star);
+
     print_var!(distant_binary_star);
-    trace_exit!();
+
     Ok(())
   }
 
@@ -93,15 +87,15 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-    trace_enter!();
+
     let mut rng = thread_rng();
-    trace_var!(rng);
+
     let distant_binary_star = Constraints::habitable().generate(&mut rng)?;
-    trace_var!(distant_binary_star);
+
     print_var!(distant_binary_star);
     distant_binary_star.get_stellar_mass();
     distant_binary_star.is_habitable();
-    trace_exit!();
+
     Ok(())
   }
 }

@@ -18,19 +18,14 @@ impl<'source> Token<'source> {
   /// Constructor.
   #[named]
   pub fn synthesize(lexeme: &'source str) -> Self {
-    trace_enter!();
-    trace_var!(lexeme);
     let r#type = Type::Error;
-    trace_var!(r#type);
+
     let line_number = 0;
-    trace_var!(line_number);
-    let result = Self {
+
+    Self {
       r#type,
       lexeme,
       line_number,
-    };
-    trace_var!(result);
-    trace_exit!();
-    result
+    }
   }
 }

@@ -11,16 +11,13 @@ impl ClassCompiler {
   /// Constructor.
   #[named]
   pub fn new(enclosing: Option<Box<ClassCompiler>>) -> Box<Self> {
-    trace_enter!();
-    trace_var!(enclosing);
     let has_superclass = false;
-    trace_var!(has_superclass);
+
     let result = ClassCompiler {
       enclosing,
       has_superclass,
     };
-    trace_var!(result);
-    trace_exit!();
+
     Box::new(result)
   }
 }

@@ -46,14 +46,13 @@ pub mod test {
   #[test]
   pub fn test_rules() {
     init();
-    trace_enter!();
+
     let rule = Rule {
       prefix: None,
       infix: None,
       precedence: Precedence::None,
     };
-    trace_var!(rule);
+
     println!("{:?}", rule);
-    trace_exit!();
   }
 }
