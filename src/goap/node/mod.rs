@@ -22,9 +22,7 @@ impl Node {
 
   pub fn new_start(state: State, goal: State) -> Self {
     let parent_state = None;
-
     let action_name = None;
-
     let g = 0;
 
     Self::new(state, parent_state, goal, action_name, g)
@@ -34,7 +32,6 @@ impl Node {
 
   pub fn new(state: State, parent_state: Option<State>, goal: State, action_name: Option<String>, g: usize) -> Self {
     let h = state.get_distance(&goal);
-
     let f = g + h;
 
     Self {
@@ -57,7 +54,6 @@ pub mod test {
   #[test]
   pub fn test_new_start() {
     init();
-
     let start = State::default();
     let goal = State::default();
     let node = Node::new_start(start, goal);
@@ -67,7 +63,6 @@ pub mod test {
   #[test]
   pub fn test_new() {
     init();
-
     let start = State::default();
     let goal = State::default();
     let node = Node::new(start, None, goal, None, 0);

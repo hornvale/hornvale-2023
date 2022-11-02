@@ -19,9 +19,7 @@ pub mod test {
 
   #[test]
   pub fn test_grams_to_dsol() {
-    init();
-
-    let expected = 1.0;
+    init();    let expected = 1.0;
     let actual = grams_to_dsol(1.41);
     info_var!(actual);
     assert_approx_eq!(expected, actual, 1E-3);

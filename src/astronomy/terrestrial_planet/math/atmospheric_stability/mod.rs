@@ -88,7 +88,6 @@ pub mod test {
   #[test]
   pub fn test_get_oxygen_stability() {
     init();
-
     let equilibrium_temperature = 288.0;
     let escape_velocity = 1.0;
     let oxygen_stability = get_oxygen_stability(equilibrium_temperature, escape_velocity);
@@ -99,7 +98,6 @@ pub mod test {
   #[test]
   pub fn test_get_carbon_dioxide_stability() {
     init();
-
     let equilibrium_temperature = 288.0;
     let escape_velocity = 1.0;
     let carbon_dioxide_stability = get_carbon_dioxide_stability(equilibrium_temperature, escape_velocity);
@@ -110,7 +108,6 @@ pub mod test {
   #[test]
   pub fn test_get_argon_stability() {
     init();
-
     let equilibrium_temperature = 288.0;
     let escape_velocity = 1.0;
     let argon_stability = get_argon_stability(equilibrium_temperature, escape_velocity);
@@ -121,7 +118,6 @@ pub mod test {
   #[test]
   pub fn test_get_nitrogen_stability() {
     init();
-
     let equilibrium_temperature = 288.0;
     let escape_velocity = 1.0;
     let nitrogen_stability = get_nitrogen_stability(equilibrium_temperature, escape_velocity);

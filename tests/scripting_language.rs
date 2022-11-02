@@ -61,7 +61,6 @@ fn parse_comments(path: &PathBuf) -> Expected {
   let error_re = Regex::new(r"// (Error.*)").unwrap();
   let error_line_re = Regex::new(r"// \[(?:c )?line (\d+)\] (Error.*)").unwrap();
   let runtime_error_re = Regex::new(r"// expect runtime error: (.+)").unwrap();
-
   let mut expected = Expected {
     out: vec![],
     compile_err: vec![],
@@ -127,9 +126,7 @@ fn run_file_test(filename: &str) {
   let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
   path.push(filename.replace("crates/hornvale/", ""));
   let expected = parse_comments(&path);
-
   let output = test_command().arg(path).output().unwrap();
-
   let out: Vec<String> = String::from_utf8(output.stdout)
     .unwrap()
     .lines()

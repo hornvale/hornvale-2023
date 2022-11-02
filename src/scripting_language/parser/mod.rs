@@ -61,21 +61,13 @@ impl<'source> Parser<'source> {
 
   pub fn new(scanner: Scanner<'source>, garbage_collector: &'source mut GarbageCollector) -> Parser<'source> {
     let current = None;
-
     let previous = None;
-
     let function_name = garbage_collector.intern("script".to_owned());
-
     let compiler = Box::new(Compiler::new(function_name, FunctionType::Script));
-
     let rules = Rules::default();
-
     let suppress_new_errors = false;
-
     let did_encounter_error = false;
-
     let resolver_errors = Vec::new();
-
     let class_compiler = None;
 
     Self {
@@ -172,7 +164,6 @@ impl<'source> Parser<'source> {
   pub fn parse_class_declaration(&mut self) -> Result<(), Error> {
     self.consume(TokenType::Identifier, "Expect class name.")?;
     let class_name = self.previous.unwrap();
-
     let name_constant = self.get_identifier_constant(class_name)?;
 
     self.declare_variable()?;
@@ -218,7 +209,6 @@ impl<'source> Parser<'source> {
   pub fn parse_method_declaration(&mut self) -> Result<(), Error> {
     self.consume(TokenType::Identifier, "Expect method name.")?;
     let constant = self.get_identifier_constant(self.previous.unwrap())?;
-
     let function_type = if self.previous.unwrap().lexeme == "init" {
       FunctionType::Initializer
     } else {
@@ -500,7 +490,6 @@ impl<'source> Parser<'source> {
 
   pub fn patch_jump(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
-
     let offset = latest - index;
 
     match self.compiler.function.chunk.instructions.instructions[index as usize] {
@@ -540,7 +529,6 @@ impl<'source> Parser<'source> {
 
   pub fn emit_loop(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
-
     let offset = (latest - index) + 2;
 
     self.emit_instruction(Instruction::Loop(offset))?;
@@ -596,7 +584,6 @@ impl<'source> Parser<'source> {
     } else {
       self.parse_expression_statement()?;
     }
-
     let mut loop_start = self.compiler.function.chunk.instructions.instructions.len();
 
     // Process condition segment.
@@ -656,9 +643,7 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn parse_number(&mut self, _can_assign: bool) -> Result<(), Error> {
     let previous = self.previous.unwrap();
-
     let string = previous.lexeme;
-
     let value = string.parse::<f64>()?;
 
     self.emit_constant(Value::Number(value))?;
@@ -671,9 +656,7 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn parse_string(&mut self, _can_assign: bool) -> Result<(), Error> {
     let previous = self.previous.unwrap();
-
     let string = &previous.lexeme[1..(previous.lexeme.len() - 1)];
-
     let value = self.garbage_collector.intern(string.to_owned());
 
     self.emit_constant(Value::String(value))?;
@@ -686,7 +669,6 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn intern_token(&mut self, token: &Token) -> Result<Reference<String>, Error> {
     let string = token.lexeme;
-
     let result = self.garbage_collector.intern(string.to_owned());
 
     Ok(result)
@@ -875,9 +857,7 @@ impl<'source> Parser<'source> {
   #[inline]
   pub fn get_identifier_constant(&mut self, token: Token) -> Result<u16, Error> {
     let reference = self.intern_token(&token)?;
-
     let value = Value::String(reference);
-
     let result = self.make_constant(value)?;
 
     Ok(result)
@@ -887,9 +867,7 @@ impl<'source> Parser<'source> {
 
   pub fn push_compiler(&mut self, function_type: FunctionType) -> Result<(), Error> {
     let function_name = self.intern_token(&self.previous.unwrap())?;
-
     let new_compiler = Box::new(Compiler::new(function_name, function_type));
-
     let old_compiler = replace(&mut self.compiler, new_compiler);
     self.compiler.enclosing = Some(old_compiler);
 

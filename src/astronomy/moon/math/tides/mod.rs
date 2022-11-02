@@ -66,7 +66,6 @@ pub mod test {
   #[test]
   pub fn test_get_lunar_tide() {
     init();
-
     let actual = get_lunar_tide(1.0, 1.0, 384_784.0);
 
     print_var!(actual);
@@ -77,7 +76,6 @@ pub mod test {
   #[test]
   pub fn test_get_solar_tide() {
     init();
-
     let actual = get_solar_tide(1.0, 1.0, 1.0);
 
     print_var!(actual);
@@ -88,7 +86,6 @@ pub mod test {
   #[test]
   pub fn test_get_planetary_tide() {
     init();
-
     let actual = get_planetary_tide(1.0, 1.0, 384_784.0);
 
     print_var!(actual);
@@ -99,7 +96,6 @@ pub mod test {
   #[test]
   pub fn test_get_spring_tide() {
     init();
-
     let actual = get_spring_tide(0.996, 0.460);
 
     print_var!(actual);
@@ -110,7 +106,6 @@ pub mod test {
   #[test]
   pub fn test_get_neap_tide() {
     init();
-
     let actual = get_neap_tide(0.996, 0.460);
 
     print_var!(actual);

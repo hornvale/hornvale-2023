@@ -34,13 +34,9 @@ impl Constraints {
     star_distance: f64,
   ) -> Result<SatelliteSystem, Error> {
     let planet_constraints = self.planet_constraints.unwrap_or_default();
-
     let moons_constraints = self.moons_constraints.unwrap_or_default();
-
     let planet = planet_constraints.generate(rng, host_star, star_distance)?;
-
     let moons = moons_constraints.generate(rng, host_star, star_distance, &planet)?;
-
     let result = SatelliteSystem { planet, moons };
 
     Ok(result)
@@ -71,9 +67,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);

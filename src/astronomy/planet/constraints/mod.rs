@@ -69,9 +69,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
@@ -85,9 +83,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);

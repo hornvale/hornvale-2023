@@ -45,7 +45,6 @@ pub mod test {
   #[test]
   pub fn test_precedence() {
     init();
-
     let mut precedence = Precedence::Assignment;
     while precedence != Precedence::None {
       precedence = precedence.next();

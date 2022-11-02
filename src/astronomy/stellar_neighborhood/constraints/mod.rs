@@ -34,17 +34,11 @@ impl Constraints {
 
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighborhood, Error> {
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
-
     let density = self.density.unwrap_or(STELLAR_NEIGHBORHOOD_DENSITY);
-
     let volume = (4.0 / 3.0) * PI * radius.powf(3.0);
-
     let average_stars = density * volume;
-
     let number_of_stars = rng.gen_range((0.875 * average_stars)..(1.125 * average_stars)) as usize;
-
     let mut neighbors = vec![];
-
     let mut star_count = 0;
     let neighbor_constraints = self.neighbor_constraints.unwrap_or(StellarNeighborConstraints {
       radius: Some(radius),
@@ -59,7 +53,6 @@ impl Constraints {
         break;
       }
     }
-
     let result = StellarNeighborhood {
       radius,
       density,
@@ -96,9 +89,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let constraints = Constraints::default();
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);
@@ -110,9 +101,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let constraints = Constraints::habitable();
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);

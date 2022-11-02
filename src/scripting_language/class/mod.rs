@@ -29,7 +29,6 @@ impl Class {
 impl Trace for Class {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let name = garbage_collector.deref(self.name);
-
     let result = write!(f, "{}", name);
 
     result

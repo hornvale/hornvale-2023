@@ -32,7 +32,6 @@ pub mod test {
   #[test]
   pub fn test_errors() {
     init();
-
     let mut error = Error::BinaryStarsTooCloseForComfort;
     print_var!(error);
     error = Error::HabitableZoneContainedWithinForbiddenZone;

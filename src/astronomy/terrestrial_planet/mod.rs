@@ -59,46 +59,26 @@ pub struct TerrestrialPlanet {
 impl TerrestrialPlanet {
   pub fn from_mass(mass: f64) -> Result<Self, Error> {
     let core_mass_fraction: f64 = 0.35;
-
     let density = get_density(mass, core_mass_fraction);
-
     let radius = get_radius(mass, density);
-
     let escape_velocity = get_escape_velocity(mass, radius);
-
     let gravity = get_gravity(mass, radius);
-
     let axial_tilt = 23.5;
-
     let rotation_direction = RotationDirection::Prograde;
-
     let tropic_zones = (0.0, axial_tilt);
-
     let polar_zones = (90.0 - axial_tilt, 90.0);
-
     let bond_albedo = 0.29;
-
     let greenhouse_effect = 1.0;
-
     let host_star_luminosity = 1.0;
-
     let host_star_distance = 1.0;
-
     let semi_major_axis: f64 = host_star_distance;
-
     let orbital_eccentricity = 0.0167;
-
     let perihelion = (1.0 - orbital_eccentricity) * semi_major_axis;
-
     let aphelion = (1.0 + orbital_eccentricity) * semi_major_axis;
-
     let orbital_period = semi_major_axis.powf(3.0).sqrt();
-
     let equilibrium_temperature =
       get_equilibrium_temperature(bond_albedo, greenhouse_effect, host_star_luminosity, host_star_distance);
-
     let is_atmospherically_stable = is_atmospherically_stable(equilibrium_temperature, escape_velocity);
-
     let result = Self {
       mass,
       core_mass_fraction,
@@ -177,7 +157,6 @@ pub mod test {
   #[test]
   pub fn test_from_mass() -> Result<(), Error> {
     init();
-
     let planet = TerrestrialPlanet::from_mass(1.0)?;
     assert_approx_eq!(planet.mass, 1.0);
     assert_approx_eq!(planet.core_mass_fraction, 0.35);

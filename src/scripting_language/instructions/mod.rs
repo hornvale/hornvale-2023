@@ -52,7 +52,6 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-
     let mut string = String::new();
     let instruction = Instruction::Return;
     let mut instructions = Instructions::default();

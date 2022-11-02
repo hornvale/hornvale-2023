@@ -75,9 +75,7 @@ pub mod test {
   #[test]
   pub fn get_random() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let constraints = Constraints::default();
     let result = constraints.generate(&mut rng)?;
 

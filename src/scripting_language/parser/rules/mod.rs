@@ -123,7 +123,6 @@ pub mod test {
   #[test]
   pub fn test_rules() {
     init();
-
     let _rules = Rules::default();
   }
 }

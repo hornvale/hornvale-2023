@@ -31,17 +31,11 @@ impl GasGiantPlanet {
 
     // @todo: fix.
     let radius: f64 = 1.0;
-
     let semi_major_axis: f64 = 5.2;
-
     let orbital_eccentricity = 0.0167;
-
     let perihelion = (1.0 - orbital_eccentricity) * semi_major_axis;
-
     let aphelion = (1.0 + orbital_eccentricity) * semi_major_axis;
-
     let orbital_period = semi_major_axis.powf(3.0).sqrt();
-
     let result = Self {
       mass,
       density,

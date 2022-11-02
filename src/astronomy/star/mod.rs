@@ -61,36 +61,21 @@ impl Star {
 
   pub fn from_mass<R: Rng + ?Sized>(rng: &mut R, mass: f64) -> Result<Star, Error> {
     let temperature = star_mass_to_temperature(mass)?;
-
     let luminosity = star_mass_to_luminosity(mass)?;
-
     let radius = star_mass_to_radius(mass)?;
-
     let class = star_mass_to_spectral_class(mass)?;
-
     let life_expectancy = mass / luminosity * 10.0;
-
     let lower_bound_age = 0.1 * life_expectancy;
-
     let upper_bound_age = 0.9 * life_expectancy;
-
     let current_age = rng.gen_range(lower_bound_age..upper_bound_age);
-
     let density = mass / radius.powf(3.0);
-
     let habitable_zone = star_luminosity_to_habitable_zone(luminosity);
-
     let satellite_inner_bound = get_approximate_innermost_orbit(mass);
-
     let satellite_outer_bound = get_approximate_outermost_orbit(mass);
-
     let satellite_zone = (satellite_inner_bound, satellite_outer_bound);
     let frost_line = star_luminosity_to_frost_line(luminosity);
-
     let absolute_rgb = star_mass_to_rgb(mass)?;
-
     let name = generate_star_name(rng);
-
     let result = Star {
       class,
       mass,
@@ -148,9 +133,7 @@ pub mod test {
   #[test]
   pub fn get_random_main_sequence() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star = Constraints::default().generate(&mut rng)?;
 
     print_var!(star);

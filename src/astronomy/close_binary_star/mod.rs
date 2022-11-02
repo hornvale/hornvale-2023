@@ -73,10 +73,8 @@ impl CloseBinaryStar {
   ) -> Result<Self, Error> {
     let average_distances_from_barycenter =
       get_average_distances_from_barycenter(average_separation, primary.mass, secondary.mass);
-
     let minimum_distances_from_barycenter =
       get_minimum_distances_from_barycenter(average_separation, primary.mass, secondary.mass, orbital_eccentricity);
-
     let minimum_separation = get_minimum_separation(minimum_distances_from_barycenter);
 
     if minimum_separation < MINIMUM_SEPARATION {
@@ -84,24 +82,15 @@ impl CloseBinaryStar {
     }
     let maximum_distances_from_barycenter =
       get_maximum_distances_from_barycenter(average_separation, primary.mass, secondary.mass, orbital_eccentricity);
-
     let maximum_separation = get_maximum_separation(maximum_distances_from_barycenter);
-
     let forbidden_zone = (minimum_separation / 3.0, maximum_separation * 3.0);
-
     let danger_zone = (0.0, maximum_separation * 4.0);
-
     let habitable_zone = get_habitable_zone(&primary, &secondary);
-
     let combined_mass = primary.mass + secondary.mass;
     let satellite_zone = (0.1 * combined_mass, 40.0 * combined_mass);
-
     let frost_line = get_frost_line(&primary, &secondary);
-
     let habitable_zone_is_forbidden = habitable_zone.1 <= forbidden_zone.1;
-
     let habitable_zone_is_dangerous = habitable_zone.1 <= danger_zone.1;
-
     let result = CloseBinaryStar {
       primary,
       secondary,
@@ -194,9 +183,7 @@ pub mod test {
   #[test]
   pub fn test_whatever() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star = &Constraints::default().generate(&mut rng)?;
 
     print_var!(star);

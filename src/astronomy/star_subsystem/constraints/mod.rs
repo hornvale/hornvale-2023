@@ -32,9 +32,7 @@ impl Constraints {
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSubsystem, Error> {
     use StarSubsystem::*;
     let distant_binary_probability = self.distant_binary_probability.unwrap_or(DISTANT_BINARY_PROBABILITY);
-
     let generate_planetary_system: bool = rng.gen_range(0.0..1.0) > distant_binary_probability;
-
     let result = if generate_planetary_system {
       let planetary_system_constraints = self.planetary_system_constraints.unwrap_or_default();
 
@@ -74,9 +72,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_subsystem = &Constraints::default().generate(&mut rng)?;
 
     print_var!(star_subsystem);
@@ -87,9 +83,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_subsystem = &Constraints::habitable().generate(&mut rng)?;
 
     print_var!(star_subsystem);

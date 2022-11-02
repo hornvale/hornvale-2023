@@ -45,7 +45,6 @@ pub mod test {
   #[test]
   pub fn test_rules() {
     init();
-
     let rule = Rule {
       prefix: None,
       infix: None,

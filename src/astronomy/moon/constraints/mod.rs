@@ -27,11 +27,8 @@ impl Constraints {
     planet_distance: f64,
   ) -> Result<Moon, Error> {
     let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MASS);
-
     let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
-
     let mass = rng.gen_range(minimum_mass..maximum_mass);
-
     let result = Moon::from_environment(mass, host_star, star_distance, planet, planet_distance)?;
 
     Ok(result)
@@ -63,17 +60,11 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
-
     let habitable_zone = host_star.get_habitable_zone();
-
     let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-
     let planet = &PlanetConstraints::habitable().generate(&mut rng, host_star, star_distance)?;
-
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet, 400_000.0)?;
 
     print_var!(moon);

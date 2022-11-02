@@ -26,7 +26,6 @@ impl Constraints {
 
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Galaxy, Error> {
     let stellar_neighborhood_constraints = self.stellar_neighborhood_constraints.unwrap_or_default();
-
     let stellar_neighborhood = stellar_neighborhood_constraints.generate(rng)?;
     let result = Galaxy { stellar_neighborhood };
 
@@ -55,9 +54,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let constraints = Constraints::default();
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);
@@ -69,9 +66,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let constraints = Constraints::habitable();
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);

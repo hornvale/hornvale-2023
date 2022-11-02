@@ -40,9 +40,7 @@ impl Planner {
 
   pub fn reconstruct_plan(&mut self, current: Node) -> Plan {
     let start = self.start;
-
     let goal = self.goal;
-
     let mut plan = Vec::new();
     let mut states = Vec::new();
     let mut pointer = current;
@@ -62,7 +60,6 @@ impl Planner {
     plan.reverse();
 
     states.reverse();
-
     let length = plan.len();
 
     Plan {
@@ -82,7 +79,6 @@ impl Planner {
     self.open.nodes.push(node0);
     loop {
       let current = self.open.take_cheapest_node()?;
-
       let at_goal = current.state.get_distance(&self.goal) == 0;
 
       if at_goal {
@@ -93,11 +89,8 @@ impl Planner {
 
       for action in actions.iter() {
         let cost = current.g + action.cost;
-
         let post_state = self.apply_action(action, &current.state);
-
         let mut open_index_result = self.open.find_node_matching_state(&post_state);
-
         let mut closed_index_result = self.closed.find_node_matching_state(&post_state);
 
         if let Ok(open_index) = open_index_result {
@@ -116,17 +109,11 @@ impl Planner {
         }
         if open_index_result.is_err() && closed_index_result.is_err() {
           let state = post_state;
-
           let parent_state = Some(current.state);
-
           let g = cost;
-
           let h = post_state.get_distance(&self.goal);
-
           let f = g + h;
-
           let action_name = Some(action.name.clone());
-
           let neighbor = Node {
             state,
             parent_state,
@@ -179,7 +166,6 @@ pub mod test {
 
   fn test_1_action_plan() {
     init();
-
     let setbit0_action = Action {
       name: "Set Bit 0".to_string(),
       cost: 1,
@@ -192,21 +178,16 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
     };
-
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
     };
-
     let actions = vec![setbit0_action.clone()];
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -220,7 +201,6 @@ pub mod test {
 
   fn test_2_action_plan() {
     init();
-
     let setbit0_action = Action {
       name: "Set Bit 0".to_string(),
       cost: 1,
@@ -233,7 +213,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-
     let setbit1_action = Action {
       name: "Set Bit 1".to_string(),
       cost: 1,
@@ -246,21 +225,16 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
     };
-
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
     };
-
     let actions = vec![setbit0_action.clone(), setbit1_action.clone()];
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -274,7 +248,6 @@ pub mod test {
 
   fn test_3_action_plan() {
     init();
-
     let setbit0_action = Action {
       name: "Set Bit 0".to_string(),
       cost: 1,
@@ -287,7 +260,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-
     let setbit1_action = Action {
       name: "Set Bit 1".to_string(),
       cost: 1,
@@ -300,7 +272,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-
     let setbit2_action = Action {
       name: "Set Bit 2".to_string(),
       cost: 1,
@@ -313,21 +284,16 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1011,
       },
     };
-
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
     };
-
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
     };
-
     let actions = vec![setbit0_action, setbit1_action, setbit2_action];
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -340,7 +306,6 @@ pub mod test {
 
   fn test_3_action_plan_2() {
     init();
-
     let setbit0_action = Action {
       name: "Set Bit 0".to_string(),
       cost: 1,
@@ -353,7 +318,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-
     let setbit1_action = Action {
       name: "Set Bit 1".to_string(),
       cost: 1,
@@ -366,7 +330,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-
     let setbit2_action = Action {
       name: "Set Bit 2".to_string(),
       cost: 1,
@@ -379,21 +342,16 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
       },
     };
-
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
     };
-
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
     };
-
     let actions = vec![setbit0_action, setbit1_action, setbit2_action];
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -406,7 +364,6 @@ pub mod test {
 
   fn test_4_action_plan() {
     init();
-
     let setbit0_action = Action {
       name: "Set Bit 0".to_string(),
       cost: 1,
@@ -419,7 +376,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-
     let setbit1_action = Action {
       name: "Set Bit 1".to_string(),
       cost: 1,
@@ -432,7 +388,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-
     let setbit2_action = Action {
       name: "Set Bit 2".to_string(),
       cost: 1,
@@ -445,7 +400,6 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1011,
       },
     };
-
     let setbit3_action = Action {
       name: "Set Bit 3".to_string(),
       cost: 1,
@@ -458,21 +412,16 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0111,
       },
     };
-
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0000,
     };
-
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111,
       mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0000,
     };
-
     let actions = vec![setbit0_action, setbit1_action, setbit2_action, setbit3_action];
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -485,7 +434,6 @@ pub mod test {
 
   fn test_many_simple_action_plan() {
     init();
-
     let limit = 63;
     let mut actions = Vec::new();
     for i in 0..limit {
@@ -504,16 +452,12 @@ pub mod test {
       actions.push(action);
       actions.reverse();
     }
-
     let start = State { values: 0, mask: 0 };
-
     let goal = State {
       values: (1 << limit) - 1,
       mask: !((1 << limit) - 1),
     };
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     println!("{:#?}", plan);
@@ -527,7 +471,6 @@ pub mod test {
 
   fn test_many_complex_action_plan() {
     init();
-
     let limit = 63;
     let mut actions = Vec::new();
     for i in 0..limit {
@@ -552,16 +495,12 @@ pub mod test {
       actions.push(action);
       actions.reverse();
     }
-
     let start = State { values: 0, mask: 0 };
-
     let goal = State {
       values: (1 << limit) - 1,
       mask: !((1 << limit) - 1),
     };
-
     let mut planner = Planner::new(start, goal, actions);
-
     let plan = planner.plan().unwrap();
     print_var!(plan);
     println!("{:#?}", plan);

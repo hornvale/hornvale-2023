@@ -37,9 +37,7 @@ impl Function {
 
   pub fn new(name: Reference<String>) -> Self {
     let arity = 0;
-
     let chunk = Chunk::default();
-
     let upvalues = Vec::new();
 
     Self {

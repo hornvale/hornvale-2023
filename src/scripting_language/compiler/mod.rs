@@ -28,13 +28,9 @@ impl<'source> Compiler<'source> {
 
   pub fn new(function_name: Reference<String>, function_type: FunctionType) -> Self {
     let mut locals = Vec::new();
-
     let depth = 0;
-
     let function = Function::new(function_name);
-
     let enclosing = None;
-
     let token = match function_type {
       FunctionType::Method | FunctionType::Initializer => Token::synthesize("this"),
       _ => Token::synthesize(""),

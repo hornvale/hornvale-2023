@@ -69,9 +69,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = Constraints::default().generate(&mut rng)?;
 
     print_var!(host_star);
@@ -82,9 +80,7 @@ pub mod test {
   #[test]
   pub fn test_random() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let mut binary_count = 0;
     for _ in 1..10 {
       if let Ok(host_star) = Constraints::default().generate(&mut rng) {
@@ -101,9 +97,7 @@ pub mod test {
   #[test]
   pub fn find_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let mut habitable_count = 0;
     for _ in 1..1000 {
       if let Ok(host_star) = Constraints::habitable().generate(&mut rng) {

@@ -32,13 +32,9 @@ impl Constraints {
 
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<DistantBinaryStar, Error> {
     let primary_constraints = PlanetarySystemConstraints::default();
-
     let primary = primary_constraints.generate(rng)?;
-
     let secondary_constraints = PlanetarySystemConstraints::default();
-
     let secondary = secondary_constraints.generate(rng)?;
-
     let result = DistantBinaryStar { primary, secondary };
 
     Ok(result)
@@ -72,9 +68,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let distant_binary_star = Constraints::default().generate(&mut rng)?;
 
     print_var!(distant_binary_star);
@@ -85,9 +79,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let distant_binary_star = Constraints::habitable().generate(&mut rng)?;
 
     print_var!(distant_binary_star);

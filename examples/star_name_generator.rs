@@ -9,7 +9,6 @@ use rand::prelude::*;
 
 fn main() {
   init_pretty_env_logger();
-
   let mut rng = thread_rng();
 
   println!(

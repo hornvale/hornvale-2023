@@ -147,7 +147,6 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-
     let mut string = String::new();
     let result = Instruction::Return.dump(0, 0, 0, false, &mut string).unwrap();
     assert_eq!(result, 0);
@@ -157,7 +156,6 @@ pub mod test {
   #[test]
   pub fn test2() {
     init();
-
     let mut string = String::new();
     let result = Instruction::Return.dump(16, 23, 72, false, &mut string).unwrap();
     assert_eq!(result, 0);
@@ -167,7 +165,6 @@ pub mod test {
   #[test]
   pub fn test3() {
     init();
-
     let mut string = String::new();
     let result = Instruction::Return.dump(16, 23, 72, true, &mut string).unwrap();
     assert_eq!(result, 0);

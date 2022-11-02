@@ -31,9 +31,7 @@ impl Instance {
 impl Trace for Instance {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let class = garbage_collector.deref(self.class);
-
     let name = garbage_collector.deref(class.name);
-
     let result = write!(f, "{} instance", name);
 
     result

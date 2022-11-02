@@ -57,7 +57,6 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-
     let mut string = String::new();
     let mut chunk = Chunk::default();
     let const_inst = chunk.constants.push(Value::Number(1.2)).unwrap();

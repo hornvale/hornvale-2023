@@ -27,11 +27,8 @@ impl<'source> Scanner<'source> {
 
   pub fn new(source: &'source str) -> Self {
     let start = 0;
-
     let current = 0;
-
     let line_number = 1;
-
     let source_bytes = source.as_bytes().to_vec();
 
     Self {
@@ -111,7 +108,6 @@ impl<'source> Scanner<'source> {
 
   pub fn make_token(&self, r#type: TokenType) -> Token<'source> {
     let lexeme = self.get_lexeme();
-
     let line_number = self.line_number;
 
     Token {
@@ -154,7 +150,6 @@ impl<'source> Scanner<'source> {
       }
     }
     let _value = &self.source[self.start..self.current];
-
     let result = self.make_token(TokenType::Number);
 
     Ok(result)
@@ -184,12 +179,10 @@ impl<'source> Scanner<'source> {
       self.advance();
     }
     let value = &self.source[self.start..self.current];
-
     let value_type = match TokenType::from_str(value) {
       Ok(token_type) => token_type,
       Err(_) => TokenType::Identifier,
     };
-
     let result = self.make_token(value_type);
 
     Ok(result)

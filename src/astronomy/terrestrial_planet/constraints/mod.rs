@@ -61,17 +61,11 @@ impl Constraints {
     distance: f64,
   ) -> Result<TerrestrialPlanet, Error> {
     let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MASS);
-
     let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
-
     let mass = rng.gen_range(minimum_mass..maximum_mass);
-
     let mut result = TerrestrialPlanet::from_mass(mass)?;
-
     let minimum_axial_tilt = self.minimum_axial_tilt.unwrap_or(0.0);
-
     let maximum_axial_tilt = self.maximum_axial_tilt.unwrap_or(180.0);
-
     let axial_tilt = rng.gen_range(minimum_axial_tilt..maximum_axial_tilt);
 
     result.semi_major_axis = distance;
@@ -94,28 +88,20 @@ impl Constraints {
     let minimum_orbital_eccentricity = self
       .minimum_orbital_eccentricity
       .unwrap_or(MINIMUM_ORBITAL_ECCENTRICITY);
-
     let maximum_orbital_eccentricity = self
       .maximum_orbital_eccentricity
       .unwrap_or(MAXIMUM_ORBITAL_ECCENTRICITY);
-
     let orbital_eccentricity = rng.gen_range(minimum_orbital_eccentricity..maximum_orbital_eccentricity);
     result.orbital_eccentricity = orbital_eccentricity;
-
     let perihelion = (1.0 - orbital_eccentricity) * distance;
     result.perihelion = perihelion;
-
     let aphelion = (1.0 + orbital_eccentricity) * distance;
     result.aphelion = aphelion;
-
     let orbital_period = (distance.powf(3.0) / host_star.get_stellar_mass()).sqrt();
     result.orbital_period = orbital_period;
-
     let bond_albedo = result.bond_albedo;
-
     let greenhouse_effect = result.greenhouse_effect;
     result.greenhouse_effect = greenhouse_effect;
-
     let luminosity = host_star.get_luminosity();
     result.equilibrium_temperature = get_equilibrium_temperature(bond_albedo, greenhouse_effect, luminosity, distance);
 
@@ -164,12 +150,9 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star_constraints = HostStarConstraints::habitable();
     let mut host_star = host_star_constraints.generate(&mut rng)?;
-
     let mut is_habitable = !host_star.is_habitable();
     let mut counter = 0;
     while !is_habitable && counter < 50 {
@@ -178,9 +161,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
 
     print_var!(planet);
@@ -191,12 +172,9 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star_constraints = HostStarConstraints::habitable();
     let mut host_star = host_star_constraints.generate(&mut rng)?;
-
     let mut is_habitable = !host_star.is_habitable();
     let mut counter = 0;
     while !is_habitable && counter < 50 {
@@ -205,9 +183,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-
     let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
 
     print_var!(planet);
@@ -219,12 +195,9 @@ pub mod test {
   #[test]
   pub fn test_habitable2() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star_constraints = HostStarConstraints::habitable();
     let mut host_star = host_star_constraints.generate(&mut rng)?;
-
     let mut is_habitable = !host_star.is_habitable();
     let mut counter = 0;
     while !is_habitable && counter < 50 {
@@ -233,9 +206,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-
     let mut planet = Constraints::habitable().generate(&mut rng, &host_star, distance)?;
 
     print_var!(planet);

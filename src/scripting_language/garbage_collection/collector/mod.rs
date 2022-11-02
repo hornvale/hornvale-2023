@@ -33,15 +33,10 @@ impl Collector {
 
   pub fn new() -> Self {
     let bytes_allocated = 0;
-
-    let next_threshold = 1024; // * 1024;
-
+    let next_threshold = 1024 * 1024;
     let free_slots = Vec::new();
-
     let objects = Vec::new();
-
     let strings = HashMap::new();
-
     let gray_stack = VecDeque::new();
 
     Collector {
@@ -58,20 +53,16 @@ impl Collector {
 
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
     let repr = format!("{:?}", object).chars().into_iter().take(32).collect::<String>();
-
     let size = object.get_size() + size_of::<ObjectHeader>();
 
     self.bytes_allocated += size;
     let is_marked = false;
-
     let object = Box::new(object);
-
     let entry = ObjectHeader {
       is_marked,
       size,
       object,
     };
-
     let index = match self.free_slots.pop() {
       Some(i) => {
         self.objects[i] = Some(entry);

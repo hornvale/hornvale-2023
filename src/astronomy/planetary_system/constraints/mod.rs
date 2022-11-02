@@ -32,13 +32,9 @@ impl Constraints {
 
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<PlanetarySystem, Error> {
     let host_star_constraints = self.host_star_constraints.unwrap_or_default();
-
     let satellite_systems_constraints = self.satellite_systems_constraints.unwrap_or_default();
-
     let host_star = host_star_constraints.generate(rng)?;
-
     let satellite_systems = satellite_systems_constraints.generate(rng, &host_star)?;
-
     let result = PlanetarySystem {
       host_star,
       satellite_systems,
@@ -71,9 +67,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let mut planetary_system = Constraints::habitable().generate(&mut rng)?;
     let mut is_habitable = planetary_system.is_habitable();
     let mut counter = 0;
@@ -93,9 +87,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let planetary_system = Constraints::default().generate(&mut rng)?;
 
     print_var!(planetary_system);

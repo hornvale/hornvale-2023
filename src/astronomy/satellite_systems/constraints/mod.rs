@@ -42,11 +42,8 @@ impl Constraints {
 
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar) -> Result<SatelliteSystems, Error> {
     let _minimum_count = self.minimum_count.unwrap_or(MINIMUM_SATELLITE_SYSTEMS);
-
     let _maximum_count = self.maximum_count.unwrap_or(MAXIMUM_SATELLITE_SYSTEMS);
-
     let satellite_system_constraints = self.satellite_system_constraints.unwrap_or_default();
-
     let mut satellite_systems = Vec::new();
     let orbits = self.generate_orbits(rng, host_star)?;
     for orbit in orbits.into_iter() {
@@ -54,7 +51,6 @@ impl Constraints {
 
       satellite_systems.push(satellite_system);
     }
-
     let result = SatelliteSystems { satellite_systems };
 
     Ok(result)
@@ -74,17 +70,11 @@ impl Constraints {
       result.push(orbit);
     }
     let satellite_zone = host_star.get_satellite_zone();
-
     let innermost_orbit = satellite_zone.0;
-
     let outermost_orbit = satellite_zone.1;
-
     let minimum = 40.0 * innermost_orbit;
-
     let distance_limit = outermost_orbit;
-
     let growth_factor = 0.3;
-
     let mut orbital_distance = minimum;
     let mut index = 0;
     loop {
@@ -140,11 +130,8 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
-
     let satellite_systems = &Constraints::default().generate(&mut rng, host_star)?;
 
     print_var!(satellite_systems);
@@ -155,11 +142,8 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
-
     let satellite_systems = &Constraints::habitable().generate(&mut rng, host_star)?;
 
     print_var!(satellite_systems);

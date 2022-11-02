@@ -10,14 +10,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   let area = SVGBackend::new(OUT_FILE_NAME, (1024, 760)).into_drawing_area();
 
   area.fill(&WHITE)?;
-
   let constraints = StellarNeighborhoodConstraints::habitable();
   let radius = constraints.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
-
   let x_axis = (-radius..radius).step(1.0);
   let y_axis = (-radius..radius).step(1.0);
   let z_axis = (-radius..radius).step(1.0);
-
   let mut rng = rand::thread_rng();
   let stellar_neighborhood = constraints.generate(&mut rng).unwrap();
   let points = stellar_neighborhood

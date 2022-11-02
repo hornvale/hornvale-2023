@@ -6,7 +6,6 @@ use crate::scripting_language::virtual_machine::VirtualMachine;
 
 pub fn uptime(vm: &VirtualMachine, _args: &[Value]) -> Result<Value, Error> {
   let time = vm.start_time.elapsed().as_secs_f64();
-
   let result = Value::Number(time);
 
   Ok(result)

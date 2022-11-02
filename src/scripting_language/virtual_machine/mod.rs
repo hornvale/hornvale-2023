@@ -51,19 +51,12 @@ impl VirtualMachine {
 
   pub fn new() -> Self {
     let call_frames = Vec::with_capacity(CALL_FRAMES_MAX);
-
     let stack = Vec::with_capacity(STACK_SIZE_MAX);
-
     let mut garbage_collector = GarbageCollector::new();
-
     let globals = Table::new();
-
     let init_string = garbage_collector.intern("init".to_owned());
-
     let open_upvalues = Vec::new();
-
     let start_time = ProcessTime::now();
-
     let mut result = Self {
       call_frames,
       stack,
@@ -84,7 +77,6 @@ impl VirtualMachine {
 
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     let mut interpreter = Interpreter::default();
-
     let function = interpreter.compile(source, &mut self.garbage_collector)?;
 
     self.push(Value::Function(function))?;
@@ -131,7 +123,6 @@ impl VirtualMachine {
         },
         Add => {
           let a = self.pop()?;
-
           let b = self.pop()?;
 
           use Value::*;
@@ -160,14 +151,12 @@ impl VirtualMachine {
         Divide => self.binary_arithmetic_operation(Divide, |a, b| b / a, Value::Number)?,
         Equal => {
           let a = self.pop()?;
-
           let b = self.pop()?;
 
           self.push(Value::Boolean(a == b))?;
         },
         NotEqual => {
           let a = self.pop()?;
-
           let b = self.pop()?;
 
           self.push(Value::Boolean(a != b))?;
@@ -178,7 +167,6 @@ impl VirtualMachine {
         LessThanOrEqual => self.binary_arithmetic_operation(LessThanOrEqual, |a, b| b <= a, Value::Boolean)?,
         Return => {
           let call_frame = self.call_frames.pop().unwrap();
-
           let return_value = self.pop()?;
 
           self.close_upvalues(call_frame.index)?;
@@ -197,20 +185,17 @@ impl VirtualMachine {
         },
         Print => {
           let value = self.pop()?;
-
           let formatter = TraceFormatter::new(value, &self.garbage_collector);
           println!("{}", formatter);
         },
         Not => {
           let value = self.pop()?;
-
           let answer = self.is_falsey(&value);
 
           self.push(Value::Boolean(answer))?;
         },
         DefineGlobal(index) => {
           let identifier = self.get_current_chunk().read_string(index);
-
           let value = self.pop()?;
 
           self.globals.insert(identifier, value);
@@ -315,9 +300,7 @@ impl VirtualMachine {
         },
         Instruction::Class(index) => {
           let class_name = self.get_current_chunk().read_string(index);
-
           let class_object = ClassStruct::new(class_name);
-
           let class_reference = self.alloc(class_object);
 
           self.push(Value::Class(class_reference))?;
@@ -408,7 +391,6 @@ impl VirtualMachine {
     valuate: fn(T) -> Value,
   ) -> Result<(), Error> {
     let a = self.pop()?;
-
     let b = self.pop()?;
 
     use Value::*;
@@ -447,7 +429,6 @@ impl VirtualMachine {
     if self.stack.is_empty() {
       return Err(Error::RuntimeError(RuntimeError::StackUnderflow));
     }
-
     let result = self.stack.pop().unwrap();
 
     Ok(result)
@@ -461,9 +442,7 @@ impl VirtualMachine {
       return Err(Error::RuntimeError(RuntimeError::StackUnderflow));
     }
     let max_index = self.stack.len() - 1;
-
     let index = max_index - offset;
-
     let result = self.stack[index];
 
     Ok(result)
@@ -473,7 +452,6 @@ impl VirtualMachine {
 
   pub fn set_in_stack(&mut self, offset: usize, value: Value) {
     let max_index = self.stack.len() - 1;
-
     let index = max_index - offset;
     self.stack[index] = value;
   }
@@ -582,7 +560,6 @@ impl VirtualMachine {
 
   pub fn get_current_chunk(&self) -> &Chunk {
     let closure = self.get_current_closure();
-
     let function = self.garbage_collector.deref(closure.function);
 
     &function.chunk as _
@@ -599,7 +576,6 @@ impl VirtualMachine {
       }
     }
     let upvalue = Upvalue::new(location);
-
     let upvalue = self.alloc(upvalue);
 
     self.open_upvalues.push(upvalue);
@@ -614,9 +590,7 @@ impl VirtualMachine {
     match callee {
       Value::BoundMethod(bound_reference) => {
         let bound = self.garbage_collector.deref(bound_reference);
-
         let method = bound.method;
-
         let receiver = bound.receiver;
 
         self.set_in_stack(argument_count, receiver);
@@ -625,7 +599,6 @@ impl VirtualMachine {
       Value::Closure(closure) => self.call(closure, argument_count)?,
       Value::NativeFunction(native_function) => {
         let start = self.stack.len() - argument_count;
-
         let result = native_function.0(self, &self.stack[start..])?;
 
         self.stack.truncate(start - 1);
@@ -633,7 +606,6 @@ impl VirtualMachine {
       },
       Value::Class(class_reference) => {
         let instance_object = Instance::new(class_reference);
-
         let instance_reference = self.alloc(instance_object);
 
         self.set_in_stack(argument_count, Value::Instance(instance_reference));
@@ -715,7 +687,6 @@ impl VirtualMachine {
 
   pub fn call(&mut self, closure_reference: Reference<ClosureStruct>, argument_count: usize) -> Result<(), Error> {
     let closure = self.garbage_collector.deref(closure_reference);
-
     let function = self.garbage_collector.deref(closure.function);
 
     if argument_count != function.arity {
@@ -728,7 +699,6 @@ impl VirtualMachine {
       return Err(Error::RuntimeError(RuntimeError::StackOverflow));
     } else {
       let start = self.stack.len() - argument_count - 1;
-
       let end = start + argument_count;
 
       debug!(
@@ -782,7 +752,6 @@ impl VirtualMachine {
 
     eprintln!("{}", message);
     let chunk = self.get_current_chunk();
-
     let line_number = chunk.instructions.line_numbers[frame.instruction_pointer - 1];
     eprintln!("[line {}] in script", line_number);
   }
@@ -798,14 +767,11 @@ impl VirtualMachine {
 
     if let Some(method) = class.methods.get(&name_reference) {
       let receiver = self.peek(0)?;
-
       let method = match method {
         Value::Closure(closure) => *closure,
         _ => panic!("Inconsistent state. Method is not closure"),
       };
-
       let bound = BoundMethod::new(receiver, method);
-
       let bound_reference = self.alloc(bound);
 
       self.pop()?;
@@ -856,7 +822,6 @@ pub mod test {
   #[test]
   pub fn test_vm2() {
     init();
-
     let mut vm = VirtualMachine::new();
     let line = "!(5 - 4 > 3 * 2 == !nil);".to_string();
     vm.interpret(&line).unwrap();
@@ -866,7 +831,6 @@ pub mod test {
   #[should_panic]
   pub fn test_vm3() {
     init();
-
     let mut vm = VirtualMachine::new();
     let line = "invalid input".to_string();
     // Should panic.
@@ -876,7 +840,6 @@ pub mod test {
   #[test]
   pub fn test_vm4() -> Result<(), Error> {
     init();
-
     let mut vm = VirtualMachine::new();
     vm.interpret("2 != 3;")?;
     vm.interpret("2 > 3;")?;

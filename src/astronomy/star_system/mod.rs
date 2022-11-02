@@ -67,9 +67,7 @@ pub mod test {
   #[test]
   pub fn get_random() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = Constraints::habitable().generate(&mut rng)?;
     info_var!(star_system);
     print_var!(star_system);

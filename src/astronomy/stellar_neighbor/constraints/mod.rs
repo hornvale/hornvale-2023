@@ -35,21 +35,14 @@ impl Constraints {
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighbor, Error> {
     // @todo: move this into stellar neighborhood, probably.
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
-
     let raw_coordinates = get_random_point_in_sphere(rng);
-
     let x = raw_coordinates.0 * radius;
-
     let y = raw_coordinates.1 * radius;
-
     let z = raw_coordinates.2 * radius;
-
     let coordinates = (x, y, z);
-
     let distance = (x.powf(2.0) + y.powf(2.0) + z.powf(2.0)).sqrt();
     let system_constraints = self.system_constraints.unwrap_or_default();
     let star_system = system_constraints.generate(rng)?;
-
     let name = star_system.name.clone();
     let result = StellarNeighbor {
       coordinates,
@@ -85,9 +78,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let stellar_neighbor = &Constraints::default().generate(&mut rng)?;
 
     print_var!(stellar_neighbor);
@@ -98,9 +89,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let stellar_neighbor = &Constraints::habitable().generate(&mut rng)?;
 
     print_var!(stellar_neighbor);

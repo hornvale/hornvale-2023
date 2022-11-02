@@ -20,7 +20,6 @@ pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
     return Err(Error::MassTooHighForMainSequence);
   }
   let temperature = star_mass_to_temperature(mass)?;
-
   let x = match temperature {
     temperature if (1_667.0..=4_000.0).contains(&temperature) => {
       ((-0.2661239 * (10.0_f64).powf(9.0)) / temperature.powf(3.0))
@@ -36,7 +35,6 @@ pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
     },
     _ => 0.0,
   };
-
   let y = match temperature {
     temperature if (1_667.0..2_222.0).contains(&temperature) => {
       -1.1063814 * x.powf(3.0) - 1.34811020 * x.powf(2.0) + 2.18555832 * x - 0.20219683
@@ -49,37 +47,27 @@ pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
     },
     _ => 0.0,
   };
-
   let y2 = if y == 0.0 { 0.0 } else { 1.0 };
-
   let x2 = if y == 0.0 { 0.0 } else { (x * y2) / y };
-
   let z2 = if y == 0.0 { 0.0 } else { ((1.0 - x - y) * y2) / y };
-
   let r = 3.2406 * x2 - 1.5372 * y2 - 0.4986 * z2;
-
   let g = -0.9689 * x2 + 1.8758 * y2 + 0.0415 * z2;
-
   let b = 0.0557 * x2 - 0.2040 * y2 + 1.0570 * z2;
-
   let r2 = if r <= 0.0031308 {
     12.92 * r
   } else {
     1.055 * r.powf(1.0 / 2.4) - 0.055
   };
-
   let g2 = if g <= 0.0031308 {
     12.92 * g
   } else {
     1.055 * g.powf(1.0 / 2.4) - 0.055
   };
-
   let b2 = if b <= 0.0031308 {
     12.92 * b
   } else {
     1.055 * b.powf(1.0 / 2.4) - 0.055
   };
-
   let result = ((r2 * 255.0) as u8, (g2 * 255.0) as u8, (b2 * 255.0) as u8);
 
   Ok(result)

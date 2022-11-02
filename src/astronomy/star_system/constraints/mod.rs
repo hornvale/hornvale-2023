@@ -76,9 +76,7 @@ impl Constraints {
       }
       star_subsystem
     };
-
     let name = "Steve".to_string();
-
     let result = StarSystem { star_subsystem, name };
 
     Ok(result)
@@ -108,9 +106,7 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = &Constraints::default().generate(&mut rng)?;
 
     print_var!(star_system);
@@ -121,9 +117,7 @@ pub mod test {
   #[test]
   pub fn test_habitable() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = &Constraints::habitable().generate(&mut rng)?;
 
     print_var!(star_system);
@@ -137,9 +131,7 @@ pub mod test {
   #[test]
   pub fn test_habitable_close_binary() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = &Constraints::habitable_close_binary().generate(&mut rng)?;
 
     print_var!(star_system);
@@ -150,9 +142,7 @@ pub mod test {
   #[test]
   pub fn test_habitable_distant_binary() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = &Constraints::habitable_distant_binary().generate(&mut rng)?;
 
     print_var!(star_system);
@@ -163,9 +153,7 @@ pub mod test {
   #[test]
   pub fn test_main_sequence() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let star_system = &Constraints::main_sequence().generate(&mut rng)?;
 
     print_var!(star_system);

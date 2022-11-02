@@ -37,21 +37,16 @@ impl Constraints {
         maximum_count = MAXIMUM_GAS_GIANT_MOONS;
       },
     }
-
     let moon_constraints = self.moon_constraints.unwrap_or_default();
-
     let rocky_moon_density = 3.35;
-
     let satellite_zone = {
       let inner = 2.44 * planet.get_radius() * 6_371.0 * (planet.get_density() / rocky_moon_density).powf(1.0 / 3.0);
       // @todo: improve this.
       let outer = 20.0 * inner;
       (inner, outer)
     };
-
     let moons = {
       let count = rng.gen_range(minimum_count..=maximum_count);
-
       let mut moons = vec![];
       for _ in 1..count {
         let planet_distance = rng.gen_range(satellite_zone.0..satellite_zone.1);
@@ -61,7 +56,6 @@ impl Constraints {
       }
       moons
     };
-
     let result = Moons { moons };
 
     Ok(result)
@@ -89,17 +83,11 @@ pub mod test {
   #[test]
   pub fn test_generate() -> Result<(), Error> {
     init();
-
     let mut rng = thread_rng();
-
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
-
     let habitable_zone = host_star.get_habitable_zone();
-
     let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-
     let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance)?;
-
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet)?;
 
     print_var!(moon);

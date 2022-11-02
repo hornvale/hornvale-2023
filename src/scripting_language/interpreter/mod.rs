@@ -22,9 +22,7 @@ impl Interpreter {
     garbage_collector: &mut GarbageCollector,
   ) -> Result<Reference<Function>, Error> {
     let scanner = Scanner::new(source);
-
     let parser = Parser::new(scanner, garbage_collector);
-
     let result = parser.compile()?;
 
     Ok(result)
@@ -40,7 +38,6 @@ pub mod test {
   #[test]
   pub fn test_interpreter() {
     init();
-
     let interpreter = Interpreter::default();
     print_var!(interpreter);
   }

@@ -53,7 +53,6 @@ impl StarReporter {
 
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
-
   let mut rng = rand::thread_rng();
   let constraints = Constraints::default();
   let star = constraints.generate(&mut rng)?;

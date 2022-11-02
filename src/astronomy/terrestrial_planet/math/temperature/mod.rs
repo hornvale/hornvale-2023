@@ -17,17 +17,11 @@ pub fn get_equilibrium_temperature(
   star_distance: f64,
 ) -> f64 {
   let luminosity = star_luminosity * ERGS_PER_SEC_PER_LSOL;
-
   let distance = star_distance * METERS_PER_AU * 100.0;
-
   let t_greenhouse = greenhouse_effect * GREENHOUSE_EFFECT;
-
   let absorption = ((1.0 - bond_albedo) * luminosity / (16.0 * PI * STEFAN_BOLTZMANN_CONSTANT)).sqrt();
-
   let t_effective = absorption.sqrt() * (1.0 / distance.sqrt());
-
   let t_equilibrium = t_effective.powf(4.0) * (1.0 + (3.0 * t_greenhouse / 4.0));
-
   let t_surface = t_equilibrium / 0.9;
 
   t_surface.powf(1.0 / 4.0)

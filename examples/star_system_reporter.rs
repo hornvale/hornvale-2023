@@ -23,7 +23,6 @@ impl StarSystemReporter {
 
 fn main() -> Result<(), Error> {
   init_pretty_env_logger();
-
   let mut rng = rand::thread_rng();
   let constraints = Constraints::main_sequence();
   let star_system = constraints.generate(&mut rng)?;

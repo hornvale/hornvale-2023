@@ -19,7 +19,6 @@ impl<'source> Token<'source> {
 
   pub fn synthesize(lexeme: &'source str) -> Self {
     let r#type = Type::Error;
-
     let line_number = 0;
 
     Self {

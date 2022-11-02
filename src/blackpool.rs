@@ -100,7 +100,6 @@ pub mod test {
   #[should_panic]
   pub fn test() {
     init();
-
     let mut vm = VirtualMachine::new();
     run_file(&mut vm, "nonexistent file.txt").unwrap();
   }
@@ -108,7 +107,6 @@ pub mod test {
   #[test]
   pub fn test2() {
     init();
-
     let mut vm = VirtualMachine::new();
     let output = Vec::new();
     let input = b"3 + 4";

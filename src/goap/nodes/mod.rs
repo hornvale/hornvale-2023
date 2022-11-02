@@ -37,7 +37,6 @@ impl Nodes {
 
   pub fn find_cheapest_node(&self) -> Result<usize, Error> {
     let mut lowest_value = usize::MAX;
-
     let mut result = Err(Error::NotFound);
     for (index, node) in self.nodes.iter().enumerate() {
       if node.f < lowest_value {
@@ -67,7 +66,6 @@ pub mod test {
   #[test]
   pub fn test1() {
     init();
-
     let start = State::default();
     let mut nodes = Nodes::default();
     assert_eq!(nodes.find_node_matching_state(&start), Err(Error::NotFound));
@@ -79,7 +77,6 @@ pub mod test {
   #[test]
   pub fn test2() {
     init();
-
     let start = State::default();
     let goal = State::default();
     let node = Node::new_start(start, goal);

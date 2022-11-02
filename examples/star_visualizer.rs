@@ -141,9 +141,7 @@ fn setup_many_orbits(
   if manual_reset {
     for (ent, _) in planet_query.iter() {
       commands.entity(ent).despawn();
-    }
-
-    let mut rng = rand::thread_rng();
+    }    let mut rng = rand::thread_rng();
     let center = Vec3::new(0.0, 0.0, 10.0);
     let constraints = Constraints::habitable_close_binary();
     if let Ok(star_system) = StarSystem::from_constraints(&mut rng, &constraints) {

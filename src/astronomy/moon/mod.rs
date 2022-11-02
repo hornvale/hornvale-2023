@@ -78,7 +78,6 @@ impl Moon {
     planet_distance: f64,
   ) -> Result<Moon, Error> {
     let density = 3.34;
-
     let radius = (mass / (density / 3.34)).powf(1.0 / 3.0);
 
     // This gives gravity in Earth equivalents, since other units are relative
@@ -90,45 +89,29 @@ impl Moon {
 
     // Peg this to the albedo of the Moon for the time being.
     let bond_albedo = 0.136;
-
     let semi_major_axis = planet_distance;
 
     // Pegged for the time being.
     let orbital_eccentricity = 0.05;
-
     let periapsis = (1.0 - orbital_eccentricity) * semi_major_axis;
-
     let apoapsis = (1.0 + orbital_eccentricity) * semi_major_axis;
 
     // Pegged.
     let orbital_inclination = 5.15;
-
     let rotation_direction = RotationDirection::Prograde;
-
     let sidereal_orbital_period =
       0.0588 * ((semi_major_axis / 12_742.0 * 2.0).powf(3.0) / (planet.get_mass() + mass * 0.0123)).sqrt();
-
     let earth_orbital_period = planet.get_orbital_period() * 365.265;
-
     let orbital_period = earth_orbital_period / (earth_orbital_period / sidereal_orbital_period - 1.0);
-
     let lunar_tide = get_lunar_tide(mass, planet.get_radius(), semi_major_axis);
-
     let solar_tide = get_solar_tide(host_star.get_stellar_mass(), planet.get_radius(), star_distance);
-
     let planetary_tide = get_planetary_tide(mass, radius, semi_major_axis);
-
     let spring_tide_magnitude = get_spring_tide(lunar_tide, solar_tide);
-
     let neap_tide_magnitude = get_neap_tide(lunar_tide, solar_tide);
-
     let is_planet_tidally_locked =
       is_planet_tidally_locked(lunar_tide, solar_tide, host_star.get_current_age(), planet.get_mass());
-
     let is_moon_tidally_locked = is_moon_tidally_locked(solar_tide, planetary_tide, host_star.get_current_age(), mass);
-
     let rotation_period = if is_moon_tidally_locked { orbital_period } else { 3.0 };
-
     let result = Moon {
       mass,
       density,

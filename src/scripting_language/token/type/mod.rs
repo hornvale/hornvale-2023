@@ -140,7 +140,6 @@ pub mod test {
   #[test]
   pub fn test() {
     init();
-
     let all = Type::get_all();
     print_var!(all);
     println!("{}", all.last().unwrap());
