@@ -29,6 +29,7 @@ impl Parser for TwoWord {
       ("go", direction) | (direction, _) if Direction::from_str(direction).is_ok() => {
         Command::GoDirection(player, Direction::from_str(direction)?).execute()?
       },
+      ("quit", _) => Command::Quit(player).execute()?,
       (_, _) => todo!(),
     };
     Ok(result)

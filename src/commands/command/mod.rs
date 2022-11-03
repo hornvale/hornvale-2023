@@ -10,6 +10,8 @@ pub enum Command {
   LookDirection(Player, Direction),
   /// Go in a specific direction.
   GoDirection(Player, Direction),
+  /// Quit.
+  Quit(Player),
 }
 
 impl Command {
@@ -27,6 +29,7 @@ impl Command {
         "You can't look {} yet (you're not smart enough).",
         format!("{}", direction).to_lowercase()
       )),
+      Quit(_player) => return Err(Error::UserExitError),
     };
     Ok(result)
   }
