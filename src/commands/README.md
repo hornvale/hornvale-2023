@@ -6,8 +6,4 @@ From the user's perspective, Commands are mapped to [Actions](../actions/README.
 
 Commands also convey context about the player to the action.
 
-```mermaid
-flowchart TD
-  A[Command] --> B[Action]
-  B --> C[Effect]
-```
+Command execution returns a `Result<Option<String>, Error>`; this is so that errors and immediate responses ("You see nothing unusual about the amulet.") can be returned immediately, outside of the Command -> Action -> Effect -> Event chain.
