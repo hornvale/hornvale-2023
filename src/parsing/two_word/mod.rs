@@ -44,8 +44,8 @@ impl Parser for TwoWord {
   /// Parse two (or more) words of input.
   fn parse_input(&mut self, input: &str) -> Result<Option<String>, Error> {
     let words = input.split(' ').map(str::to_string).collect::<Vec<String>>();
-    let word0 = words.get(0).cloned().unwrap_or_else(|| "".to_string());
-    let word1 = words.get(1).cloned().unwrap_or_else(|| "".to_string());
+    let word0 = words.get(0).cloned().unwrap_or_default();
+    let word1 = words.get(1).cloned().unwrap_or_default();
     let result = match (word0.as_str(), word1.as_str()) {
       ("look", direction) if Direction::from_str(direction).is_ok() => {
         Command::LookDirection(Direction::from_str(direction)?).execute(&mut self.game)?

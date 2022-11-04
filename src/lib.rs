@@ -49,6 +49,7 @@ pub mod player;
 pub mod room;
 pub mod scripting_language;
 pub mod sensation;
+pub mod service_locator;
 pub mod sociology;
 pub mod supernatural;
 pub mod ui;
