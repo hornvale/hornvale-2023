@@ -23,13 +23,13 @@ impl Parser for TwoWord {
     let word1 = words.get(1).cloned().unwrap_or_else(|| "".to_string());
     let result = match (word0.as_str(), word1.as_str()) {
       ("look", direction) if Direction::from_str(direction).is_ok() => {
-        Command::LookDirection(player, Direction::from_str(direction)?).execute()?
+        Command::LookDirection(Direction::from_str(direction)?).execute(&player)?
       },
-      ("look", _) => Command::Look(player).execute()?,
+      ("look", _) => Command::LookAround.execute(&player)?,
       ("go", direction) | (direction, _) if Direction::from_str(direction).is_ok() => {
-        Command::GoDirection(player, Direction::from_str(direction)?).execute()?
+        Command::GoDirection(Direction::from_str(direction)?).execute(&player)?
       },
-      ("quit", _) => Command::Quit(player).execute()?,
+      ("quit", _) => Command::Quit.execute(&player)?,
       (_, _) => todo!(),
     };
     Ok(result)
