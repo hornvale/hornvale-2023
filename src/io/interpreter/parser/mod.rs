@@ -15,10 +15,8 @@ where
   P: ParserTrait + Debug,
 {
   /// Constructor.
-
   pub fn new(parser: P) -> Self {
     let parser = Box::new(parser);
-
     Self { parser }
   }
 }
@@ -28,14 +26,11 @@ where
   P: ParserTrait + Debug,
 {
   fn get_initial_text(&self) -> Result<Option<String>, Error> {
-    let result = None;
-
-    Ok(result)
+    Ok(None)
   }
 
   fn interpret(&mut self, input: &str) -> Result<Option<String>, Error> {
     let result = self.parser.parse_input(input)?;
-
     Ok(result)
   }
 }

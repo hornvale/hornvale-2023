@@ -27,7 +27,6 @@ pub struct Repl<R: BufRead, W: Write, I: Interpreter> {
 
 impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   /// Constructor.
-
   pub fn new(input: R, output: W, interpreter: I) -> Self {
     Self {
       input,
@@ -37,7 +36,6 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
   }
 
   /// Runloop.
-
   pub fn run(&mut self) -> Result<(), Error> {
     let initial_text = self.interpreter.get_initial_text()?;
     writeln!(&mut self.output, "{}", initial_text.unwrap_or_default())?;
@@ -49,13 +47,10 @@ impl<R: BufRead, W: Write, I: Interpreter> Repl<R, W, I> {
       if &line == "quit" {
         break;
       }
-
       // Note that the string comes in with a trailing newline.
       let response = self.interpreter.interpret(line.trim())?;
-
       writeln!(&mut self.output, "{}", response.unwrap_or_default())?;
     }
-
     Ok(())
   }
 }
@@ -65,8 +60,7 @@ impl Default for Repl<StdinLock<'_>, Stdout, ParserInterpreter<TwoWord>> {
     let stdio = io::stdin();
     let input = stdio.lock();
     let output = io::stdout();
-    let interpreter = ParserInterpreter::new(TwoWord {});
-
+    let interpreter = ParserInterpreter::new(TwoWord::new());
     Self::new(input, output, interpreter)
   }
 }
