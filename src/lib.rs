@@ -48,7 +48,6 @@ pub mod perception;
 pub mod player;
 pub mod room;
 pub mod scripting_language;
-pub mod sensation;
 pub mod sociology;
 pub mod supernatural;
 pub mod ui;

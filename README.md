@@ -6,7 +6,7 @@ Hornvale[📖](https://ndouglas.github.io/hornvale/)  is an experimental, idiosy
 
 I don't know if this is stupid or not.  It's a more personal project than I typically throw on GitHub, and I'm making it up as I go.
 
-For more (a lot more) on my approach to the project, check out the [book](https://ndouglas.github.io/hornvale/), which is pretty much what's going to serve as documentation.
+For more (a lot more) on my approach to the project, check out the [Book](https://ndouglas.github.io/hornvale/), which is pretty much what's going to document my goals, inspirations, etc.  For a more technical overview of the code, check out [ARCHITECTURE](./ARCHITECTURE.md).
 
 ## Major Ideas
 The main thing I want to play with, that ties this to the roguelike tradition, is procedural content generation.  But I'm also deeply embedded in interactive (and non-interactive) fiction, and MUDs, both of which tend to be intentionally authored experiences.  The former is deeply invested in a notion of efficient storytelling, the latter in a more open-world concept with multiple narratives.  I'd like to explore this area and figure out what sort of messes I can cause.
@@ -17,32 +17,6 @@ But maybe this will be something that grows over time into something worth looki
 
 ## Prior Incarnation
 A previous iteration, purely exploratory, can be found [here](https://github.com/ndouglas/hornvale-rust/).  It was/is mostly just investigatory, figuring out what was possible, and whether I could bear to do it in Rust.
-
-## Hornvale Subprojects
-- [🧬 Biology](./src/biology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Biological, taxonomy and related subjects.
-- [💻 Scripting Language](./src/scripting_language/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
-- [🏦 Economics](./src/economics/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Economic system, merchants, resources, scarcity.
-- [⛏️ Downdelving](./src/downdelving/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Dungeons, mining, and the Underdark.
-- [🧍‍♂️ Anatomy](./src/anatomy/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
-- [📜 Mythopoetics](./src/mythopoetics/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Narrative/mythopoetic procedural content generation and tools.
-- [📖 The Book](https://ndouglas.github.io/hornvale/)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: The book that I'm writing alongside this and using to guide my thoughts and ideas, etc.
-- [🌿 User Interface](./src/ui/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Frontend and connective logic.  As little as possible.
-- [🪦 Combat](./src/combat/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Combat system, some closely related topics.
-- [💬 Linguistics](./src/linguistics/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Linguistics system permitting communication, bidirectional translation, etc.
-- [🧠 Goal-Oriented Action Planning](./src/goap/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Part of psychology and Artificial Intelligence.
-- [👻 Supernatural](./src/supernatural/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Supernatural and metaphysical concepts, the thermodynamics of spirit.
-- [💫 Astronomy](./src/astronomy/README.md)&nbsp;<sup><sub><sub>🟠</sub></sub></sup>: Astronomical sciences, from the galaxy to the moon.
-- [🌋 Geology](./src/geology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Geology and physical geography, for terrain generation at a macro and local scale.
-- [🧑‍🤝‍🧑 Sociology](./src/sociology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
-- [📍 Room](./src/room/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: The Room concept and related tools.
-- [🔗 Input/Output](./src/io/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Various forms of Input/Output.
-
-**Status**: These indicators' meanings are subject to change as I progress.
- - <sup><sub><sub>🔴</sub></sub></sup>: I haven't even started.
- - <sup><sub><sub>🟠</sub></sub></sup>: I've laid the groundwork, or at least taken some initial steps.
- - <sup><sub><sub>🟡</sub></sub></sup>: It's serving some purpose, though far from complete.
- - <sup><sub><sub>🟢</sub></sub></sup>: Working, although I'll never really consider it "feature complete".
- - <sup><sub><sub>🔵</sub></sub></sup>: A vast radiant beach and cool jeweled moon, etc.  Some evenings I just watch the test suites as they run.
 
 ## FAQ
 
