@@ -16,3 +16,7 @@ Actions should not:
 flowchart TD
   A[Action] --> B[Effect]
 ```
+
+Action execution returns a `Result<Option<String>, Error>`; this is so that errors and immediate responses ("You see nothing unusual about the amulet.") can be returned immediately, outside of the Command -> Action -> Effect -> Event chain.  This should only be used for things that happen, essentially, at the speed of thought.
+
+I was considering allowing Actions to return an alternative message when the player is not the actor, e.g. so a player might see a goblin sniff around when they perform the action.  I think it's better if visible behavior triggers an explicit Effect, though.

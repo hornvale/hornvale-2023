@@ -6,13 +6,13 @@ use crate::game::Game;
 
 /// The `Command` enum.
 pub enum Command {
-  /// Look at surroundings.
+  /// IC: Look at surroundings.
   LookAround(EntityId),
-  /// Look in a specific direction.
+  /// IC: Look in a specific direction.
   LookDirection(EntityId, Direction),
-  /// Go in a specific direction.
+  /// IC: Go in a specific direction.
   GoDirection(EntityId, Direction),
-  /// Quit.
+  /// OOC: Quit.
   Quit(EntityId),
 }
 
