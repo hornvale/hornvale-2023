@@ -1,4 +1,4 @@
-# Debug Macros
+# Macros
 
 General-purpose debugging and other macros.
 

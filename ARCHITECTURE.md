@@ -18,7 +18,7 @@ The following should be a 1:1 listing of the code in the `src/` subdirectory.
 
 - [🪲 Macros](./src/_macros/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Macros developed for various uses.  Given the peculiarities of how macros are made available in Rust, I've segregated them to a specific folder.
 
-- [🎭 Traits](./src/_traits/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Macros developed for various uses.  Given the peculiarities of how macros are made available in Rust, I've segregated them to a specific folder.
+- [🎭 Traits](./src/_traits/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Traits to ease dependency injection, genericity, decoupling code, etc.  I want to keep traits separate from the things assuming them as well as the things consuming them. 
 
 - [🎬 Actions](./src/actions/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Actions, in-game actions undertaken by entities with the intent to alter something about the game world.
 

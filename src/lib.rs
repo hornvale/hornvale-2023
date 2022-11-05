@@ -20,9 +20,10 @@ extern crate serde;
 extern crate thiserror;
 
 #[macro_use]
-pub mod debug_macros;
-pub use debug_macros::*;
+pub mod _macros;
+pub use _macros::*;
 
+pub mod _traits;
 pub mod actions;
 pub mod anatomy;
 pub mod astronomy;
