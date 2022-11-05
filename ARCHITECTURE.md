@@ -16,6 +16,10 @@ I'm not under any illusions about how complex a task this is.  I expect that if 
 
 The following should be a 1:1 listing of the code in the `src/` subdirectory.
 
+- [🪲 Macros](./src/_macros/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Macros developed for various uses.  Given the peculiarities of how macros are made available in Rust, I've segregated them to a specific folder.
+
+- [🎭 Traits](./src/_traits/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Macros developed for various uses.  Given the peculiarities of how macros are made available in Rust, I've segregated them to a specific folder.
+
 - [🎬 Actions](./src/actions/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Actions, in-game actions undertaken by entities with the intent to alter something about the game world.
 
 - [🧍‍♂️ Anatomy](./src/anatomy/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Anatomy and physiology, health, damage, poison, and regeneration.
@@ -38,7 +42,7 @@ The following should be a 1:1 listing of the code in the `src/` subdirectory.
 
 - [💥 Effects](./src/effects/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Alterations to the world state should take certain pre-defined forms that can be tested for accuracy and correctness.
 
-- [🎭 Entity](./src/entity/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Entities are any objects that appear in the game.  This section comprises not so much entity _behavior_ (which should be handled primarily in the Components), but the creation and management of entities.
+- [👽 Entity](./src/entity/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Entities are any objects that appear in the game.  This section comprises not so much entity _behavior_ (which should be handled primarily in the Components), but the creation and management of entities.
 
 - [🎮 Game](./src/game/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Game state management.
 
