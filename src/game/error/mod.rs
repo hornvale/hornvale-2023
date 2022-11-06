@@ -1,3 +1,4 @@
+use rustyline::error::ReadlineError;
 use std::error::Error as StdError;
 use std::io::Error as IoError;
 
@@ -15,4 +16,7 @@ pub enum Error {
   /// A direction error occurred.
   #[error("a direction error occurred ({0})")]
   DirectionError(#[from] DirectionError),
+  /// A Readline/Rustyline error occured.
+  #[error("a readline error occurred ({0})")]
+  ReadlineError(#[from] ReadlineError),
 }

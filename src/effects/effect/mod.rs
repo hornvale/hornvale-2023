@@ -1,5 +1,5 @@
-use crate::entity::id::Id as EntityId;
-use crate::room::id::Id as RoomId;
+use crate::ecs::entity::EntityId;
+use crate::ecs::entity::RoomId;
 
 /// The `Effect` enum.
 #[derive(Clone, Debug)]

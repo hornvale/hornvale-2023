@@ -19,6 +19,9 @@ pub use pretty_env_logger::env_logger::builder as pretty_env_logger_builder;
 pub use pretty_env_logger::init as init_pretty_env_logger;
 #[macro_use]
 extern crate serde;
+extern crate specs;
+#[macro_use]
+extern crate specs_derive;
 #[macro_use]
 extern crate thiserror;
 
@@ -29,18 +32,16 @@ pub use _macro::*;
 pub mod _error;
 
 // Systems.
-pub mod action_system;
+pub mod action;
 pub mod anatomy;
 pub mod astronomy;
 pub mod biology;
 pub mod combat;
-pub mod commands;
-pub mod components;
-pub mod direction;
+pub mod command;
 pub mod downdelving;
 pub mod economics;
+pub mod ecs;
 pub mod effects;
-pub mod entity;
 pub mod game;
 pub mod geology;
 pub mod goap;
@@ -49,15 +50,11 @@ pub mod linguistics;
 pub mod map;
 pub mod mythopoetics;
 pub mod parsing;
-pub mod passage;
 pub mod perception;
-pub mod player;
-pub mod room;
 pub mod scripting_language;
 pub mod sociology;
 pub mod supernatural;
 pub mod ui;
-pub mod world;
 
 #[cfg(test)]
 pub mod test {
