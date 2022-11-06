@@ -1,4 +1,4 @@
-// use crate::action_system::factory::Factory;
+use crate::action_system::factory::Factory as ActionFactory;
 use crate::commands::error::Error;
 use crate::direction::Direction;
 use crate::entity::id::Id as EntityId;
@@ -19,15 +19,26 @@ pub enum Command {
 impl Command {
   /// Execute.
 
-  pub fn execute(&mut self, game: &mut Game) -> Result<Option<String>, Error> {
+  pub fn execute(self, game: &mut Game) -> Result<Option<String>, Error> {
     use Command::*;
-    let _world = game.world.as_mut().unwrap();
+    let world = game.world.as_mut().unwrap();
     match &self {
-      //LookAround(entity_id) => Action::LookAround(entity_id.clone()).execute(world)?,
-      //GoDirection(entity_id, direction) => Action::GoDirection(entity_id.clone(), *direction).execute(world)?,
-      //LookDirection(entity_id, direction) => Action::LookDirection(entity_id.clone(), *direction).execute(world)?,
+      GoDirection(ref entity_id, ref direction) => {
+        let action = ActionFactory::go_direction(entity_id.clone(), *direction);
+        let result = action.execute(world)?;
+        Ok(result)
+      },
+      LookAround(ref entity_id) => {
+        let action = ActionFactory::look_around(entity_id.clone());
+        let result = action.execute(world)?;
+        Ok(result)
+      },
+      LookDirection(ref entity_id, ref direction) => {
+        let action = ActionFactory::look_direction(entity_id.clone(), *direction);
+        let result = action.execute(world)?;
+        Ok(result)
+      },
       Quit(_entity_id) => Err(Error::UserExitError),
-      _ => Err(Error::UserExitError),
     }
   }
 }

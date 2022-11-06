@@ -1,3 +1,5 @@
+use crate::direction::Direction;
+use crate::entity::EntityId;
 use crate::world::World;
 
 use super::action::{go_direction::GoDirection, look_around::LookAround, look_direction::LookDirection};
@@ -26,5 +28,20 @@ impl Factory {
       Factory::LookAround(action) => action.execute(world),
       Factory::LookDirection(action) => action.execute(world),
     }
+  }
+
+  /// Go direction.
+  pub fn go_direction(entity_id: EntityId, direction: Direction) -> Self {
+    Self::GoDirection(GoDirection { entity_id, direction })
+  }
+
+  /// Look around.
+  pub fn look_around(entity_id: EntityId) -> Self {
+    Self::LookAround(LookAround { entity_id })
+  }
+
+  /// Look in direction.
+  pub fn look_direction(entity_id: EntityId, direction: Direction) -> Self {
+    Self::LookDirection(LookDirection { entity_id, direction })
   }
 }

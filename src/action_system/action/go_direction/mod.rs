@@ -1,3 +1,4 @@
+use crate::direction::Direction;
 use crate::entity::EntityId;
 use crate::world::World;
 
@@ -7,6 +8,8 @@ use super::super::error::Error;
 pub struct GoDirection {
   /// Actor entity ID.
   pub entity_id: EntityId,
+  /// Direction.
+  pub direction: Direction,
 }
 
 impl GoDirection {
