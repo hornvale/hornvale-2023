@@ -10,3 +10,5 @@ impl Default for Id {
     Self(id)
   }
 }
+
+impl Id {}

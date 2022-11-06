@@ -3,8 +3,11 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 use crate::components::has_description::HasDescription;
 use crate::components::has_passages::HasPassages;
 
+pub mod collection;
+pub use collection::Collection as RoomCollection;
 pub mod id;
 use id::Id;
+pub use id::Id as RoomId;
 
 /// The `Room` type.
 ///
@@ -24,5 +27,11 @@ pub struct Room {
 impl Display for Room {
   fn fmt(&self, f: &mut Formatter) -> FmtResult {
     write!(f, "{:?}", self)
+  }
+}
+
+impl Room {
+  pub fn get_id(&self) -> &RoomId {
+    &self.id
   }
 }

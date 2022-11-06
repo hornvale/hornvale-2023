@@ -1,4 +1,4 @@
-use crate::actions::error::Error as ActionError;
+use crate::action_system::error::Error as ActionError;
 
 /// Errors encountered in commands.
 #[derive(Debug, Error)]

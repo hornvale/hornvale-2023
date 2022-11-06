@@ -2,6 +2,9 @@
 
 #[allow(unused_imports)]
 #[macro_use]
+extern crate anyhow;
+#[allow(unused_imports)]
+#[macro_use]
 extern crate assert_approx_eq;
 extern crate cpu_time;
 #[macro_use]
@@ -19,12 +22,14 @@ extern crate serde;
 #[macro_use]
 extern crate thiserror;
 
+// Utilities shared and relied upon by all systems.
 #[macro_use]
-pub mod _macros;
-pub use _macros::*;
+pub mod _macro;
+pub use _macro::*;
+pub mod _error;
 
-pub mod _traits;
-pub mod actions;
+// Systems.
+pub mod action_system;
 pub mod anatomy;
 pub mod astronomy;
 pub mod biology;

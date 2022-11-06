@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::str::FromStr;
 
 use crate::commands::command::Command;
@@ -24,17 +23,14 @@ impl TwoWord {
   /// Constructor.
   pub fn new() -> Self {
     let map = (SimpleMapBuilder {}).build();
-    let mut entities = HashMap::new();
+    let mut world = World::new();
     let mut entity = Entity::default();
-    let spawn_room_id = map.spawn_room_id.clone().unwrap();
+    let spawn_room_id = map.spawn_room_id.unwrap();
     entity.is_in_room = Some(IsInRoom(spawn_room_id));
     let entity_id = entity.id.clone();
-    entities.insert(entity_id.clone(), entity);
+    world.entity_collection.0.insert(entity_id.clone(), entity);
     let player = Some(Player { entity_id });
-    let world = Some(World {
-      entities,
-      map: Some(map),
-    });
+    let world = Some(world);
     let game = Game { player, world };
     Self { game }
   }

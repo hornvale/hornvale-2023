@@ -1,4 +1,16 @@
 /// Formats a 3-tuple of u8s in useful ways.
+///
+/// ```
+/// # #[macro_use] extern crate function_name;
+/// # #[macro_use] extern crate hornvale;
+/// # use hornvale::*;
+/// #
+/// # #[named]
+/// # fn main() {
+/// let five = 5;
+/// debug_var!(five);
+/// # }
+/// ```
 #[macro_export]
 macro_rules! format_3u8 {
   ($var: expr) => {{
