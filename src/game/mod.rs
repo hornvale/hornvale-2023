@@ -35,9 +35,9 @@ pub struct Game {
 
 impl Game {
   /// Initialize ECS.
-  pub fn new() -> Self {
+  pub fn new(seed: &str) -> Self {
     let mut ecs = World::new();
-    insert_resources(&mut ecs);
+    insert_resources(&mut ecs, seed);
     insert_event_channels(&mut ecs);
     register_components(&mut ecs);
     let dispatcher = get_new_dispatcher(&mut ecs);
@@ -99,6 +99,6 @@ impl Game {
 
 impl Default for Game {
   fn default() -> Self {
-    Self::new()
+    Self::new("goat boy")
   }
 }

@@ -2,6 +2,7 @@
 ///
 /// Organization, in a sort-of pseudo-BNF:
 ///
+/// ```text
 /// MOON = ()
 /// MOONS = [MOON]
 /// TERRESTRIAL_PLANET = ()
@@ -19,6 +20,7 @@
 /// STELLAR_NEIGHBOR = (STAR_SYSTEM)
 /// STELLAR_NEIGHBORHOOD = [STELLAR_NEIGHBOR]
 /// GALAXY = (STELLAR_NEIGHBORHOOD)
+/// ```
 pub mod close_binary_star;
 pub mod distant_binary_star;
 pub mod galaxy;

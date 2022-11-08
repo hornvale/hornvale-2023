@@ -15,6 +15,8 @@ pub mod process_input;
 pub use process_input::ProcessInput as ProcessInputSystem;
 pub mod process_output;
 pub use process_output::ProcessOutput as ProcessOutputSystem;
+pub mod tick;
+pub use tick::Tick as TickSystem;
 
 pub fn run_initial_systems(ecs: &mut World) {
   (CreatePlayerSystem {}).run_now(ecs);
@@ -38,12 +40,25 @@ pub fn get_new_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     let reader_id = ecs.fetch_mut::<EventChannel<ActionEvent>>().register_reader();
     ProcessActionSystem { reader_id }
   };
-
+  let tick_system = TickSystem {};
   let dispatcher = DispatcherBuilder::new()
     .with(process_input_system, "process_input", &[])
-    .with(process_command_system, "process_command", &[])
-    .with(process_action_system, "process_action", &[])
-    .with(process_output_system, "process_output", &[])
+    .with(process_command_system, "process_command", &["process_input"])
+    .with(
+      process_action_system,
+      "process_action",
+      &["process_input", "process_command"],
+    )
+    .with(
+      process_output_system,
+      "process_output",
+      &["process_input", "process_command", "process_action"],
+    )
+    .with(
+      tick_system,
+      "tick",
+      &["process_input", "process_command", "process_action", "process_output"],
+    )
     .build();
   dispatcher
 }
