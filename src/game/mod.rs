@@ -3,7 +3,6 @@ use futures::prelude::*;
 use rustyline_async::SharedWriter;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
-use std::collections::VecDeque;
 use std::time::Duration;
 
 use crate::ecs::components::register_components;
@@ -29,9 +28,6 @@ pub struct Game {
   /// The system dispatcher.
   #[derivative(Debug = "ignore")]
   pub dispatcher: Dispatcher<'static, 'static>,
-  /// Messages.
-  #[derivative(Debug = "ignore")]
-  pub messages: VecDeque<String>,
   /// Raw output channel.
   #[derivative(Debug = "ignore")]
   pub output: SharedWriter,
@@ -45,57 +41,48 @@ impl Game {
     insert_event_channels(&mut ecs);
     register_components(&mut ecs);
     run_initial_systems(&mut ecs);
+    let dispatcher = get_new_dispatcher(&mut ecs);
     let output = {
       let output_resource = ecs.read_resource::<OutputResource>();
       output_resource.0.as_ref().unwrap().clone()
     };
-    let dispatcher = get_new_dispatcher(&mut ecs);
-    let messages = VecDeque::new();
     Self {
       ecs,
       dispatcher,
-      messages,
       output,
     }
   }
 
   /// Run.
   pub async fn run(&mut self) -> Result<(), Error> {
+    // This is how we read input.
     let mut input_resource = self.ecs.write_resource::<InputResource>();
     // Probably move to a prompt system?  Or not?  IDK.
     let stdin = input_resource.0.as_mut().unwrap();
-    // If we need to print to stdout.
+    // If we need to print without sending it through the whole thing.
     let _stdout = self.output.clone();
-
+    // It'd be interesting to store this in a resource and possibly modify it
+    // on the fly.  Very FRP.  Much signal.
     let mut tick_timer = stream::interval(Duration::from_millis(TICK_INTERVAL));
-    let mut periodic_timer2 = stream::interval(Duration::from_millis(900));
-
+    // Main game loop, such as it is.
     loop {
+      // Select the next future to complete.
       futures::select! {
         _ = tick_timer.next().fuse() => {
+          // Each tick, run all of the systems.  We could have multiple
+          // dispatchers, each running a subset of the systems, and scheduled
+          // differently.
           self.dispatcher.dispatch(&self.ecs);
-        }
-        _ = periodic_timer2.next().fuse() => {
-          /*
-          let new_messages = self
-            .ecs
-            .write_resource::<MessagesResource>()
-            .0
-            .drain(..)
-            .collect::<Vec<String>>();
-          for message in new_messages {
-            self.messages.push_front(message);
-          }
-          while self.messages.len() > 500 {
-            self.messages.pop_back();
-          }
-          */
-          // writeln!(stdout, "{}", "Second timer went off!".to_string().trim()).await?;
         }
         command = stdin.readline().fuse() => match command {
           Ok(line) => {
+            // We could conceivably be parsing some commands (like Quit, etc)
+            // from here rather than sending them through the system, but I
+            // think that's a bad architectural decision.
             let line = line.trim();
             stdin.add_history_entry(line.to_owned());
+            // We could write "input" in other places.  This might be a way
+            // (however unsophisticated) of building macros into the UI.
             self.ecs
               .write_resource::<EventChannel<InputEvent>>()
               .single_write(InputEvent {
