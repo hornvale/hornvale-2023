@@ -25,8 +25,15 @@ use crate::map::Direction;
 ///   tinuously.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Action {
+  /// Go in a specific direction.  This should respect current movement method
+  /// (e.g. walking, flying, etc).
   GoDirection { entity_id: EntityId, direction: Direction },
+  /// Look at the current room.  This should provide a snapshot the sensory
+  /// data of the room.
   LookAround { entity_id: EntityId },
+  /// Look at a specific object, either on the actor or in their environment.
   LookAtObject { entity_id: EntityId, object_id: ObjectId },
+  /// Look through the passage in the specified direction.  Will not work with
+  /// closed doors.  Certain other passageways may prevent the action as well.
   LookDirection { entity_id: EntityId, direction: Direction },
 }
