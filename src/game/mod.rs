@@ -40,7 +40,6 @@ impl Game {
     insert_resources(&mut ecs);
     insert_event_channels(&mut ecs);
     register_components(&mut ecs);
-    run_initial_systems(&mut ecs);
     let dispatcher = get_new_dispatcher(&mut ecs);
     let output = {
       let output_resource = ecs.read_resource::<OutputResource>();
@@ -55,6 +54,7 @@ impl Game {
 
   /// Run.
   pub async fn run(&mut self) -> Result<(), Error> {
+    run_initial_systems(&mut self.ecs);
     // This is how we read input.
     let mut input_resource = self.ecs.write_resource::<InputResource>();
     // Probably move to a prompt system?  Or not?  IDK.

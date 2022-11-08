@@ -2,15 +2,15 @@
 macro_rules! create_room {
   ($system_data: expr, $name: expr, $description: expr) => {{
     use $crate::ecs::components::*;
-    let room_id = $system_data.entities.create();
+    let room = $system_data.entities.create();
     $system_data
       .has_name
-      .insert(room_id, HasName($name.into()))
+      .insert(room, HasName($name.into()))
       .expect(&format!("Unable to insert name {} for entity!", $name));
     $system_data
       .has_description
       .insert(
-        room_id,
+        room,
         HasDescription {
           initial: None,
           brief: $description.into(),
@@ -19,13 +19,13 @@ macro_rules! create_room {
       .expect(&format!("Unable to insert description {} for entity!", $description));
     $system_data
       .has_passages
-      .insert(room_id, HasPassages::default())
+      .insert(room, HasPassages::default())
       .expect("Unable to insert exits for entity!");
     $system_data
       .is_a_room
-      .insert(room_id, IsARoom)
+      .insert(room, IsARoom)
       .expect("Unable to insert is-a-room for entity!");
-    room_id
+    room
   }};
 }
 

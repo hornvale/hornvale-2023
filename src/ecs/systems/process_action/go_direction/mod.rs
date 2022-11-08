@@ -1,6 +1,7 @@
 use crate::action::Action;
 use crate::map::PassageDestination;
 
+use super::super::super::entity::RoomId;
 use super::*;
 
 impl<'a> ProcessAction {
@@ -13,10 +14,7 @@ impl<'a> ProcessAction {
         match get_passage_to!(data, room_entity, direction) {
           Some(passage) => match passage.to {
             PassageDestination::Room(destination_id) => {
-              data
-                .is_in_room
-                .insert(entity, IsInRoom(destination_id))
-                .expect("Unable to insert is-in-room for entity!");
+              set_current_room!(data, entity, get_entity!(data, destination_id));
               data.action_event_channel.single_write(ActionEvent {
                 action: Action::LookAround { entity_id: *entity_id },
               });
