@@ -47,16 +47,13 @@ pub mod effect;
 pub mod game;
 pub mod geology;
 pub mod goap;
-pub mod io;
 pub mod linguistics;
 pub mod map;
 pub mod mythopoetics;
-pub mod parsing;
 pub mod perception;
 pub mod scripting_language;
 pub mod sociology;
 pub mod supernatural;
-pub mod ui;
 
 #[cfg(test)]
 pub mod test {
