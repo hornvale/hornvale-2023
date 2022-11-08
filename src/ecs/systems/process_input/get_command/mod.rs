@@ -15,43 +15,62 @@ impl<'a> ProcessInput {
     let second: String = words.get(1).unwrap_or(&"").to_string();
     use Command::*;
     let player_id = data.player_resource.0.unwrap();
-    // let player = data.entities.entity(player_id.0);
     let result = match (first.as_str(), second.as_str()) {
-      ("echo", _) => Ok(Echo {
-        player_id,
-        string: words[1..].join(" "),
-        original_input,
-      }),
-      ("eval", _) => Ok(Eval {
-        player_id,
-        string: words[1..].join(" "),
-        original_input,
-      }),
-      ("look" | "l", direction) if Direction::from_str(direction).is_ok() => Ok(LookDirection {
-        player_id,
-        direction: Direction::from_str(direction).unwrap(),
-        original_input,
-      }),
+      ("echo", _) => {
+        debug!("Matched command Echo");
+        Ok(Echo {
+          player_id,
+          string: words[1..].join(" "),
+          original_input,
+        })
+      },
+      ("eval", _) => {
+        debug!("Matched command Eval");
+        Ok(Eval {
+          player_id,
+          string: words[1..].join(" "),
+          original_input,
+        })
+      },
+      ("look" | "l", direction) if Direction::from_str(direction).is_ok() => {
+        debug!("Matched command LookDirection");
+        Ok(LookDirection {
+          player_id,
+          direction: Direction::from_str(direction).unwrap(),
+          original_input,
+        })
+      },
       ("look" | "l", _) => {
         if let Ok(object) = self.match_visible_object(&words[1..].join(" "), data) {
+          debug!("Matched command LookAtObject");
           Ok(LookAtObject {
             player_id,
             object_id: ObjectId(object.id()),
             original_input,
           })
         } else {
-          Err(anyhow!("Unexpected combination!"))
+          debug!("Matched command LookAround");
+          Ok(LookAround {
+            player_id,
+            original_input,
+          })
         }
       },
-      (direction, _) | ("move" | "go", direction) if Direction::from_str(direction).is_ok() => Ok(MoveDirection {
-        player_id,
-        direction: Direction::from_str(direction).unwrap(),
-        original_input,
-      }),
-      ("quit", _) => Ok(Quit {
-        player_id,
-        original_input,
-      }),
+      (direction, _) | ("move" | "go", direction) if Direction::from_str(direction).is_ok() => {
+        debug!("Matched command GoDirection");
+        Ok(GoDirection {
+          player_id,
+          direction: Direction::from_str(direction).unwrap(),
+          original_input,
+        })
+      },
+      ("quit", _) => {
+        debug!("Matched command Quit");
+        Ok(Quit {
+          player_id,
+          original_input,
+        })
+      },
       (&_, _) => Err(anyhow!("Unexpected combination!")),
     };
     result

@@ -39,7 +39,7 @@ macro_rules! get_passage_to {
   ($system_data: expr, $room: expr, $direction: expr) => {{
     let mut result = None;
     if let Some(passages) = get_passages!($system_data, $room) {
-      if let Some(passage) = passages.get_passage($direction) {
+      if let Some(passage) = passages.get_passage_to($direction) {
         result = Some(passage.to_owned());
       }
     }

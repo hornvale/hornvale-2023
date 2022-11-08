@@ -7,8 +7,8 @@
 /// #
 /// # #[named]
 /// # fn main() {
-/// let five = 5;
-/// debug_var!(five);
+/// let test = (32, 24, 125);
+/// println!("{}", format_3u8!(test));
 /// # }
 /// ```
 #[macro_export]

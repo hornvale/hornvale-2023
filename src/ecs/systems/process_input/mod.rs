@@ -6,6 +6,9 @@ use super::super::entity::*;
 use super::super::event_channels::*;
 use super::super::resources::*;
 
+mod get_command;
+mod match_visible_object;
+
 pub struct ProcessInput {
   pub reader_id: ReaderId<InputEvent>,
 }
@@ -16,6 +19,7 @@ impl ProcessInput {}
 pub struct ProcessInputData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Read<'a, PlayerResource>,
+  pub output_resource: Write<'a, OutputResource>,
   pub has_description: ReadStorage<'a, HasDescription>,
   pub has_passages: ReadStorage<'a, HasPassages>,
   pub has_name: ReadStorage<'a, HasName>,
@@ -42,9 +46,11 @@ impl<'a> System<'a> for ProcessInput {
     }
     info!("Processing {} input event(s)...", event_count);
     for event in input_events.iter() {
+      /* Debugging
       data.output_event_channel.single_write(OutputEvent {
-        string: format!("> {}", event.input),
+        string: format!("> {}", event.input.trim()),
       });
+      */
       if let Ok(command) = self.get_command(&event.input, &mut data) {
         data.command_event_channel.single_write(CommandEvent { command });
       } else {
@@ -53,6 +59,3 @@ impl<'a> System<'a> for ProcessInput {
     }
   }
 }
-
-mod get_command;
-mod match_visible_object;

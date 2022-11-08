@@ -1,14 +1,20 @@
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
-use super::event_channels::InputEvent;
+use super::event_channels::*;
 
 pub mod create_map;
 pub use create_map::CreateMap as CreateMapSystem;
 pub mod create_player;
 pub use create_player::CreatePlayer as CreatePlayerSystem;
+pub mod process_action;
+pub use process_action::ProcessAction as ProcessActionSystem;
+pub mod process_command;
+pub use process_command::ProcessCommand as ProcessCommandSystem;
 pub mod process_input;
 pub use process_input::ProcessInput as ProcessInputSystem;
+pub mod process_output;
+pub use process_output::ProcessOutput as ProcessOutputSystem;
 
 pub fn run_initial_systems(ecs: &mut World) {
   (CreatePlayerSystem {}).run_now(ecs);
@@ -20,9 +26,24 @@ pub fn get_new_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     let reader_id = ecs.fetch_mut::<EventChannel<InputEvent>>().register_reader();
     ProcessInputSystem { reader_id }
   };
+  let process_output_system = {
+    let reader_id = ecs.fetch_mut::<EventChannel<OutputEvent>>().register_reader();
+    ProcessOutputSystem { reader_id }
+  };
+  let process_command_system = {
+    let reader_id = ecs.fetch_mut::<EventChannel<CommandEvent>>().register_reader();
+    ProcessCommandSystem { reader_id }
+  };
+  let process_action_system = {
+    let reader_id = ecs.fetch_mut::<EventChannel<ActionEvent>>().register_reader();
+    ProcessActionSystem { reader_id }
+  };
 
   let dispatcher = DispatcherBuilder::new()
     .with(process_input_system, "process_input", &[])
+    .with(process_command_system, "process_command", &[])
+    .with(process_action_system, "process_action", &[])
+    .with(process_output_system, "process_output", &[])
     .build();
   dispatcher
 }

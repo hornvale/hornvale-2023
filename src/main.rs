@@ -1,12 +1,15 @@
-use pretty_env_logger::env_logger::builder;
+use log::LevelFilter;
+use simplelog::Config;
+use simplelog::WriteLogger;
 
 use hornvale::game::Game;
 use hornvale::game::GameError;
 
-fn main() -> Result<(), GameError> {
-  let _ = builder().try_init();
+#[async_std::main]
+async fn main() -> Result<(), GameError> {
   let mut game = Game::new();
-  loop {
-    game.tick()?;
-  }
+  let stdout = game.output.clone();
+  WriteLogger::init(LevelFilter::Off, Config::default(), stdout).unwrap();
+  game.run().await?;
+  Ok(())
 }

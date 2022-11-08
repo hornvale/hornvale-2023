@@ -12,6 +12,8 @@ extern crate derivative;
 #[macro_use]
 extern crate derive_more;
 #[macro_use]
+extern crate lazy_static;
+#[macro_use]
 extern crate log;
 pub use log::*;
 extern crate pretty_env_logger;
@@ -41,7 +43,7 @@ pub mod command;
 pub mod downdelving;
 pub mod economics;
 pub mod ecs;
-pub mod effects;
+pub mod effect;
 pub mod game;
 pub mod geology;
 pub mod goap;

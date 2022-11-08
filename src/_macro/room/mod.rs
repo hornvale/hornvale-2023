@@ -32,14 +32,16 @@ macro_rules! create_room {
 #[macro_export]
 macro_rules! format_room {
   ($system_data: expr, $room: expr) => {{
+    use $crate::ecs::entity::RoomId;
     let mut string = String::new();
     if let Some(name) = get_name!($system_data, $room) {
-      string.push_str(format!("{}\n", name).as_str());
+      string.push_str(format!("<bold>{}<reset>\n", name).as_str());
     }
-    if let Some(description) = get_description!($system_data, $room) {
+    if let Some(description) = get_brief_description!($system_data, $room) {
       string.push_str(format!("{}\n", description).as_str());
     }
     {
+      let room_id = RoomId($room.id());
       for (_entities, _is_in_room, _is_an_object, has_description) in (
         &$system_data.entities,
         &$system_data.is_in_room,
@@ -47,13 +49,13 @@ macro_rules! format_room {
         &$system_data.has_description,
       )
         .join()
-        .filter(|(_entity, is_in_room, _is_an_object, _has_description)| is_in_room.0 == Some($room))
+        .filter(|(_entity, is_in_room, _is_an_object, _has_description)| is_in_room.0 == room_id)
       {
         string.push_str(format!("{}\n", has_description.brief).as_str());
       }
     }
     if let Some(passages) = get_passages!($system_data, $room) {
-      string.push_str(format!("{}\n", format!("{}", passages).green()).as_str());
+      string.push_str(format!("<green>{}<reset>\n", passages).as_str());
     }
     format!("{}", string)
   }};
