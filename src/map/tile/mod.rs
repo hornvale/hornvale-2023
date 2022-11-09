@@ -11,6 +11,7 @@ pub use map::Map as TileMap;
 /// simple room map.  Don't make this weird.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Tile {
+  Void,
   Wall,
   Floor,
   Player,
@@ -21,6 +22,7 @@ impl Tile {
   pub fn get_char(&self) -> char {
     use Tile::*;
     match &self {
+      Void => ' ',
       Wall => '#',
       Floor => '.',
       Player => '@',
@@ -31,6 +33,7 @@ impl Tile {
   pub fn get_color_code(&self) -> u8 {
     use Tile::*;
     match &self {
+      Void => 232,
       Wall => 238,
       Floor => 238,
       Player => 21,

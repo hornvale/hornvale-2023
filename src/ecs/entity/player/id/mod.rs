@@ -7,4 +7,5 @@ use specs::world::Index;
 #[derive(
   Clone, Component, Copy, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Ord, PartialOrd, Serialize,
 )]
+#[repr(transparent)]
 pub struct Id(pub Index);

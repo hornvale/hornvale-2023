@@ -44,6 +44,7 @@ pub mod downdelving;
 pub mod economics;
 pub mod ecs;
 pub mod effect;
+pub mod formatting;
 pub mod game;
 pub mod geology;
 pub mod goap;

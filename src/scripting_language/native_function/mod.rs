@@ -11,6 +11,7 @@ pub type FunctionType = fn(&VirtualMachine, &[Value]) -> Result<Value, Error>;
 
 /// The `NativeFunction` type.
 #[derive(Clone, Copy)]
+#[repr(transparent)]
 pub struct NativeFunction(pub FunctionType);
 
 impl Debug for NativeFunction {

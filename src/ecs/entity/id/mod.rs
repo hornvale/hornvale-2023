@@ -1,6 +1,7 @@
 use specs::prelude::*;
 use specs::world::Index;
 
+use super::being::id::Id as BeingId;
 use super::object::id::Id as ObjectId;
 use super::player::id::Id as PlayerId;
 use super::room::id::Id as RoomId;
@@ -11,7 +12,14 @@ use super::room::id::Id as RoomId;
 #[derive(
   Clone, Component, Copy, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Ord, PartialOrd, Serialize,
 )]
+#[repr(transparent)]
 pub struct Id(pub Index);
+
+impl From<BeingId> for Id {
+  fn from(id: BeingId) -> Self {
+    Self(id.0)
+  }
+}
 
 impl From<ObjectId> for Id {
   fn from(id: ObjectId) -> Self {

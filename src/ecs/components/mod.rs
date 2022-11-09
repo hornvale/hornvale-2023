@@ -6,6 +6,8 @@ pub mod has_name;
 pub use has_name::HasName;
 pub mod has_passages;
 pub use has_passages::HasPassages;
+pub mod is_a_being;
+pub use is_a_being::IsABeing;
 pub mod is_a_player;
 pub use is_a_player::IsAPlayer;
 pub mod is_a_room;
@@ -21,6 +23,7 @@ pub fn register_components(ecs: &mut World) {
   ecs.register::<HasDescription>();
   ecs.register::<HasName>();
   ecs.register::<HasPassages>();
+  ecs.register::<IsABeing>();
   ecs.register::<IsAPlayer>();
   ecs.register::<IsARoom>();
   ecs.register::<IsASpawnRoom>();

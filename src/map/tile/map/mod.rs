@@ -8,6 +8,8 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 pub struct Map {
   /// The actual map.
   pub map: Vec<Tile>,
+  /// The visibility mask.
+  pub visibility: Vec<bool>,
   /// Cooresponding rooms.
   pub rooms: Vec<Option<RoomId>>,
   /// Room to Index map.
@@ -27,13 +29,16 @@ impl Map {
   pub fn new(o_width: usize, o_height: usize) -> Self {
     let width = 2 * o_width + 1;
     let height = 2 * o_height + 1;
-    let map = vec![Tile::Wall; height * width];
-    let rooms = vec![None; height * width];
+    let length = height * width;
+    let map = vec![Tile::Wall; length];
+    let visibility = vec![false; length];
+    let rooms = vec![None; length];
     let room_index_map = HashMap::new();
     let room_coords_map = HashMap::new();
     let player_coordinates = None;
     Self {
       map,
+      visibility,
       rooms,
       room_index_map,
       room_coords_map,
@@ -58,6 +63,18 @@ impl Map {
     self.get_y(y) * self.width + self.get_x(x)
   }
 
+  /// Mark coordinates and area surrounding them visible.
+  pub fn mark_visible(&mut self, x: usize, y: usize) {
+    for i_y in y.saturating_sub(2)..=y + 2 {
+      for i_x in x.saturating_sub(2)..=x + 2 {
+        if i_y >= self.height || i_x >= self.width {
+          continue;
+        }
+        self.visibility[i_y as usize * self.width + i_x as usize] = true;
+      }
+    }
+  }
+
   /// Set a room ID.
   pub fn set_room_id(&mut self, room_id: RoomId, x: usize, y: usize) {
     let index = self.get_index(x, y);
@@ -75,12 +92,15 @@ impl Display for Map {
     }
     let mut strings = Vec::new();
     for y in 0..self.height {
-      let line = map[y * self.width..y * self.width + self.width]
-        .iter()
-        .map(|tile| tile.get_string())
-        .collect::<Vec<String>>()
-        .join("");
-      strings.push(format!("{}\n", line));
+      for x in 0..self.width {
+        let index = y * self.width + x;
+        if self.visibility[index] {
+          strings.push(map[index].get_string());
+        } else {
+          strings.push(Tile::Void.get_string());
+        }
+      }
+      strings.push("\n".to_string());
     }
     write!(formatter, "{}", strings.join(""))
   }

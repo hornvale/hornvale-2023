@@ -1,8 +1,6 @@
 use specs::prelude::*;
 
-use super::super::entity::RoomId;
-
-/// The `IsInRoom` type.
+/// The `IsABeing` component.
 #[derive(Clone, Component, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Serialize)]
-#[repr(transparent)]
-pub struct IsInRoom(pub RoomId);
+#[storage(NullStorage)]
+pub struct IsABeing;

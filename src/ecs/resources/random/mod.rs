@@ -4,6 +4,7 @@ use rand_seeder::{SipHasher, SipRng};
 ///
 /// This makes a random number generator available to processes that need one.
 #[derive(Clone, Debug)]
+#[repr(transparent)]
 pub struct Random(pub SipRng);
 
 impl Default for Random {

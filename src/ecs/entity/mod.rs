@@ -1,3 +1,5 @@
+pub mod being;
+pub use being::id::Id as BeingId;
 pub mod id;
 pub use id::Id as EntityId;
 pub mod object;
