@@ -17,20 +17,35 @@ pub enum Tile {
 }
 
 impl Tile {
-  /// Get string.
-  pub fn get_str(&self) -> &'static str {
+  /// Get char.
+  pub fn get_char(&self) -> char {
     use Tile::*;
     match &self {
-      Wall => "<fg_ext238>#<reset>",
-      Floor => "<fg_ext238>.<reset>",
-      Player => "<fg_ext21>@<reset>",
+      Wall => '#',
+      Floor => '.',
+      Player => '@',
     }
+  }
+
+  /// Get color code.
+  pub fn get_color_code(&self) -> u8 {
+    use Tile::*;
+    match &self {
+      Wall => 238,
+      Floor => 238,
+      Player => 21,
+    }
+  }
+
+  /// Get string.
+  pub fn get_string(&self) -> String {
+    format!("<fg_ext{}>{}<reset>", self.get_color_code(), self.get_char())
   }
 }
 
 impl Display for Tile {
   fn fmt(&self, formatter: &mut Formatter) -> FmtResult {
-    write!(formatter, "{}", self.get_str())
+    write!(formatter, "{}", self.get_string())
   }
 }
 
@@ -48,10 +63,10 @@ pub mod test {
   }
 
   #[test]
-  pub fn test_display_tile_types() {
+  pub fn test_display_tile_chars() {
     init();
-    assert_eq!(format!("{}", Tile::Wall), "#");
-    assert_eq!(format!("{}", Tile::Floor), ".");
-    assert_eq!(format!("{}", Tile::Player), "@");
+    assert_eq!(Tile::Wall.get_char(), '#');
+    assert_eq!(Tile::Floor.get_char(), '.');
+    assert_eq!(Tile::Player.get_char(), '@');
   }
 }

@@ -77,8 +77,8 @@ impl Display for Map {
     for y in 0..self.height {
       let line = map[y * self.width..y * self.width + self.width]
         .iter()
-        .map(|tile| tile.get_str())
-        .collect::<Vec<&str>>()
+        .map(|tile| tile.get_string())
+        .collect::<Vec<String>>()
         .join("");
       strings.push(format!("{}\n", line));
     }
@@ -108,18 +108,9 @@ pub mod test {
     let width = 80;
     let mut map = Map::new(height, width);
     use Tile::*;
-    for y in 0..height {
-      for x in 0..width {
-        map.map.push(Wall);
-      }
-    }
-    let column_offset = 1;
-    let row_offset = 1;
     for y in 1..height - 1 {
-      let is_on_top = y == 1;
       let is_on_bottom = y == height - 2;
       for x in 1..width - 1 {
-        let is_on_left = x == 1;
         let is_on_right = x == width - 1;
         if y % 2 != 0 && x % 2 != 0 {
           map.map[(y * width) + x] = Floor;
