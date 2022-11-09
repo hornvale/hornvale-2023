@@ -101,7 +101,7 @@ impl Display for HasPassages {
     let mut directions = self.get_directions();
     let string = match directions.len() {
       0 => "There are no visible passages.".into(),
-      1 => format!("There is a visible passages to the {}.", directions.pop().unwrap()),
+      1 => format!("There is a visible passage to the {}.", directions.pop().unwrap()),
       2 => format!(
         "There are visible passages to the {} and {}.",
         directions.pop().unwrap(),
