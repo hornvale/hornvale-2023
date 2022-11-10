@@ -44,6 +44,8 @@ use crate::ecs::entity::RoomId;
 /// grained with creating `Effect`s.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Effect {
-  /// An entity walks from Room 1 -> Room 2.
-  EntityWalksBetweenRooms(EntityId, RoomId, RoomId),
+  /// An entity walks out of a room.
+  EntityWalksOutOfRoom(EntityId, RoomId),
+  /// An entity walks into a room.
+  EntityWalksIntoRoom(EntityId, RoomId),
 }

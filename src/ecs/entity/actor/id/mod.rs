@@ -2,7 +2,7 @@ use super::super::PlayerId;
 use specs::prelude::*;
 use specs::world::Index;
 
-/// The `BeingId` type.
+/// The `ActorId` type.
 ///
 /// We do this so that we can perform some compile-time type-checking with IDs.
 #[derive(

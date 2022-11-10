@@ -4,9 +4,9 @@ macro_rules! create_player {
     use $crate::ecs::components::*;
     let player = $system_data.entities.create();
     $system_data
-      .is_a_being
-      .insert(player, IsABeing)
-      .expect("Unable to insert is-a-being for player!");
+      .is_an_actor
+      .insert(player, IsAnActor)
+      .expect("Unable to insert is-an-actor for player!");
     $system_data
       .is_a_player
       .insert(player, IsAPlayer)
@@ -15,6 +15,16 @@ macro_rules! create_player {
       .has_name
       .insert(player, HasName("Player".into()))
       .expect("Unable to insert name for player!");
+    $system_data
+      .has_initiative
+      .insert(
+        player,
+        HasInitiative {
+          current: 0,
+          refill_rate: 1,
+        },
+      )
+      .expect("Unable to insert has-initiative for player!");
     $system_data
       .has_description
       .insert(

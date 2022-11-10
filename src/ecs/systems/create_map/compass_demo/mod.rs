@@ -21,7 +21,7 @@ impl<'a> CreateMap {
       "A speckled mushroom grows out of the sodden earth, on a long stalk.",
       RoomId(spawn_room.id())
     );
-    let _goblin = create_being!(
+    let _goblin = create_actor!(
       data,
       "Goblin",
       "The goblin is short, stout, and ugly.",

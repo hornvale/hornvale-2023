@@ -1,7 +1,7 @@
 use specs::prelude::*;
 use specs::world::Index;
 
-use super::being::id::Id as BeingId;
+use super::actor::id::Id as ActorId;
 use super::object::id::Id as ObjectId;
 use super::player::id::Id as PlayerId;
 use super::room::id::Id as RoomId;
@@ -15,8 +15,8 @@ use super::room::id::Id as RoomId;
 #[repr(transparent)]
 pub struct Id(pub Index);
 
-impl From<BeingId> for Id {
-  fn from(id: BeingId) -> Self {
+impl From<ActorId> for Id {
+  fn from(id: ActorId) -> Self {
     Self(id.0)
   }
 }

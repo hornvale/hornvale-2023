@@ -1,35 +1,45 @@
 #[macro_export]
-macro_rules! create_being {
+macro_rules! create_actor {
   ($system_data: expr, $name: expr, $description: expr) => {{
     use $crate::ecs::components::*;
-    let being = $system_data.entities.create();
+    let actor = $system_data.entities.create();
     $system_data
-      .is_a_being
-      .insert(being, IsABeing)
-      .expect("Unable to insert is-a-being for entity!");
+      .is_an_actor
+      .insert(actor, IsAnActor)
+      .expect("Unable to insert is-an-actor for entity!");
+    $system_data
+      .has_initiative
+      .insert(
+        actor,
+        HasInitiative {
+          current: 0,
+          refill_rate: 1,
+        },
+      )
+      .expect("Unable to insert name for entity!");
     $system_data
       .has_name
-      .insert(being, HasName($name.into()))
+      .insert(actor, HasName($name.into()))
       .expect("Unable to insert name for entity!");
     $system_data
       .has_description
       .insert(
-        being,
+        actor,
         HasDescription {
           initial: None,
           brief: $description.into(),
         },
       )
       .expect("Unable to insert description for entity!");
-    being
+    actor
   }};
   ($system_data: expr, $name: expr, $description: expr, $in_room: expr) => {{
     use $crate::ecs::components::*;
-    let being = create_being!($system_data, $name, $description);
+    let actor = create_actor!($system_data, $name, $description);
     $system_data
       .is_in_room
-      .insert(being, IsInRoom($in_room))
+      .insert(actor, IsInRoom($in_room))
       .expect("Unable to insert is-in-room for entity!");
-    being
+    actor
   }};
 }

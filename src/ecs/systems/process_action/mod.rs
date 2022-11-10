@@ -28,8 +28,8 @@ pub struct ProcessActionData<'a> {
   pub has_description: ReadStorage<'a, HasDescription>,
   pub has_name: ReadStorage<'a, HasName>,
   pub has_passages: ReadStorage<'a, HasPassages>,
-  pub is_a_being: ReadStorage<'a, IsABeing>,
   pub is_a_player: ReadStorage<'a, IsAPlayer>,
+  pub is_an_actor: ReadStorage<'a, IsAnActor>,
   pub is_an_object: ReadStorage<'a, IsAnObject>,
   pub is_in_room: WriteStorage<'a, IsInRoom>,
 }

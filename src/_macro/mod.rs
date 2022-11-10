@@ -1,5 +1,5 @@
 #[macro_use]
-pub mod being;
+pub mod actor;
 #[macro_use]
 pub mod camera;
 #[macro_use]
