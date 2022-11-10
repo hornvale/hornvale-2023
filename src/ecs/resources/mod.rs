@@ -2,6 +2,8 @@ use rand_seeder::SipHasher;
 use rustyline_async::Readline;
 use specs::prelude::*;
 
+pub mod camera;
+pub use camera::Camera as CameraResource;
 pub mod input;
 pub use input::Input as InputResource;
 pub mod output;
@@ -19,6 +21,7 @@ pub use tile_map::TileMap as TileMapResource;
 
 pub fn insert_resources(ecs: &mut World, seed: &str) {
   let (input, stdout) = Readline::new("> ".to_owned()).unwrap();
+  ecs.insert(CameraResource(None));
   ecs.insert(InputResource(Some(input)));
   ecs.insert(OutputResource(Some(stdout)));
   ecs.insert(PlayerResource(None));

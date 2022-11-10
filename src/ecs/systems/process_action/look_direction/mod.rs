@@ -15,25 +15,31 @@ impl<'a> ProcessAction {
         match get_passage_to!(data, room, direction) {
           Some(passage) => match passage.to {
             PassageDestination::Room(destination_id) => {
-              info!("Sending event (description of indicated room).");
-              data.output_event_channel.single_write(OutputEvent {
-                string: format!("You look to the {}...", &direction.get_lowercase()),
-              });
-              let destination_room = get_entity!(data, destination_id);
-              data.output_event_channel.single_write(OutputEvent {
-                string: format_room!(data, destination_room),
-              });
+              if has_camera!(data, entity_id) {
+                info!("Sending event (description of indicated room).");
+                data.output_event_channel.single_write(OutputEvent {
+                  string: format!("You look to the {}...", &direction.get_lowercase()),
+                });
+                let destination_room = get_entity!(data, destination_id);
+                data.output_event_channel.single_write(OutputEvent {
+                  string: format_room!(data, destination_room),
+                });
+              }
             },
             _ => {
-              data.output_event_channel.single_write(OutputEvent {
-                string: "You are unable to look in that direction!".into(),
-              });
+              if has_camera!(data, entity_id) {
+                data.output_event_channel.single_write(OutputEvent {
+                  string: "You are unable to look in that direction!".into(),
+                });
+              }
             },
           },
           None => {
-            data.output_event_channel.single_write(OutputEvent {
-              string: "You are unable to look in that direction!".into(),
-            });
+            if has_camera!(data, entity_id) {
+              data.output_event_channel.single_write(OutputEvent {
+                string: "You are unable to look in that direction!".into(),
+              });
+            }
           },
         }
       }

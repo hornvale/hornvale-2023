@@ -8,7 +8,7 @@ use crate::action::Action;
 
 mod go_direction;
 mod look_around;
-mod look_at_object;
+mod look_at_entity;
 mod look_direction;
 
 pub struct ProcessAction {
@@ -21,12 +21,15 @@ impl ProcessAction {}
 pub struct ProcessActionData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Read<'a, PlayerResource>,
+  pub camera_resource: Read<'a, CameraResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
   pub has_description: ReadStorage<'a, HasDescription>,
-  pub has_passages: ReadStorage<'a, HasPassages>,
   pub has_name: ReadStorage<'a, HasName>,
+  pub has_passages: ReadStorage<'a, HasPassages>,
+  pub is_a_being: ReadStorage<'a, IsABeing>,
+  pub is_a_player: ReadStorage<'a, IsAPlayer>,
   pub is_an_object: ReadStorage<'a, IsAnObject>,
   pub is_in_room: WriteStorage<'a, IsInRoom>,
 }
@@ -53,10 +56,8 @@ impl<'a> System<'a> for ProcessAction {
       use Action::*;
       match action {
         GoDirection { .. } => self.process_go_direction(action, &mut data),
-        LookAround { .. } => {
-          self.process_look_around(action, &mut data);
-        },
-        LookAtObject { .. } => self.process_look_at_object(action, &mut data),
+        LookAround { .. } => self.process_look_around(action, &mut data),
+        LookAtEntity { .. } => self.process_look_at_entity(action, &mut data),
         LookDirection { .. } => self.process_look_direction(action, &mut data),
       }
     }

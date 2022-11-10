@@ -41,11 +41,11 @@ impl<'a> ProcessInput {
         })
       },
       ("look" | "l", _) => {
-        if let Ok(object) = self.match_visible_object(&words[1..].join(" "), data) {
+        if let Ok(target_entity) = self.match_visible_entity(&words[1..].join(" "), data) {
           debug!("Matched command LookAtObject");
-          Ok(LookAtObject {
+          Ok(LookAtEntity {
             player_id,
-            object_id: ObjectId(object.id()),
+            target_entity_id: EntityId(target_entity.id()),
             original_input,
           })
         } else {

@@ -20,15 +20,19 @@ impl<'a> ProcessAction {
               });
             },
             _ => {
-              data.output_event_channel.single_write(OutputEvent {
-                string: "You are unable to move in that direction!".into(),
-              });
+              if has_camera!(data, entity_id) {
+                data.output_event_channel.single_write(OutputEvent {
+                  string: "You are unable to move in that direction!".into(),
+                });
+              }
             },
           },
           None => {
-            data.output_event_channel.single_write(OutputEvent {
-              string: "You are unable to move in that direction!".into(),
-            });
+            if has_camera!(data, entity_id) {
+              data.output_event_channel.single_write(OutputEvent {
+                string: "You are unable to move in that direction!".into(),
+              });
+            }
           },
         }
       }

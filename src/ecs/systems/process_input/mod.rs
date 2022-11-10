@@ -7,7 +7,7 @@ use super::super::event_channels::*;
 use super::super::resources::*;
 
 mod get_command;
-mod match_visible_object;
+mod match_visible_entity;
 
 pub struct ProcessInput {
   pub reader_id: ReaderId<InputEvent>,
@@ -20,14 +20,15 @@ pub struct ProcessInputData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Read<'a, PlayerResource>,
   pub output_resource: Write<'a, OutputResource>,
+  pub command_event_channel: Write<'a, EventChannel<CommandEvent>>,
+  pub input_event_channel: Read<'a, EventChannel<InputEvent>>,
+  pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
   pub has_description: ReadStorage<'a, HasDescription>,
-  pub has_passages: ReadStorage<'a, HasPassages>,
   pub has_name: ReadStorage<'a, HasName>,
+  pub has_passages: ReadStorage<'a, HasPassages>,
+  pub is_a_player: ReadStorage<'a, IsAPlayer>,
   pub is_an_object: ReadStorage<'a, IsAnObject>,
   pub is_in_room: ReadStorage<'a, IsInRoom>,
-  pub input_event_channel: Read<'a, EventChannel<InputEvent>>,
-  pub command_event_channel: Write<'a, EventChannel<CommandEvent>>,
-  pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
 }
 
 impl<'a> System<'a> for ProcessInput {
@@ -46,11 +47,9 @@ impl<'a> System<'a> for ProcessInput {
     }
     info!("Processing {} input event(s)...", event_count);
     for event in input_events.iter() {
-      /* Debugging
       data.output_event_channel.single_write(OutputEvent {
-        string: format!("> {}", event.input.trim()),
+        string: format!("> {}\n\n", event.input.trim()),
       });
-      */
       if let Ok(command) = self.get_command(&event.input, &mut data) {
         data.command_event_channel.single_write(CommandEvent { command });
       } else {

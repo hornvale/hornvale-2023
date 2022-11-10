@@ -1,7 +1,7 @@
 use anyhow::Error as AnyError;
 
 use crate::action::Action;
-use crate::ecs::entity::ObjectId;
+use crate::ecs::entity::EntityId;
 use crate::ecs::entity::PlayerId;
 use crate::map::Direction;
 
@@ -46,9 +46,9 @@ pub enum Command {
     player_id: PlayerId,
     original_input: String,
   },
-  LookAtObject {
+  LookAtEntity {
     player_id: PlayerId,
-    object_id: ObjectId,
+    target_entity_id: EntityId,
     original_input: String,
   },
   LookDirection {
@@ -71,25 +71,21 @@ impl Command {
         entity_id: (*player_id).into(),
       }),
       LookDirection {
-        player_id,
-        ref direction,
-        ..
+        player_id, direction, ..
       } => Ok(Action::LookDirection {
         entity_id: (*player_id).into(),
         direction: *direction,
       }),
-      LookAtObject {
+      LookAtEntity {
         player_id,
-        ref object_id,
+        target_entity_id,
         ..
-      } => Ok(Action::LookAtObject {
+      } => Ok(Action::LookAtEntity {
         entity_id: (*player_id).into(),
-        object_id: *object_id,
+        target_entity_id: *target_entity_id,
       }),
       GoDirection {
-        player_id,
-        ref direction,
-        ..
+        player_id, direction, ..
       } => Ok(Action::GoDirection {
         entity_id: (*player_id).into(),
         direction: *direction,

@@ -1,5 +1,4 @@
 use crate::ecs::entity::EntityId;
-use crate::ecs::entity::ObjectId;
 use crate::map::Direction;
 
 /// The `Action` enum.
@@ -32,7 +31,10 @@ pub enum Action {
   /// data of the room.
   LookAround { entity_id: EntityId },
   /// Look at a specific object, either on the actor or in their environment.
-  LookAtObject { entity_id: EntityId, object_id: ObjectId },
+  LookAtEntity {
+    entity_id: EntityId,
+    target_entity_id: EntityId,
+  },
   /// Look through the passage in the specified direction.  Will not work with
   /// closed doors.  Certain other passageways may prevent the action as well.
   LookDirection { entity_id: EntityId, direction: Direction },

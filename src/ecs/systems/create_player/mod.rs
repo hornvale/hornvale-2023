@@ -10,8 +10,11 @@ pub struct CreatePlayer {}
 pub struct CreatePlayerData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Write<'a, PlayerResource>,
-  pub has_name: WriteStorage<'a, HasName>,
+  pub camera_resource: Write<'a, CameraResource>,
   pub has_description: WriteStorage<'a, HasDescription>,
+  pub has_name: WriteStorage<'a, HasName>,
+  pub is_a_being: WriteStorage<'a, IsABeing>,
+  pub is_a_player: WriteStorage<'a, IsAPlayer>,
 }
 
 // This system should normally only be run at startup.
@@ -21,22 +24,9 @@ impl<'a> System<'a> for CreatePlayer {
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
     if data.player_resource.0.is_none() {
-      let player = data.entities.create();
-      data
-        .has_name
-        .insert(player, HasName("Player".into()))
-        .expect("Unable to insert name for player!");
-      data
-        .has_description
-        .insert(
-          player,
-          HasDescription {
-            initial: Some("You're an absolutely unexceptional specimen of whatever species you are.".to_string()),
-            brief: "It's you, you idiot!".to_string(),
-          },
-        )
-        .expect("Unable to insert description for player!");
+      let player = create_player!(data);
       data.player_resource.0 = Some(PlayerId(player.id()));
+      data.camera_resource.0 = Some(EntityId(player.id()));
     }
   }
 }

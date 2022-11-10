@@ -23,6 +23,7 @@ pub struct CreateMapData<'a> {
   pub has_description: WriteStorage<'a, HasDescription>,
   pub has_passages: WriteStorage<'a, HasPassages>,
   pub has_name: WriteStorage<'a, HasName>,
+  pub is_a_being: WriteStorage<'a, IsABeing>,
   pub is_a_room: WriteStorage<'a, IsARoom>,
   pub is_an_object: WriteStorage<'a, IsAnObject>,
   pub is_in_room: WriteStorage<'a, IsInRoom>,

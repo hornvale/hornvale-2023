@@ -1,6 +1,8 @@
 #[macro_use]
 pub mod being;
 #[macro_use]
+pub mod camera;
+#[macro_use]
 pub mod entity;
 #[macro_use]
 pub mod format;

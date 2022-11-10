@@ -51,7 +51,22 @@ macro_rules! format_room {
         .join()
         .filter(|(_entity, is_in_room, _is_an_object, _has_description)| is_in_room.0 == room_id)
       {
-        string.push_str(format!("{}\n", has_description.brief).as_str());
+        string.push_str(format!("<fg_ext180>{}<reset>\n", has_description.brief).as_str());
+      }
+    }
+    {
+      let room_id = RoomId($room.id());
+      for (_entities, _is_in_room, _is_a_being, has_description, _is_a_player) in (
+        &$system_data.entities,
+        &$system_data.is_in_room,
+        &$system_data.is_a_being,
+        &$system_data.has_description,
+        !&$system_data.is_a_player,
+      )
+        .join()
+        .filter(|(_entity, is_in_room, _is_a_being, _has_description, _)| is_in_room.0 == room_id)
+      {
+        string.push_str(format!("<fg_ext162>{}<reset>\n", has_description.brief).as_str());
       }
     }
     if let Some(passages) = get_passages!($system_data, $room) {
