@@ -19,7 +19,6 @@ pub struct Node {
 
 impl Node {
   /// Constructor for start node.
-
   pub fn new_start(state: State, goal: State) -> Self {
     let parent_state = None;
     let action_name = None;
@@ -29,7 +28,6 @@ impl Node {
   }
 
   /// Constructor.
-
   pub fn new(state: State, parent_state: Option<State>, goal: State, action_name: Option<String>, g: usize) -> Self {
     let h = state.get_distance(&goal);
     let f = g + h;

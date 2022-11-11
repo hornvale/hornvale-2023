@@ -4,7 +4,6 @@
 /// * `mass` - Host body mass in Msol.
 ///
 /// Returns distance in AU.
-
 pub fn get_approximate_innermost_orbit(mass: f64) -> f64 {
   0.01 * mass
 }
@@ -15,7 +14,6 @@ pub fn get_approximate_innermost_orbit(mass: f64) -> f64 {
 /// * `mass` - Host body mass in Msol.
 ///
 /// Returns distance in AU.
-
 pub fn get_approximate_outermost_orbit(mass: f64) -> f64 {
   40.0 * mass
 }

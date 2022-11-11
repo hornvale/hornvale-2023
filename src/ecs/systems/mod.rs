@@ -3,22 +3,24 @@ use specs::shrev::EventChannel;
 
 use super::event_channels::*;
 
-pub mod create_map;
-pub use create_map::CreateMap as CreateMapSystem;
-pub mod create_player;
-pub use create_player::CreatePlayer as CreatePlayerSystem;
-pub mod experiment;
-pub use experiment::Experiment as ExperimentSystem;
 pub mod action_processor;
 pub use action_processor::ActionProcessor as ActionProcessorSystem;
 pub mod command_processor;
 pub use command_processor::CommandProcessor as CommandProcessorSystem;
+pub mod create_map;
+pub use create_map::CreateMap as CreateMapSystem;
+pub mod create_player;
+pub use create_player::CreatePlayer as CreatePlayerSystem;
 pub mod effect_processor;
 pub use effect_processor::EffectProcessor as EffectProcessorSystem;
+pub mod experiment;
+pub use experiment::Experiment as ExperimentSystem;
 pub mod initiative_dispenser;
 pub use initiative_dispenser::InitiativeDispenser as InitiativeDispenserSystem;
 pub mod input_processor;
 pub use input_processor::InputProcessor as InputProcessorSystem;
+pub mod intent_processor;
+pub use intent_processor::IntentProcessor as IntentProcessorSystem;
 pub mod output_processor;
 pub use output_processor::OutputProcessor as OutputProcessorSystem;
 pub mod tick;
@@ -50,6 +52,7 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     let reader_id = ecs.fetch_mut::<EventChannel<EffectEvent>>().register_reader();
     EffectProcessorSystem { reader_id }
   };
+  let intent_processor_system = IntentProcessorSystem {};
   let experiment_system = ExperimentSystem {};
   let initiative_dispenser_system = InitiativeDispenserSystem {};
   let tick_system = TickSystem {};
@@ -58,6 +61,7 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     .with(initiative_dispenser_system, "initiative_dispenser", &[])
     .with(input_processor_system, "input_processor", &[])
     .with(command_processor_system, "command_processor", &[])
+    .with(intent_processor_system, "intent_processor", &[])
     .with(action_processor_system, "action_processor", &[])
     .with(effect_processor_system, "effect_processor", &[])
     .with(output_processor_system, "output_processor", &[])

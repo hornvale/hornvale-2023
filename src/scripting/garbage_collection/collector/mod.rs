@@ -30,7 +30,6 @@ pub struct Collector {
 
 impl Collector {
   /// Constructor.
-
   pub fn new() -> Self {
     let bytes_allocated = 0;
     let next_threshold = 1024 * 1024;
@@ -50,7 +49,6 @@ impl Collector {
   }
 
   /// Allocate a chunk of memory.
-
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
     let repr = format!("{:?}", object).chars().into_iter().take(32).collect::<String>();
     let size = object.get_size() + size_of::<ObjectHeader>();
@@ -90,7 +88,6 @@ impl Collector {
   }
 
   /// Eliminate duplicate string objects.
-
   pub fn intern(&mut self, name: String) -> Reference<String> {
     let result = if let Some(&value) = self.strings.get(&name) {
       value
@@ -105,7 +102,6 @@ impl Collector {
   }
 
   /// Dereference.
-
   pub fn deref<T: Trace + 'static>(&self, reference: Reference<T>) -> &T {
     let result = self.objects[reference.index]
       .as_ref()
@@ -119,7 +115,6 @@ impl Collector {
   }
 
   /// Dereference mutably.
-
   pub fn deref_mut<T: Trace + 'static>(&mut self, reference: Reference<T>) -> &mut T {
     let result = self.objects[reference.index]
       .as_mut()
@@ -133,7 +128,6 @@ impl Collector {
   }
 
   /// Free up memory that was allocated for a newly-released object.
-
   pub fn free(&mut self, index: usize) {
     if let Some(old) = self.objects[index].take() {
       debug!("free (id: {}, size: {})", index, old.size);
@@ -176,7 +170,6 @@ impl Collector {
   /// object is ever collected.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn collect_garbage(&mut self) {
     let before = self.bytes_allocated;
 
@@ -204,7 +197,6 @@ impl Collector {
   /// entire wavefront forward.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn trace_references(&mut self) {
     debug!("tracing references");
     while let Some(index) = self.gray_stack.pop_front() {
@@ -220,7 +212,6 @@ impl Collector {
   /// gray stack.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn blacken_object(&mut self, index: usize) {
     debug!("blacken(id: {})", index);
     // Hack to trick the borrow checker to be able to call trace on an element.
@@ -240,7 +231,6 @@ impl Collector {
   ///
   /// For heap-allocated values, that will forward to a type-specific implemen-
   /// tation of `trace()`.
-
   pub fn mark_value(&mut self, value: Value) {
     value.trace(self);
   }
@@ -250,7 +240,6 @@ impl Collector {
   /// This indicates that the object is reachable and should not be collected,
   /// but also that we have not yet traced through it to determine which other
   /// objects it references.
-
   pub fn mark_object<T: Trace>(&mut self, reference: Reference<T>) {
     if let Some(object) = self.objects[reference.index].as_mut() {
       // If the object is already marked, we don’t mark it again and thus don’t
@@ -278,7 +267,6 @@ impl Collector {
   ///
   /// Don't forget to mark the key strings as well, since they too are managed
   /// by our garbage collection.
-
   pub fn mark_table(&mut self, table: &Table) {
     for (&key, &value) in table {
       self.mark_object(key);
@@ -305,7 +293,6 @@ impl Collector {
   /// waiting too long.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn should_collect(&self) -> bool {
     self.bytes_allocated > self.next_threshold
   }
@@ -323,7 +310,6 @@ impl Collector {
   /// reclaim them.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn sweep(&mut self) {
     debug!("sweeping");
     for i in 0..self.objects.len() {
@@ -365,7 +351,6 @@ impl Collector {
   /// is clearing out any dangling pointers for strings that are freed.
   ///
   /// @see https://craftinginterpreters.com/garbage-collection.html
-
   pub fn remove_white_strings(&mut self) {
     debug!("removing white strings");
     let strings = &mut self.strings;

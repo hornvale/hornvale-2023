@@ -18,7 +18,7 @@ macro_rules! create_actor {
         actor,
         HasInitiative(Initiative {
           current: 0,
-          increment: 8,
+          increment: 1,
         }),
       )
       .expect("Unable to insert has-initiative for entity!");

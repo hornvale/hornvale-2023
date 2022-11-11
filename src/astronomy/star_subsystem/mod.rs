@@ -19,7 +19,6 @@ pub enum StarSubsystem {
 
 impl StarSubsystem {
   /// Indicate whether this star is capable of supporting conventional life.
-
   pub fn check_habitable(&self) -> Result<(), Error> {
     use StarSubsystem::*;
 
@@ -30,7 +29,6 @@ impl StarSubsystem {
   }
 
   /// Indicate whether this star is capable of supporting conventional life.
-
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,
@@ -41,7 +39,6 @@ impl StarSubsystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-
   pub fn get_stellar_mass(&self) -> f64 {
     use StarSubsystem::*;
 
@@ -52,7 +49,6 @@ impl StarSubsystem {
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-
   pub fn get_stellar_count(&self) -> u8 {
     use StarSubsystem::*;
 

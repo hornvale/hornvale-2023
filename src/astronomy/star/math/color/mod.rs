@@ -11,7 +11,6 @@ use crate::astronomy::star::math::temperature::star_mass_to_temperature;
 /// from which we are observing the star.
 ///
 /// This came from StackOverflow: https://stackoverflow.com/q/21977786
-
 pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);

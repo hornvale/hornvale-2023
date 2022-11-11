@@ -69,10 +69,6 @@ impl Game {
   /// Run.
   pub async fn run(&mut self) -> Result<(), Error> {
     run_initial_systems(&mut self.ecs);
-    // This is how we read input.
-    let mut input_resource = self.ecs.write_resource::<InputResource>();
-    // Probably move to a prompt system?  Or not?  IDK.
-    let stdin = input_resource.0.as_mut().unwrap();
     // If we need to print without sending it through the whole thing.
     let _stdout = self.output.clone();
     // It'd be interesting to store this in a resource and possibly modify it
@@ -86,6 +82,13 @@ impl Game {
     let mut kilo_tick_timer = stream::interval(Duration::from_millis(1000 * TICK_INTERVAL));
     // Main game loop, such as it is.
     loop {
+      // Maintain after every tick.  This enables the use of the lazy systems,
+      // which should make it easier to have simple, concise systems.
+      self.ecs.maintain();
+      // This is how we read input.
+      let mut input_resource = self.ecs.write_resource::<InputResource>();
+      // Probably move to a prompt system?  Or not?  IDK.
+      let stdin = input_resource.0.as_mut().unwrap();
       // Select the next future to complete.
       futures::select! {
         _ = tick_timer.next().fuse() => {

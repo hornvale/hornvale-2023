@@ -18,7 +18,6 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable host star.
-
   pub fn habitable() -> Self {
     let star_constraints = Some(StarConstraints::habitable());
     let close_binary_star_constraints = Some(CloseBinaryStarConstraints::habitable());
@@ -30,7 +29,6 @@ impl Constraints {
   }
 
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<HostStar, Error> {
     use HostStar::*;
     let is_solitary: bool = rng.gen_range(0.0..=1.0) > BINARY_STAR_PROBABILITY;

@@ -34,7 +34,6 @@ pub struct Function {
 
 impl Function {
   /// Constructor.
-
   pub fn new(name: Reference<String>) -> Self {
     let arity = 0;
     let chunk = Chunk::default();

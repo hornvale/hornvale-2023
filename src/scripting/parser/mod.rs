@@ -58,7 +58,6 @@ pub struct Parser<'source> {
 
 impl<'source> Parser<'source> {
   /// Constructor.
-
   pub fn new(scanner: Scanner<'source>, garbage_collector: &'source mut GarbageCollector) -> Parser<'source> {
     let current = None;
     let previous = None;
@@ -85,7 +84,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Compile!
-
   pub fn compile(mut self) -> Result<Reference<Function>, Error> {
     self.advance()?;
     let mut first_error = None;
@@ -103,7 +101,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Advance!
-
   pub fn advance(&mut self) -> Result<(), Error> {
     self.previous = self.current;
     loop {
@@ -118,7 +115,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Consume.
-
   pub fn consume(&mut self, expected: TokenType, message: &str) -> Result<(), Error> {
     let current_type = self.current.unwrap().r#type;
 
@@ -132,7 +128,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Grouping.
-
   pub fn parse_grouping(&mut self, _can_assign: bool) -> Result<(), Error> {
     self.parse_expression()?;
     self.consume(TokenType::RightParenthesis, "expected ')' after expression")?;
@@ -141,7 +136,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Declaration.
-
   pub fn parse_declaration(&mut self) -> Result<(), Error> {
     if self.r#match(TokenType::Class)? {
       self.parse_class_declaration()?;
@@ -160,7 +154,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Class declaration.
-
   pub fn parse_class_declaration(&mut self) -> Result<(), Error> {
     self.consume(TokenType::Identifier, "Expect class name.")?;
     let class_name = self.previous.unwrap();
@@ -205,7 +198,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Method declaration.
-
   pub fn parse_method_declaration(&mut self) -> Result<(), Error> {
     self.consume(TokenType::Identifier, "Expect method name.")?;
     let constant = self.get_identifier_constant(self.previous.unwrap())?;
@@ -221,7 +213,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Function declaration.
-
   pub fn parse_function_declaration(&mut self) -> Result<(), Error> {
     let function_index = self.parse_variable_identifier("expected a function name")?;
 
@@ -233,7 +224,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Variable declaration.
-
   pub fn parse_variable_declaration(&mut self) -> Result<(), Error> {
     let variable_index = self.parse_variable_identifier("Expect variable name.")?;
 
@@ -249,7 +239,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Statement.
-
   pub fn parse_statement(&mut self) -> Result<(), Error> {
     if self.r#match(TokenType::Print)? {
       self.parse_print_statement()?;
@@ -273,7 +262,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Begin a scope.
-
   pub fn begin_scope(&mut self) -> Result<(), Error> {
     self.compiler.depth += 1;
 
@@ -281,7 +269,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Function.
-
   pub fn parse_function(&mut self, function_type: FunctionType) -> Result<(), Error> {
     self.push_compiler(function_type)?;
     self.begin_scope()?;
@@ -312,19 +299,16 @@ impl<'source> Parser<'source> {
   }
 
   /// Encountered an error at the previous token.
-
   pub fn did_encounter_error(&mut self, message: &str) {
     self.did_encounter_error_at_token(self.previous.unwrap(), message);
   }
 
   /// Encountered an error at the current token.
-
   pub fn did_encounter_error_at_current(&mut self, message: &str) {
     self.did_encounter_error_at_token(self.current.unwrap(), message);
   }
 
   /// Encountered an error.
-
   pub fn did_encounter_error_at_token(&mut self, token: Token, message: &str) {
     if self.suppress_new_errors {
       return;
@@ -342,7 +326,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Block.
-
   pub fn parse_block(&mut self) -> Result<(), Error> {
     while !self.check(TokenType::RightBrace) && !self.check(TokenType::Eof) {
       self.parse_declaration()?;
@@ -353,7 +336,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse `super`.
-
   pub fn parse_super(&mut self, _can_assign: bool) -> Result<(), Error> {
     if let Some(current_class) = self.class_compiler.as_ref() {
       if !current_class.has_superclass {
@@ -381,7 +363,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Dots for method calls, etc.
-
   pub fn parse_dot(&mut self, can_assign: bool) -> Result<(), Error> {
     self.consume(TokenType::Identifier, "Expect property name after '.'.")?;
     let name = self.get_identifier_constant(self.previous.unwrap())?;
@@ -399,7 +380,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse `this`.
-
   pub fn parse_this(&mut self, _can_assign: bool) -> Result<(), Error> {
     if self.class_compiler.is_none() {
       self.did_encounter_error("Can't use 'this' outside of a class.");
@@ -411,7 +391,6 @@ impl<'source> Parser<'source> {
   }
 
   /// End a scope.
-
   pub fn end_scope(&mut self) -> Result<(), Error> {
     self.compiler.depth -= 1;
     for i in (0..self.compiler.locals.len()).rev() {
@@ -429,7 +408,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Print statement.
-
   pub fn parse_print_statement(&mut self) -> Result<(), Error> {
     self.parse_expression()?;
     self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
@@ -439,7 +417,6 @@ impl<'source> Parser<'source> {
   }
 
   /// If statement.
-
   pub fn parse_if_statement(&mut self) -> Result<(), Error> {
     self.r#match(TokenType::LeftParenthesis)?;
     self.parse_expression()?;
@@ -461,7 +438,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Return statement.
-
   pub fn parse_return_statement(&mut self) -> Result<(), Error> {
     if let FunctionType::Script = self.compiler.function_type {
       // Not going to block `return` in top-level code ATM.
@@ -487,7 +463,6 @@ impl<'source> Parser<'source> {
   /// which indicates how many instructions have been added since then.
   /// So we should take the difference of the two indices and add one so that
   /// we jump cleanly to the next instruction.
-
   pub fn patch_jump(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
     let offset = latest - index;
@@ -502,7 +477,6 @@ impl<'source> Parser<'source> {
   }
 
   /// While statement.
-
   pub fn parse_while_statement(&mut self) -> Result<(), Error> {
     let loop_start = self.compiler.function.chunk.instructions.instructions.len();
     self.r#match(TokenType::LeftParenthesis)?;
@@ -526,7 +500,6 @@ impl<'source> Parser<'source> {
   /// which indicates how many instructions have been added since then.
   /// So we should take the difference of the two indices so that we jump back
   /// to when the condition is checked.
-
   pub fn emit_loop(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
     let offset = (latest - index) + 2;
@@ -537,7 +510,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse a function call.
-
   pub fn parse_call(&mut self, _can_assign: bool) -> Result<(), Error> {
     let argument_count = self.parse_argument_list()?;
 
@@ -547,7 +519,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse the argument length.
-
   pub fn parse_argument_list(&mut self) -> Result<u8, Error> {
     let mut count: usize = 0;
 
@@ -571,7 +542,6 @@ impl<'source> Parser<'source> {
   }
 
   /// For statement.
-
   pub fn parse_for_statement(&mut self) -> Result<(), Error> {
     self.begin_scope()?;
     self.consume(TokenType::LeftParenthesis, "expected '(' after 'for'.")?;
@@ -621,7 +591,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Expression statement.
-
   pub fn parse_expression_statement(&mut self) -> Result<(), Error> {
     self.parse_expression()?;
     self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
@@ -631,7 +600,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Expression.
-
   pub fn parse_expression(&mut self) -> Result<(), Error> {
     self.parse_precedence(Precedence::Assignment)?;
 
@@ -639,7 +607,6 @@ impl<'source> Parser<'source> {
   }
 
   /// A number!
-
   #[inline]
   pub fn parse_number(&mut self, _can_assign: bool) -> Result<(), Error> {
     let previous = self.previous.unwrap();
@@ -652,7 +619,6 @@ impl<'source> Parser<'source> {
   }
 
   /// A string!
-
   #[inline]
   pub fn parse_string(&mut self, _can_assign: bool) -> Result<(), Error> {
     let previous = self.previous.unwrap();
@@ -665,7 +631,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Intern a string from the source.
-
   #[inline]
   pub fn intern_token(&mut self, token: &Token) -> Result<Reference<String>, Error> {
     let string = token.lexeme;
@@ -675,7 +640,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse a variable.
-
   pub fn parse_variable(&mut self, can_assign: bool) -> Result<(), Error> {
     self.did_name_variable(self.previous.unwrap(), can_assign)?;
 
@@ -683,7 +647,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse an And.
-
   pub fn parse_and(&mut self, _can_assign: bool) -> Result<(), Error> {
     let end_jump = self.compiler.function.chunk.instructions.instructions.len();
     self.emit_instruction(Instruction::JumpIfFalse(u16::MAX))?;
@@ -695,7 +658,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse an Or.
-
   pub fn parse_or(&mut self, _can_assign: bool) -> Result<(), Error> {
     let else_jump = self.compiler.function.chunk.instructions.instructions.len();
     self.emit_instruction(Instruction::JumpIfFalse(u16::MAX))?;
@@ -710,7 +672,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse a variable identifier.
-
   pub fn parse_variable_identifier(&mut self, message: &str) -> Result<u16, Error> {
     self.consume(TokenType::Identifier, message)?;
     self.declare_variable()?;
@@ -723,7 +684,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Binary operator.
-
   pub fn parse_binary(&mut self, _can_assign: bool) -> Result<(), Error> {
     let operator_type = self.previous.unwrap().r#type;
     let rule = self.get_rule(&operator_type);
@@ -747,7 +707,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Unary operator.
-
   pub fn parse_unary(&mut self, _can_assign: bool) -> Result<(), Error> {
     let operator_type = self.previous.unwrap().r#type;
     self.parse_precedence(Precedence::Unary)?;
@@ -762,7 +721,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Literal.
-
   pub fn parse_literal(&mut self, _can_assign: bool) -> Result<(), Error> {
     let token_type = self.previous.unwrap().r#type;
     use TokenType::*;
@@ -777,7 +735,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Rejoin society.
-
   pub fn synchronize(&mut self) -> Result<(), Error> {
     self.suppress_new_errors = false;
     while self.previous.unwrap().r#type != TokenType::Eof {
@@ -802,7 +759,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Declare a variable.
-
   #[inline]
   pub fn declare_variable(&mut self) -> Result<(), Error> {
     if self.compiler.depth == 0 {
@@ -819,7 +775,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Add a local variable.
-
   pub fn add_local(&mut self, token: Token<'source>) -> Result<(), Error> {
     self.compiler.locals.push(Local::new(token, -1));
 
@@ -827,7 +782,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Define a variable.
-
   #[inline]
   pub fn define_variable(&mut self, index: u16) -> Result<(), Error> {
     if self.compiler.depth > 0 {
@@ -840,7 +794,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Mark the last global as initialized.
-
   pub fn mark_initialized(&mut self) -> Result<(), Error> {
     if self.compiler.depth == 0 {
       return Ok(());
@@ -853,7 +806,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Get an identifier constant.
-
   #[inline]
   pub fn get_identifier_constant(&mut self, token: Token) -> Result<u16, Error> {
     let reference = self.intern_token(&token)?;
@@ -864,7 +816,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Switch to a new compiler.
-
   pub fn push_compiler(&mut self, function_type: FunctionType) -> Result<(), Error> {
     let function_name = self.intern_token(&self.previous.unwrap())?;
     let new_compiler = Box::new(Compiler::new(function_name, function_type));
@@ -875,7 +826,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Pop the last compiler.
-
   pub fn pop_compiler(&mut self) -> Result<Function, Error> {
     self.emit_return()?;
     let result = match self.compiler.enclosing.take() {
@@ -892,7 +842,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Create a constant.
-
   #[inline]
   pub fn make_constant(&mut self, value: Value) -> Result<u16, Error> {
     self.compiler.function.chunk.constants.push(value)?;
@@ -902,7 +851,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Match current token.
-
   pub fn r#match(&mut self, token_type: TokenType) -> Result<bool, Error> {
     if !self.check(token_type) {
       return Ok(false);
@@ -914,13 +862,11 @@ impl<'source> Parser<'source> {
   }
 
   /// Check type of current token.
-
   pub fn check(&mut self, token_type: TokenType) -> bool {
     self.current.is_some() && self.current.unwrap().r#type == token_type
   }
 
   /// Emit a constant.
-
   #[inline]
   pub fn emit_constant(&mut self, value: Value) -> Result<(), Error> {
     let instruction = self.compiler.function.chunk.constants.push(value)?;
@@ -930,7 +876,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Emit an instruction.
-
   #[inline]
   pub fn emit_instruction(&mut self, instruction: Instruction) -> Result<(), Error> {
     self
@@ -944,7 +889,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Conclude.
-
   pub fn emit_return(&mut self) -> Result<(), Error> {
     match self.compiler.function_type {
       FunctionType::Initializer => self.emit_instruction(Instruction::GetLocal(0))?,
@@ -956,7 +900,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Handle when we named a variable.
-
   pub fn did_name_variable(&mut self, name: Token, can_assign: bool) -> Result<(), Error> {
     let get_op;
     let set_op;
@@ -982,7 +925,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Parse precedence.
-
   pub fn parse_precedence(&mut self, precedence: Precedence) -> Result<(), Error> {
     self.advance()?;
     let previous_rule = self.get_previous_rule().unwrap();
@@ -1009,7 +951,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Is this current operation lower precedence?
-
   pub fn is_lower_precedence(&self, precedence: Precedence) -> bool {
     let current_precedence = self.get_current_rule().unwrap().precedence;
 
@@ -1017,7 +958,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Get the previous rule.
-
   pub fn get_previous_rule(&self) -> Option<Rule<'source>> {
     let result = match self.previous {
       None => None,
@@ -1028,7 +968,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Get the current rule.
-
   pub fn get_current_rule(&self) -> Option<Rule<'source>> {
     let result = match self.current {
       None => None,
@@ -1039,7 +978,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Get a rule.
-
   pub fn get_rule(&self, token_type: &TokenType) -> Option<Rule<'source>> {
     let result = self.rules.rules.get(token_type).cloned();
 
@@ -1047,7 +985,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Resolve a local reference.
-
   pub fn resolve_local(&mut self, token: Token) -> Option<u16> {
     let result = self.compiler.resolve_local(token, &mut self.resolver_errors);
     while let Some(error) = self.resolver_errors.pop() {
@@ -1057,7 +994,6 @@ impl<'source> Parser<'source> {
   }
 
   /// Resolve an upvalue.
-
   pub fn resolve_upvalue(&mut self, token: Token) -> Option<u16> {
     let result = self.compiler.resolve_upvalue(token, &mut self.resolver_errors);
     while let Some(error) = self.resolver_errors.pop() {

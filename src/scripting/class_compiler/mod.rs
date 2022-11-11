@@ -9,7 +9,6 @@ pub struct ClassCompiler {
 
 impl ClassCompiler {
   /// Constructor.
-
   pub fn new(enclosing: Option<Box<ClassCompiler>>) -> Box<Self> {
     let has_superclass = false;
     let result = ClassCompiler {

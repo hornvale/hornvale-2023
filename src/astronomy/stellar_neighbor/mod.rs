@@ -26,13 +26,11 @@ impl StellarNeighbor {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-
   pub fn get_stellar_mass(&self) -> f64 {
     self.star_system.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-
   pub fn get_stellar_count(&self) -> u8 {
     self.star_system.get_stellar_count()
   }

@@ -105,7 +105,6 @@ impl TerrestrialPlanet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-
   pub fn check_habitable(&self) -> Result<(), Error> {
     {
       if self.equilibrium_temperature <= MINIMUM_HABITABLE_TEMPERATURE {
@@ -139,7 +138,6 @@ impl TerrestrialPlanet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,

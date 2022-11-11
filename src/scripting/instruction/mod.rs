@@ -90,7 +90,6 @@ pub enum Instruction {
 
 impl Instruction {
   /// Show the disassembled version of the instruction.
-
   pub fn dump<W: Write>(
     &self,
     index: usize,

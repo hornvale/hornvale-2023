@@ -35,7 +35,6 @@ pub fn lsol_to_watts(lsol: f64) -> f64 {
 }
 
 /// Get the luminosity of a main-sequence star in Lsol based on its Msol.
-
 pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
   if mass < MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);

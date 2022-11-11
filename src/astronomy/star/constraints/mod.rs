@@ -31,7 +31,6 @@ impl Constraints {
   }
 
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<Star, Error> {
     let mass = match self.make_habitable {
       true => get_random_habitable_stellar_mass(rng),

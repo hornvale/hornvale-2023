@@ -20,7 +20,6 @@ impl Trace for String {
   }
 
   /// Strings cannot reference other objects, so this part is easy.
-
   fn trace(&self, _garbage_collector: &mut Collector) {}
 
   fn as_any(&self) -> &dyn Any {

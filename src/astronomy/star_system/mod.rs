@@ -28,25 +28,21 @@ impl StarSystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-
   pub fn get_stellar_mass(&self) -> f64 {
     self.star_subsystem.get_stellar_mass()
   }
 
   /// Retrieve or calculate the total number of stars in the system.
-
   pub fn get_stellar_count(&self) -> u8 {
     self.star_subsystem.get_stellar_count()
   }
 
   /// Indicate whether this star system is capable of supporting conventional life.
-
   pub fn check_habitable(&self) -> Result<(), Error> {
     Ok(self.star_subsystem.check_habitable()?)
   }
 
   /// Indicate whether this star system is capable of supporting conventional life.
-
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,

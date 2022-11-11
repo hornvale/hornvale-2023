@@ -4,7 +4,9 @@ use super::super::event_channels::*;
 use super::super::resources::*;
 use crate::action::Action;
 use crate::action::GoDirectionAction;
+use crate::intent::Intent;
 use crate::map::Direction;
+use crate::priority::Priority;
 use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
@@ -21,6 +23,7 @@ pub struct ExperimentData<'a> {
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub has_description: WriteStorage<'a, HasDescription>,
   pub has_initiative: WriteStorage<'a, HasInitiative>,
+  pub has_intent: WriteStorage<'a, HasIntent>,
   pub has_name: WriteStorage<'a, HasName>,
   pub has_passages: WriteStorage<'a, HasPassages>,
   pub is_a_player: WriteStorage<'a, IsAPlayer>,
@@ -36,7 +39,7 @@ impl<'a> System<'a> for Experiment {
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
-    for (entity, mut has_initiative, _, _) in (
+    for (entity, has_initiative, _, _) in (
       &data.entities,
       &mut data.has_initiative,
       &data.is_an_actor,
@@ -50,8 +53,17 @@ impl<'a> System<'a> for Experiment {
           entity_id: EntityId(entity.id()),
           direction,
         });
-        data.action_event_channel.single_write(ActionEvent { action });
-        has_initiative.0.current = 0;
+        data
+          .has_intent
+          .insert(
+            entity,
+            HasIntent(Intent {
+              action,
+              priority: Priority::Compulsory,
+              initiative_cost: 250,
+            }),
+          )
+          .unwrap();
       }
     }
   }

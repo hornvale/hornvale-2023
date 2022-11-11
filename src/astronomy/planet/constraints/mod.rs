@@ -26,7 +26,6 @@ impl Constraints {
   }
 
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar, distance: f64) -> Result<Planet, Error> {
     use Planet::*;
     let result = {

@@ -7,7 +7,6 @@ pub const NITROGEN_WEIGHT: f64 = 0.028;
 /// `equilibrium_temperature` - of the body, in Kelvin.
 /// `escape_velocity` - of the body, in Vearth.
 /// `mol_weight` - the weight of the molecule in kg/mol.
-
 pub fn get_molecule_stability(mol_weight: f64, equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
   ((3.0 * 8.3145 * (equilibrium_temperature / 288.0) * 1500.0) / mol_weight).sqrt()
     / ((escape_velocity * 11200.0) / 6.0)
@@ -17,7 +16,6 @@ pub fn get_molecule_stability(mol_weight: f64, equilibrium_temperature: f64, esc
 /// `equilibrium_temperature` - of the body, in Kelvin.
 /// `escape_velocity` - of the body, in Vearth.
 /// `mol_weight` - the weight of the molecule in kg/mol.
-
 pub fn is_molecule_stable(mol_weight: f64, equilibrium_temperature: f64, escape_velocity: f64) -> bool {
   let stability = get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity);
 

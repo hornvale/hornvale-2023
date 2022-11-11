@@ -24,7 +24,6 @@ pub struct Scanner<'source> {
 
 impl<'source> Scanner<'source> {
   /// Constructor.
-
   pub fn new(source: &'source str) -> Self {
     let start = 0;
     let current = 0;
@@ -41,7 +40,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Scan a token.
-
   pub fn scan_token(&mut self) -> Result<Token<'source>, Error> {
     self.skip_whitespace();
     self.start = self.current;
@@ -88,7 +86,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Advance one character through the source and return it.
-
   #[inline]
   pub fn advance(&mut self) -> char {
     let position = self.current;
@@ -99,13 +96,11 @@ impl<'source> Scanner<'source> {
   }
 
   /// Are we at the end of the source?
-
   pub fn is_at_end(&self) -> bool {
     self.current >= self.source.len()
   }
 
   /// Create a token based on a token type.
-
   pub fn make_token(&self, r#type: TokenType) -> Token<'source> {
     let lexeme = self.get_lexeme();
     let line_number = self.line_number;
@@ -118,13 +113,11 @@ impl<'source> Scanner<'source> {
   }
 
   /// Get the lexeme from the start and current position.
-
   pub fn get_lexeme(&self) -> &'source str {
     &self.source[self.start..self.current] as _
   }
 
   /// Does the current character match the one specified?
-
   pub fn match_current(&mut self, char: char) -> bool {
     if self.is_at_end() {
       return false;
@@ -138,7 +131,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Try to match and create a token out of a number.
-
   pub fn match_number(&mut self) -> Result<Token<'source>, Error> {
     while self.is_digit(self.peek()) {
       self.advance();
@@ -156,7 +148,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Try to match and create a token out of a string.
-
   pub fn match_string(&mut self) -> Result<Token<'source>, Error> {
     while self.peek() != '"' && !self.is_at_end() {
       if self.peek() == '\n' {
@@ -208,7 +199,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Match a single-line comment.
-
   pub fn match_line_comment(&mut self) {
     while self.peek() != '\n' && !self.is_at_end() {
       self.advance();
@@ -216,7 +206,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Match a multi-line comment.
-
   pub fn match_multiline_comment(&mut self) {
     while !(self.is_at_end() || self.peek_next() == '*' && self.peek_at_offset(2) == '/') {
       self.advance();
@@ -230,19 +219,16 @@ impl<'source> Scanner<'source> {
   }
 
   /// Peek at the current character, but don't advance.
-
   pub fn peek(&self) -> char {
     self.peek_at_offset(0)
   }
 
   /// Peek at the next character.
-
   pub fn peek_next(&self) -> char {
     self.peek_at_offset(1)
   }
 
   /// Peek at a character at a specified offset.
-
   pub fn peek_at_offset(&self, offset: usize) -> char {
     match self.current + offset >= self.source.len() {
       true => '\0',
@@ -251,7 +237,6 @@ impl<'source> Scanner<'source> {
   }
 
   /// Skip all the whitespace!
-
   pub fn skip_whitespace(&mut self) {
     loop {
       match self.peek() {

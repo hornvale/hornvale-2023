@@ -19,7 +19,6 @@ pub struct BoundMethod {
 
 impl BoundMethod {
   /// Constructor.
-
   pub fn new(receiver: Value, method: Reference<Closure>) -> Self {
     BoundMethod { receiver, method }
   }

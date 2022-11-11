@@ -38,7 +38,6 @@ pub enum Value {
 
 impl Value {
   /// Is this "falsey" or not?
-
   #[inline]
   pub fn is_falsey(&self) -> bool {
     use Value::*;
@@ -53,7 +52,6 @@ impl Value {
 
 impl Trace for Value {
   /// Format.
-
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     use Value::*;
     let result = match self {
@@ -72,13 +70,11 @@ impl Trace for Value {
     result
   }
   /// Get the size.
-
   fn get_size(&self) -> usize {
     0
   }
 
   /// Trace!
-
   fn trace(&self, garbage_collector: &mut GarbageCollector) {
     match self {
       Value::BoundMethod(value) => garbage_collector.mark_object(*value),
@@ -91,12 +87,10 @@ impl Trace for Value {
     };
   }
   /// Downcast.
-
   fn as_any(&self) -> &dyn Any {
     panic!("value should not be allocated");
   }
   /// Downcast.
-
   fn as_any_mut(&mut self) -> &mut dyn Any {
     panic!("value should not be allocated");
   }

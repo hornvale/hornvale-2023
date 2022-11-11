@@ -18,7 +18,6 @@ pub struct Upvalue {
 
 impl Upvalue {
   /// Constructor.
-
   pub fn new(location: usize) -> Self {
     let closed = None;
 

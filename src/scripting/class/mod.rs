@@ -18,7 +18,6 @@ pub struct Class {
 
 impl Class {
   /// Constructor.
-
   pub fn new(name: Reference<String>) -> Self {
     let methods = Table::new();
 

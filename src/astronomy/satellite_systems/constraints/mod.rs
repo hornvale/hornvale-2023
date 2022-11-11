@@ -24,7 +24,6 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable star subsystem.
-
   pub fn habitable() -> Self {
     let generate_primary_gas_giant = true;
     let generate_habitable = true;
@@ -39,7 +38,6 @@ impl Constraints {
   }
 
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar) -> Result<SatelliteSystems, Error> {
     let _minimum_count = self.minimum_count.unwrap_or(MINIMUM_SATELLITE_SYSTEMS);
     let _maximum_count = self.maximum_count.unwrap_or(MAXIMUM_SATELLITE_SYSTEMS);
@@ -57,7 +55,6 @@ impl Constraints {
   }
 
   /// Generate orbits.
-
   pub fn generate_orbits<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar) -> Result<Vec<f64>, Error> {
     let mut result = Vec::new();
     if self.generate_primary_gas_giant {

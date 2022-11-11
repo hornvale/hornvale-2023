@@ -22,7 +22,6 @@ pub struct Planner {
 
 impl Planner {
   /// Constructor.
-
   pub fn new(start: State, goal: State, actions: Vec<Action>) -> Self {
     let open = Nodes::new();
     let closed = Nodes::new();
@@ -37,7 +36,6 @@ impl Planner {
   }
 
   /// Reconstruct the plan.
-
   pub fn reconstruct_plan(&mut self, current: Node) -> Plan {
     let start = self.start;
     let goal = self.goal;
@@ -72,7 +70,6 @@ impl Planner {
   }
 
   /// Plan!
-
   pub fn plan(&mut self) -> Result<Plan, Error> {
     let node0 = Node::new_start(self.start, self.goal);
 
@@ -130,7 +127,6 @@ impl Planner {
   }
 
   /// Apply an action to the specified state and return the altered state.
-
   pub fn apply_action(&self, action: &Action, state: &State) -> State {
     let postconditions = action.postconditions;
     let mask = postconditions.mask;
@@ -143,7 +139,6 @@ impl Planner {
   }
 
   /// Get possible state transitions.
-
   pub fn get_possible_actions(&self, from: &State) -> Vec<Action> {
     let mut result = Vec::new();
     for action in self.actions.iter() {

@@ -18,7 +18,6 @@ pub enum Planet {
 
 impl Planet {
   /// Get density of the planet.
-
   pub fn get_density(&self) -> f64 {
     use Planet::*;
 
@@ -29,7 +28,6 @@ impl Planet {
   }
 
   /// Get mass of the planet.
-
   pub fn get_mass(&self) -> f64 {
     use Planet::*;
 
@@ -40,7 +38,6 @@ impl Planet {
   }
 
   /// Get radius of the planet.
-
   pub fn get_radius(&self) -> f64 {
     use Planet::*;
 
@@ -51,7 +48,6 @@ impl Planet {
   }
 
   /// Get the orbital period of the planet.
-
   pub fn get_orbital_period(&self) -> f64 {
     use Planet::*;
 
@@ -62,7 +58,6 @@ impl Planet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-
   pub fn check_habitable(&self) -> Result<(), Error> {
     use Planet::*;
     match &self {
@@ -74,7 +69,6 @@ impl Planet {
   }
 
   /// Indicate whether this planet is capable of supporting conventional life.
-
   pub fn is_habitable(&self) -> bool {
     match self.check_habitable() {
       Ok(()) => true,

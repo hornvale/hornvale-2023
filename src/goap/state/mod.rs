@@ -19,7 +19,6 @@ pub struct State {
 
 impl State {
   /// Calculate meaningful distance.
-
   pub fn get_distance(&self, other: &State) -> usize {
     let matter = self.mask ^ u64::MAX;
     let difference = (self.values & matter) ^ (other.values & matter);

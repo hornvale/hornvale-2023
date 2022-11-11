@@ -15,7 +15,6 @@ pub struct Interpreter {}
 
 impl Interpreter {
   /// Compile the source.
-
   pub fn compile<'source>(
     &mut self,
     source: &'source str,

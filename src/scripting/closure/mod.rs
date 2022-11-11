@@ -22,7 +22,6 @@ pub struct Closure {
 
 impl Closure {
   /// Constructor.
-
   pub fn new(function: Reference<Function>) -> Self {
     let upvalues = Vec::new();
 

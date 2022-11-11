@@ -57,7 +57,6 @@ impl Constraints {
   /// Generate a random star system with the specified constraints.
   ///
   /// This may or may not be habitable.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSystem, Error> {
     let star_subsystem_constraints = self.star_subsystem_constraints.unwrap_or_default();
     let star_subsystem = {

@@ -25,7 +25,6 @@ pub struct Compiler<'source> {
 
 impl<'source> Compiler<'source> {
   /// Constructor.
-
   pub fn new(function_name: Reference<String>, function_type: FunctionType) -> Self {
     let mut locals = Vec::new();
     let depth = 0;
@@ -48,7 +47,6 @@ impl<'source> Compiler<'source> {
   }
 
   /// Does a variable with this name exist already in this scope?
-
   pub fn has_local(&self, token: &Token<'source>) -> bool {
     let token_name = token.lexeme;
 
@@ -66,7 +64,6 @@ impl<'source> Compiler<'source> {
   }
 
   /// Resolve a local variable.
-
   pub fn resolve_local(&mut self, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
     let token_name = token.lexeme;
 
@@ -82,7 +79,6 @@ impl<'source> Compiler<'source> {
   }
 
   /// Resolve an upvalue.
-
   pub fn resolve_upvalue(&mut self, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
     if let Some(enclosing) = self.enclosing.as_mut() {
       if let Some(index) = enclosing.resolve_local(token, errors) {
@@ -98,7 +94,6 @@ impl<'source> Compiler<'source> {
   }
 
   /// Create a new upvalue.
-
   pub fn add_upvalue(&mut self, index: u16, is_local: bool, _errors: &mut [&'static str]) -> u16 {
     for (i, upvalue) in self.function.upvalues.iter().enumerate() {
       if upvalue.index == index && upvalue.is_local == is_local {

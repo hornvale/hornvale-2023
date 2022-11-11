@@ -20,7 +20,6 @@ pub struct Instance {
 
 impl Instance {
   /// Constructor.
-
   pub fn new(class: Reference<Class>) -> Self {
     let fields = Table::new();
 

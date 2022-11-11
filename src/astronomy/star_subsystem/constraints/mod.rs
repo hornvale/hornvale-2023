@@ -20,7 +20,6 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate a habitable star subsystem.
-
   pub fn habitable() -> Self {
     Self {
       ..Constraints::default()
@@ -28,7 +27,6 @@ impl Constraints {
   }
 
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StarSubsystem, Error> {
     use StarSubsystem::*;
     let distant_binary_probability = self.distant_binary_probability.unwrap_or(DISTANT_BINARY_PROBABILITY);

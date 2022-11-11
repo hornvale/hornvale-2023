@@ -31,7 +31,6 @@ impl Constraints {
   /// Generate a random stellar neighborhood with the specified constraints.
   ///
   /// This may or may not be habitable.
-
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighborhood, Error> {
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
     let density = self.density.unwrap_or(STELLAR_NEIGHBORHOOD_DENSITY);

@@ -16,7 +16,6 @@ pub struct Constraints {
 
 impl Constraints {
   /// Generate.
-
   pub fn generate<R: Rng + ?Sized>(
     &self,
     rng: &mut R,

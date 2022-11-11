@@ -4,7 +4,6 @@ use std::f64::consts::PI;
 /// Generate a random point in a unit sphere.
 ///
 /// Obviously, I did not come up with this algorithm.
-
 pub fn get_random_point_in_sphere<R: Rng + ?Sized>(rng: &mut R) -> (f64, f64, f64) {
   let u: f64 = rng.gen_range(0.0..1.0);
   let v: f64 = rng.gen_range(0.0..1.0);
