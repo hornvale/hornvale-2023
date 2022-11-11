@@ -1,6 +1,6 @@
 #[macro_use]
-pub mod r#macro;
-pub use r#macro::*;
+pub mod _macro;
+pub use _macro::*;
 
 pub mod bound_method;
 pub mod chunk;
