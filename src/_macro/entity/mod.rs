@@ -87,6 +87,8 @@ macro_rules! get_current_room_id {
 #[macro_export]
 macro_rules! set_current_room_id {
   ($system_data: expr, $entity: expr, $room: expr) => {{
+    use $crate::ecs::components::IsInRoom;
+    use $crate::ecs::entity::RoomId;
     $system_data
       .is_in_room
       .insert($entity, IsInRoom(RoomId($room.id())))

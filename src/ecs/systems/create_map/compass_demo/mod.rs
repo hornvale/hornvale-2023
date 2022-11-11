@@ -1,4 +1,5 @@
 use crate::action::Action;
+use crate::action::LookAroundAction;
 use crate::map::Direction;
 
 use super::*;
@@ -10,9 +11,9 @@ impl<'a> CreateMap {
     if let Some(player_id) = data.player_resource.0 {
       set_current_room_id!(data, get_entity!(data, player_id), spawn_room);
       data.action_event_channel.single_write(ActionEvent {
-        action: Action::LookAround {
+        action: Action::LookAround(LookAroundAction {
           entity_id: player_id.into(),
-        },
+        }),
       });
     }
     let _mushroom = create_object!(

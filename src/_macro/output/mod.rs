@@ -21,7 +21,7 @@ macro_rules! write_output {
   ($system_data: expr, $string: expr) => {{
     #[allow(unused_imports)]
     use $crate::ecs::event_channels::OutputEvent;
-    get_output!($system_data).single_write(OutputEvent { string: $string.into() });
+    get_output!($system_data).single_write(OutputEvent { string: $string });
   }};
 }
 
@@ -31,7 +31,9 @@ macro_rules! write_output_2nd {
     #[allow(unused_imports)]
     use $crate::ecs::event_channels::OutputEvent;
     if entity_has_camera!($system_data, $entity) {
-      get_output!($system_data).single_write(OutputEvent { string: $string.into() });
+      get_output!($system_data).single_write(OutputEvent {
+        string: format!("{}", $string),
+      });
     }
   }};
 }

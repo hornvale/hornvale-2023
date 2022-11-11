@@ -9,16 +9,16 @@ pub mod create_player;
 pub use create_player::CreatePlayer as CreatePlayerSystem;
 pub mod experiment;
 pub use experiment::Experiment as ExperimentSystem;
-pub mod process_action;
-pub use process_action::ProcessAction as ProcessActionSystem;
-pub mod process_command;
-pub use process_command::ProcessCommand as ProcessCommandSystem;
-pub mod process_effect;
-pub use process_effect::ProcessEffect as ProcessEffectSystem;
-pub mod process_input;
-pub use process_input::ProcessInput as ProcessInputSystem;
-pub mod process_output;
-pub use process_output::ProcessOutput as ProcessOutputSystem;
+pub mod action_processor;
+pub use action_processor::ActionProcessor as ActionProcessorSystem;
+pub mod command_processor;
+pub use command_processor::CommandProcessor as CommandProcessorSystem;
+pub mod effect_processor;
+pub use effect_processor::EffectProcessor as EffectProcessorSystem;
+pub mod input_processor;
+pub use input_processor::InputProcessor as InputProcessorSystem;
+pub mod output_processor;
+pub use output_processor::OutputProcessor as OutputProcessorSystem;
 pub mod tick;
 pub use tick::Tick as TickSystem;
 
@@ -28,36 +28,36 @@ pub fn run_initial_systems(ecs: &mut World) {
 }
 
 pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
-  let process_input_system = {
+  let input_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<InputEvent>>().register_reader();
-    ProcessInputSystem { reader_id }
+    InputProcessorSystem { reader_id }
   };
-  let process_output_system = {
+  let output_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<OutputEvent>>().register_reader();
-    ProcessOutputSystem { reader_id }
+    OutputProcessorSystem { reader_id }
   };
-  let process_command_system = {
+  let command_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<CommandEvent>>().register_reader();
-    ProcessCommandSystem { reader_id }
+    CommandProcessorSystem { reader_id }
   };
-  let process_action_system = {
+  let action_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<ActionEvent>>().register_reader();
-    ProcessActionSystem { reader_id }
+    ActionProcessorSystem { reader_id }
   };
-  let process_effect_system = {
+  let effect_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<EffectEvent>>().register_reader();
-    ProcessEffectSystem { reader_id }
+    EffectProcessorSystem { reader_id }
   };
   let tick_system = TickSystem {};
   let experiment_system = ExperimentSystem {};
   let dispatcher = DispatcherBuilder::new()
     .with(experiment_system, "experiment", &[])
-    .with(process_input_system, "process_input", &[])
-    .with(process_command_system, "process_command", &["process_input"])
-    .with(process_action_system, "process_action", &["process_command"])
-    .with(process_effect_system, "process_effect", &["process_action"])
-    .with(process_output_system, "process_output", &["process_action"])
-    .with(tick_system, "tick", &["process_output"])
+    .with(input_processor_system, "input_processor", &[])
+    .with(command_processor_system, "command_processor", &["input_processor"])
+    .with(action_processor_system, "action_processor", &["command_processor"])
+    .with(effect_processor_system, "effect_processor", &["action_processor"])
+    .with(output_processor_system, "output_processor", &["effect_processor"])
+    .with(tick_system, "tick", &["output_processor"])
     .build();
   dispatcher
 }

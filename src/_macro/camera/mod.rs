@@ -15,7 +15,7 @@ macro_rules! get_camera_entity {
 #[macro_export]
 macro_rules! entity_id_has_camera {
   ($system_data: expr, $entity_id: expr) => {{
-    *$entity_id == get_camera_entity_id!($system_data)
+    $entity_id == get_camera_entity_id!($system_data)
   }};
 }
 

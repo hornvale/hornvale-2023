@@ -1,9 +1,7 @@
-use rand::prelude::*;
-
-use crate::action::Action;
-use crate::map::{Direction, Tile, TileMap};
-
 use super::*;
+use crate::action::Action;
+use crate::action::LookAroundAction;
+use crate::map::{Direction, Tile, TileMap};
 
 impl<'a> CreateMap {
   /// Create a "trivial maze" demo.
@@ -24,9 +22,9 @@ impl<'a> CreateMap {
     if let Some(player_id) = data.player_resource.0 {
       set_current_room_id!(data, get_entity!(data, player_id), rooms[0]);
       data.action_event_channel.single_write(ActionEvent {
-        action: Action::LookAround {
+        action: Action::LookAround(LookAroundAction {
           entity_id: player_id.into(),
-        },
+        }),
       });
     }
     for (index, room) in rooms.iter().enumerate() {

@@ -1,3 +1,6 @@
+use crate::ecs::systems::effect_processor::Data as EffectProcessorData;
+use anyhow::Error;
+
 pub mod entity;
 pub use entity::*;
 
@@ -48,4 +51,16 @@ pub enum Effect {
   EntityWalksIntoRoom(EntityWalksIntoRoom),
   /// An entity walks out of a room.
   EntityWalksOutOfRoom(EntityWalksOutOfRoom),
+}
+
+impl Effect {
+  /// Process the effect.
+  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
+    use Effect::*;
+    match &self {
+      EntityWalksIntoRoom(effect) => effect.process(data)?,
+      EntityWalksOutOfRoom(effect) => effect.process(data)?,
+    }
+    Ok(())
+  }
 }

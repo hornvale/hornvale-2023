@@ -1,5 +1,10 @@
-use crate::ecs::entity::EntityId;
-use crate::map::Direction;
+use crate::ecs::systems::action_processor::Data as ActionProcessorData;
+use anyhow::Error;
+
+pub mod go_direction;
+pub use go_direction::GoDirection as GoDirectionAction;
+pub mod look;
+pub use look::*;
 
 /// The `Action` enum.
 ///
@@ -26,16 +31,26 @@ use crate::map::Direction;
 pub enum Action {
   /// Go in a specific direction.  This should respect current movement method
   /// (e.g. walking, flying, etc).
-  GoDirection { entity_id: EntityId, direction: Direction },
+  GoDirection(GoDirectionAction),
   /// Look at the current room.  This should provide a snapshot the sensory
   /// data of the room.
-  LookAround { entity_id: EntityId },
+  LookAround(LookAroundAction),
   /// Look at a specific object, either on the actor or in their environment.
-  LookAtEntity {
-    entity_id: EntityId,
-    target_entity_id: EntityId,
-  },
+  LookAtEntity(LookAtEntityAction),
   /// Look through the passage in the specified direction.  Will not work with
   /// closed doors.  Certain other passageways may prevent the action as well.
-  LookDirection { entity_id: EntityId, direction: Direction },
+  LookDirection(LookDirectionAction),
+}
+
+impl Action {
+  pub fn execute(&self, data: &mut ActionProcessorData) -> Result<(), Error> {
+    use Action::*;
+    match &self {
+      GoDirection(action) => action.execute(data)?,
+      LookAround(action) => action.execute(data)?,
+      LookAtEntity(action) => action.execute(data)?,
+      LookDirection(action) => action.execute(data)?,
+    }
+    Ok(())
+  }
 }

@@ -3,6 +3,7 @@ use super::super::entity::*;
 use super::super::event_channels::*;
 use super::super::resources::*;
 use crate::action::Action;
+use crate::action::GoDirectionAction;
 use crate::map::Direction;
 use rand::prelude::*;
 use specs::prelude::*;
@@ -36,10 +37,10 @@ impl<'a> System<'a> for Experiment {
   fn run(&mut self, mut data: Self::SystemData) {
     for (entity, _, _) in (&data.entities, &data.is_an_actor, !&data.is_a_player).join() {
       let direction: Direction = data.random_resource.0.gen();
-      let action = Action::GoDirection {
+      let action = Action::GoDirection(GoDirectionAction {
         entity_id: EntityId(entity.id()),
         direction,
-      };
+      });
       data.action_event_channel.single_write(ActionEvent { action });
     }
   }

@@ -1,9 +1,17 @@
+use crate::action::Action;
+use crate::ecs::systems::command_processor::Data as CommandProcessorData;
 use anyhow::Error as AnyError;
 
-use crate::action::Action;
-use crate::ecs::entity::EntityId;
-use crate::ecs::entity::PlayerId;
-use crate::map::Direction;
+pub mod echo;
+pub use echo::Echo as EchoCommand;
+pub mod eval;
+pub use eval::Eval as EvalCommand;
+pub mod go_direction;
+pub use go_direction::GoDirection as GoDirectionCommand;
+pub mod look;
+pub use look::*;
+pub mod quit;
+pub use quit::Quit as QuitCommand;
 
 /// The `Command` enum.
 ///
@@ -27,70 +35,39 @@ use crate::map::Direction;
 /// input prompt.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Command {
-  Echo {
-    player_id: PlayerId,
-    string: String,
-    original_input: String,
-  },
-  Eval {
-    player_id: PlayerId,
-    string: String,
-    original_input: String,
-  },
-  GoDirection {
-    player_id: PlayerId,
-    direction: Direction,
-    original_input: String,
-  },
-  LookAround {
-    player_id: PlayerId,
-    original_input: String,
-  },
-  LookAtEntity {
-    player_id: PlayerId,
-    target_entity_id: EntityId,
-    original_input: String,
-  },
-  LookDirection {
-    player_id: PlayerId,
-    direction: Direction,
-    original_input: String,
-  },
-  Quit {
-    player_id: PlayerId,
-    original_input: String,
-  },
+  Echo(EchoCommand),
+  Eval(EvalCommand),
+  GoDirection(GoDirectionCommand),
+  LookAround(LookAroundCommand),
+  LookAtEntity(LookAtEntityCommand),
+  LookDirection(LookDirectionCommand),
+  Quit(QuitCommand),
 }
 
 impl Command {
-  /// Retrieve an action for this command.
-  pub fn get_action(&self) -> Result<Action, AnyError> {
+  /// Retrieve an action for this command, or evaluate it.
+  ///
+  /// Commands come in two forms: extradiagetic and intradiagetic.
+  ///
+  /// Extradiagetic or out-of-character/OOC commands operate outside the game
+  /// world.  They generally perform some operation on game state and return
+  /// directly.
+  ///
+  /// Intradiagetic or in-character/IC commands are translated to an Action
+  /// object that represents the in-game action to take.
+  ///
+  /// Thus extradiagetic commands will return None here, and intradiagetic
+  /// commands will return Some(action).
+  pub fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
     use Command::*;
     match self {
-      LookAround { player_id, .. } => Ok(Action::LookAround {
-        entity_id: (*player_id).into(),
-      }),
-      LookDirection {
-        player_id, direction, ..
-      } => Ok(Action::LookDirection {
-        entity_id: (*player_id).into(),
-        direction: *direction,
-      }),
-      LookAtEntity {
-        player_id,
-        target_entity_id,
-        ..
-      } => Ok(Action::LookAtEntity {
-        entity_id: (*player_id).into(),
-        target_entity_id: *target_entity_id,
-      }),
-      GoDirection {
-        player_id, direction, ..
-      } => Ok(Action::GoDirection {
-        entity_id: (*player_id).into(),
-        direction: *direction,
-      }),
-      _ => Err(anyhow!("Unexpected!")),
+      Echo(command) => Ok(command.get_action(data)?),
+      Eval(command) => Ok(command.get_action(data)?),
+      GoDirection(command) => Ok(command.get_action(data)?),
+      LookAround(command) => Ok(command.get_action(data)?),
+      LookAtEntity(command) => Ok(command.get_action(data)?),
+      LookDirection(command) => Ok(command.get_action(data)?),
+      Quit(command) => Ok(command.get_action(data)?),
     }
   }
 }
