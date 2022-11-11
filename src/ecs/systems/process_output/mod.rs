@@ -34,7 +34,7 @@ impl<'a> System<'a> for ProcessOutput {
     if event_count == 0 {
       return;
     }
-    let mut output = get_output!(data);
+    let mut output = clone_output!(data);
     info!("Processing {} output event(s)...", event_count);
     for event in output_events.iter() {
       let string = self.format_string(event.string.trim());

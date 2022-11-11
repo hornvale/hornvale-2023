@@ -1,3 +1,5 @@
+use rand::distributions::Standard;
+use rand::prelude::*;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::str::FromStr;
 
@@ -126,5 +128,27 @@ impl Direction {
 impl Display for Direction {
   fn fmt(&self, formatter: &mut Formatter) -> FmtResult {
     write!(formatter, "{}", self.get_lowercase())
+  }
+}
+
+impl Distribution<Direction> for Standard {
+  fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
+    let index: u8 = rng.gen_range(0..12);
+    use Direction::*;
+    match index {
+      0 => North,
+      1 => Northeast,
+      2 => East,
+      3 => Southeast,
+      4 => South,
+      5 => Southwest,
+      6 => West,
+      7 => Northwest,
+      8 => Up,
+      9 => Down,
+      10 => Inside,
+      11 => Outside,
+      _ => unreachable!(),
+    }
   }
 }

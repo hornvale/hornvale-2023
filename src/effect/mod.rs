@@ -1,5 +1,5 @@
-use crate::ecs::entity::EntityId;
-use crate::ecs::entity::RoomId;
+pub mod entity;
+pub use entity::*;
 
 /// The `Effect` enum.
 ///
@@ -44,8 +44,8 @@ use crate::ecs::entity::RoomId;
 /// grained with creating `Effect`s.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Effect {
-  /// An entity walks out of a room.
-  EntityWalksOutOfRoom(EntityId, RoomId),
   /// An entity walks into a room.
-  EntityWalksIntoRoom(EntityId, RoomId),
+  EntityWalksIntoRoom(EntityWalksIntoRoom),
+  /// An entity walks out of a room.
+  EntityWalksOutOfRoom(EntityWalksOutOfRoom),
 }

@@ -10,12 +10,12 @@ impl<'a> ProcessAction {
   pub fn process_look_direction(&mut self, action: &Action, data: &mut ProcessActionData<'a>) {
     if let Action::LookDirection { entity_id, direction } = action {
       let entity = get_entity!(data, entity_id);
-      if let Some(room_id) = get_current_room!(data, entity) {
+      if let Some(room_id) = get_current_room_id!(data, entity) {
         let room = get_entity!(data, room_id);
         match get_passage_to!(data, room, direction) {
           Some(passage) => match passage.to {
             PassageDestination::Room(destination_id) => {
-              if has_camera!(data, entity_id) {
+              if entity_id_has_camera!(data, entity_id) {
                 info!("Sending event (description of indicated room).");
                 data.output_event_channel.single_write(OutputEvent {
                   string: format!("You look to the {}...", &direction.get_lowercase()),
@@ -27,7 +27,7 @@ impl<'a> ProcessAction {
               }
             },
             _ => {
-              if has_camera!(data, entity_id) {
+              if entity_id_has_camera!(data, entity_id) {
                 data.output_event_channel.single_write(OutputEvent {
                   string: "You are unable to look in that direction!".into(),
                 });
@@ -35,7 +35,7 @@ impl<'a> ProcessAction {
             },
           },
           None => {
-            if has_camera!(data, entity_id) {
+            if entity_id_has_camera!(data, entity_id) {
               data.output_event_channel.single_write(OutputEvent {
                 string: "You are unable to look in that direction!".into(),
               });

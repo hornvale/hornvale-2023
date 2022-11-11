@@ -78,14 +78,14 @@ macro_rules! set_brief_description {
 }
 
 #[macro_export]
-macro_rules! get_current_room {
+macro_rules! get_current_room_id {
   ($system_data: expr, $entity: expr) => {{
     $system_data.is_in_room.get($entity).map(|is_in_room| is_in_room.0)
   }};
 }
 
 #[macro_export]
-macro_rules! set_current_room {
+macro_rules! set_current_room_id {
   ($system_data: expr, $entity: expr, $room: expr) => {{
     $system_data
       .is_in_room

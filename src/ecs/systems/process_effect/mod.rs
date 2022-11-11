@@ -4,26 +4,20 @@ use specs::shrev::{EventChannel, ReaderId};
 use super::super::components::*;
 use super::super::event_channels::*;
 use super::super::resources::*;
-use crate::action::Action;
+use crate::effect::*;
 
-mod go_direction;
-mod look_around;
-mod look_at_entity;
-mod look_direction;
-
-pub struct ProcessAction {
-  pub reader_id: ReaderId<ActionEvent>,
+pub struct ProcessEffect {
+  pub reader_id: ReaderId<EffectEvent>,
 }
 
-impl ProcessAction {}
+impl ProcessEffect {}
 
 #[derive(SystemData)]
-pub struct ProcessActionData<'a> {
+pub struct ProcessEffectData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Read<'a, PlayerResource>,
   pub camera_resource: Read<'a, CameraResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
-  pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub effect_event_channel: Write<'a, EventChannel<EffectEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
   pub has_description: ReadStorage<'a, HasDescription>,
@@ -35,31 +29,29 @@ pub struct ProcessActionData<'a> {
   pub is_in_room: WriteStorage<'a, IsInRoom>,
 }
 
-impl<'a> System<'a> for ProcessAction {
-  type SystemData = ProcessActionData<'a>;
+impl<'a> System<'a> for ProcessEffect {
+  type SystemData = ProcessEffectData<'a>;
 
   /// Run the system.
   fn run(&mut self, mut data: Self::SystemData) {
     let events = data
-      .action_event_channel
+      .effect_event_channel
       .read(&mut self.reader_id)
       .into_iter()
       .cloned()
-      .collect::<Vec<ActionEvent>>();
+      .collect::<Vec<EffectEvent>>();
     let event_count = events.len();
     if event_count == 0 {
       return;
     }
-    info!("Processing {} action event(s)...", event_count);
+    info!("Processing {} effect event(s)...", event_count);
     for event in events.iter() {
-      debug!("Processing next action event, {:?}", event);
-      let ActionEvent { action } = event;
-      use Action::*;
-      match action {
-        GoDirection { .. } => self.process_go_direction(action, &mut data),
-        LookAround { .. } => self.process_look_around(action, &mut data),
-        LookAtEntity { .. } => self.process_look_at_entity(action, &mut data),
-        LookDirection { .. } => self.process_look_direction(action, &mut data),
+      debug!("Processing next effect event, {:?}", event);
+      let EffectEvent { effect } = event;
+      use Effect::*;
+      match effect {
+        EntityWalksIntoRoom(object) => object.process(&mut data),
+        EntityWalksOutOfRoom(object) => object.process(&mut data),
       }
     }
   }

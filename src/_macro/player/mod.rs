@@ -16,16 +16,6 @@ macro_rules! create_player {
       .insert(player, HasName("Player".into()))
       .expect("Unable to insert name for player!");
     $system_data
-      .has_initiative
-      .insert(
-        player,
-        HasInitiative {
-          current: 0,
-          refill_rate: 1,
-        },
-      )
-      .expect("Unable to insert has-initiative for player!");
-    $system_data
       .has_description
       .insert(
         player,

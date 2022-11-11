@@ -22,7 +22,7 @@ impl<'a> CreateMap {
       rooms.push(room_id);
     }
     if let Some(player_id) = data.player_resource.0 {
-      set_current_room!(data, get_entity!(data, player_id), rooms[0]);
+      set_current_room_id!(data, get_entity!(data, player_id), rooms[0]);
       data.action_event_channel.single_write(ActionEvent {
         action: Action::LookAround {
           entity_id: player_id.into(),

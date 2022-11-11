@@ -1,29 +1,27 @@
-use rand::prelude::*;
-use specs::prelude::*;
-use specs::shrev::EventChannel;
-
 use super::super::components::*;
 use super::super::entity::*;
 use super::super::event_channels::*;
 use super::super::resources::*;
+use crate::action::Action;
+use crate::map::Direction;
+use rand::prelude::*;
+use specs::prelude::*;
+use specs::shrev::EventChannel;
 
-mod compass_demo;
-mod trivial_maze;
-
-pub struct CreateMap {}
+pub struct Experiment {}
 
 #[derive(SystemData)]
-pub struct CreateMapData<'a> {
+pub struct ExperimentData<'a> {
   pub entities: Entities<'a>,
-  pub camera_resource: Write<'a, CameraResource>,
   pub player_resource: Write<'a, PlayerResource>,
-  pub random_resource: Write<'a, RandomResource>,
   pub spawn_room_resource: Write<'a, SpawnRoomResource>,
+  pub random_resource: Write<'a, RandomResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub has_description: WriteStorage<'a, HasDescription>,
   pub has_name: WriteStorage<'a, HasName>,
   pub has_passages: WriteStorage<'a, HasPassages>,
+  pub is_a_player: WriteStorage<'a, IsAPlayer>,
   pub is_a_room: WriteStorage<'a, IsARoom>,
   pub is_an_actor: WriteStorage<'a, IsAnActor>,
   pub is_an_object: WriteStorage<'a, IsAnObject>,
@@ -31,16 +29,18 @@ pub struct CreateMapData<'a> {
 }
 
 // This system should normally only be run at startup.
-impl<'a> System<'a> for CreateMap {
-  type SystemData = CreateMapData<'a>;
+impl<'a> System<'a> for Experiment {
+  type SystemData = ExperimentData<'a>;
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
-    let rng = &mut data.random_resource.0;
-    if rng.gen::<bool>() {
-      self.create_compass_demo(&mut data);
-    } else {
-      self.create_trivial_maze(&mut data);
+    for (entity, _, _) in (&data.entities, &data.is_an_actor, !&data.is_a_player).join() {
+      let direction: Direction = data.random_resource.0.gen();
+      let action = Action::GoDirection {
+        entity_id: EntityId(entity.id()),
+        direction,
+      };
+      data.action_event_channel.single_write(ActionEvent { action });
     }
   }
 }

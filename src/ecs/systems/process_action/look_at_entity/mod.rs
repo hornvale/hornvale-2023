@@ -11,7 +11,7 @@ impl<'a> ProcessAction {
     } = action
     {
       let target_entity = get_entity!(data, target_entity_id);
-      if has_camera!(data, entity_id) {
+      if entity_id_has_camera!(data, entity_id) {
         info!("Sending event (description of indicated entity).");
         data.output_event_channel.single_write(OutputEvent {
           string: format!(

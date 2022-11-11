@@ -8,7 +8,7 @@ impl<'a> CreateMap {
   pub fn create_compass_demo(&mut self, data: &mut CreateMapData<'a>) {
     let spawn_room = create_room!(data, "Spawn Room", "Dark olive trees crowd in on all sides, the air steams with the mist of a warm recent rain, midges hang in the air.");
     if let Some(player_id) = data.player_resource.0 {
-      set_current_room!(data, get_entity!(data, player_id), spawn_room);
+      set_current_room_id!(data, get_entity!(data, player_id), spawn_room);
       data.action_event_channel.single_write(ActionEvent {
         action: Action::LookAround {
           entity_id: player_id.into(),

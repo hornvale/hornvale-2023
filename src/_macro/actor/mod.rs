@@ -8,16 +8,6 @@ macro_rules! create_actor {
       .insert(actor, IsAnActor)
       .expect("Unable to insert is-an-actor for entity!");
     $system_data
-      .has_initiative
-      .insert(
-        actor,
-        HasInitiative {
-          current: 0,
-          refill_rate: 1,
-        },
-      )
-      .expect("Unable to insert name for entity!");
-    $system_data
       .has_name
       .insert(actor, HasName($name.into()))
       .expect("Unable to insert name for entity!");

@@ -13,7 +13,7 @@ impl<'a> ProcessInput {
     let player_id = data.player_resource.0.unwrap();
     let player = data.entities.entity(player_id.0);
     let mut result = Err(anyhow!("Not found"));
-    if let Some(current_room) = get_current_room!(data, player) {
+    if let Some(current_room) = get_current_room_id!(data, player) {
       info!("Examining visible objects in room {:?}", current_room);
       if let Some((target_entity, _is_in_room, _has_name, _has_description, _)) = (
         &data.entities,
