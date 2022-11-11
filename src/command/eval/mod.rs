@@ -1,6 +1,7 @@
 use crate::action::Action;
 use crate::ecs::entity::PlayerId;
 use crate::ecs::systems::command_processor::Data as CommandProcessorData;
+use crate::scripting::virtual_machine::VirtualMachine;
 use anyhow::Error;
 
 /// The `Eval` command.
@@ -12,8 +13,9 @@ pub struct Eval {
 }
 
 impl Eval {
-  pub fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    write_output!(data, self.string.clone());
+  pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
+    let mut vm = VirtualMachine::new();
+    vm.interpret(&self.string)?;
     Ok(None)
   }
 }

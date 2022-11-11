@@ -8,7 +8,7 @@ pub enum Need {
   Meaning,
   Family,
   Friendship,
-  Intimacy,
+  Intimacy,  
   Trust,
   Acceptance,
   Health,
