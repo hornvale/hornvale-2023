@@ -8,7 +8,7 @@
 
 # 💻 Scripting Language
 
-- [Programmable Realities](scripting_language/_introduction.md)
+- [Programmable Realities](scripting/_introduction.md)
 
 # ⛏️ Dungeons and the Underdark
 

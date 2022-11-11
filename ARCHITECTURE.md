@@ -68,7 +68,7 @@ The following should be a 1:1 listing of the code in the `src/` subdirectory.
 
 - [📍 Room](./src/room/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: The Room concept and related tools.
 
-- [💻 Scripting Language](./src/scripting_language/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
+- [💻 Scripting Language](./src/scripting/README.md)&nbsp;<sup><sub><sub>🟡</sub></sub></sup>: Embedded programming language (based on [Lox](https://www.craftinginterpreters.com/)) and domain-specific library.
 
 - [🧑‍🤝‍🧑 Sociology](./src/sociology/README.md)&nbsp;<sup><sub><sub>🔴</sub></sub></sup>: Social psychology and sociology, individual and group behavior.
 

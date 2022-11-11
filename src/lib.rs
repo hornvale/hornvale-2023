@@ -53,7 +53,7 @@ pub mod linguistics;
 pub mod map;
 pub mod mythopoetics;
 pub mod perception;
-pub mod scripting_language;
+pub mod scripting;
 pub mod severity;
 pub mod sociology;
 pub mod supernatural;

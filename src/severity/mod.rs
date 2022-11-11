@@ -4,7 +4,7 @@
 /// assigning each a label indicating how much danger it poses to the being.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum Severity {
-  Trace,
+  Idle,
   Info,
   Notice,
   Warning,

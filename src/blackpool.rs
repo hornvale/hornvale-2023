@@ -6,8 +6,8 @@ use std::process::exit;
 #[macro_use]
 extern crate thiserror;
 
-use hornvale::scripting_language::virtual_machine::error::Error as VirtualMachineError;
-use hornvale::scripting_language::virtual_machine::VirtualMachine;
+use hornvale::scripting::virtual_machine::error::Error as VirtualMachineError;
+use hornvale::scripting::virtual_machine::VirtualMachine;
 use hornvale::*;
 
 /// Errors encountered in compiling or executing a script.
