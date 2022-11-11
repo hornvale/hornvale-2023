@@ -43,6 +43,7 @@ pub enum Action {
 }
 
 impl Action {
+  /// Execute the action.
   pub fn execute(&self, data: &mut ActionProcessorData) -> Result<(), Error> {
     use Action::*;
     match &self {

@@ -27,9 +27,15 @@ pub struct Game {
   /// The tick dispatcher.
   #[derivative(Debug = "ignore")]
   pub tick_dispatcher: Dispatcher<'static, 'static>,
-  /// The second dispatcher.
+  /// Every tenth tick (roughly).
   #[derivative(Debug = "ignore")]
-  pub second_dispatcher: Dispatcher<'static, 'static>,
+  pub deca_tick_dispatcher: Dispatcher<'static, 'static>,
+  /// Every hundredth tick (roughly).
+  #[derivative(Debug = "ignore")]
+  pub hecto_tick_dispatcher: Dispatcher<'static, 'static>,
+  /// Every thousandth tick (roughly).
+  #[derivative(Debug = "ignore")]
+  pub kilo_tick_dispatcher: Dispatcher<'static, 'static>,
   /// Raw output channel.
   #[derivative(Debug = "ignore")]
   pub output: SharedWriter,
@@ -43,7 +49,9 @@ impl Game {
     insert_event_channels(&mut ecs);
     register_components(&mut ecs);
     let tick_dispatcher = get_tick_dispatcher(&mut ecs);
-    let second_dispatcher = get_second_dispatcher(&mut ecs);
+    let deca_tick_dispatcher = get_deca_tick_dispatcher(&mut ecs);
+    let hecto_tick_dispatcher = get_hecto_tick_dispatcher(&mut ecs);
+    let kilo_tick_dispatcher = get_kilo_tick_dispatcher(&mut ecs);
     let output = {
       let output_resource = ecs.read_resource::<OutputResource>();
       output_resource.0.as_ref().unwrap().clone()
@@ -51,7 +59,9 @@ impl Game {
     Self {
       ecs,
       tick_dispatcher,
-      second_dispatcher,
+      deca_tick_dispatcher,
+      hecto_tick_dispatcher,
+      kilo_tick_dispatcher,
       output,
     }
   }
@@ -68,8 +78,12 @@ impl Game {
     // It'd be interesting to store this in a resource and possibly modify it
     // on the fly.  Very FRP.  Much signal.
     let mut tick_timer = stream::interval(Duration::from_millis(TICK_INTERVAL));
-    // The second timer.
-    let mut second_timer = stream::interval(Duration::from_secs(1));
+    // The deca tick timer.
+    let mut deca_tick_timer = stream::interval(Duration::from_millis(10 * TICK_INTERVAL));
+    // The hecto tick timer.
+    let mut hecto_tick_timer = stream::interval(Duration::from_millis(100 * TICK_INTERVAL));
+    // The kilo tick timer.
+    let mut kilo_tick_timer = stream::interval(Duration::from_millis(1000 * TICK_INTERVAL));
     // Main game loop, such as it is.
     loop {
       // Select the next future to complete.
@@ -80,9 +94,17 @@ impl Game {
           // differently.
           self.tick_dispatcher.dispatch(&self.ecs);
         }
-        _ = second_timer.next().fuse() => {
-          // Each second, run the secondary systems.
-          self.second_dispatcher.dispatch(&self.ecs);
+        _ = deca_tick_timer.next().fuse() => {
+          // Each ten ticks.
+          self.deca_tick_dispatcher.dispatch(&self.ecs);
+        }
+        _ = hecto_tick_timer.next().fuse() => {
+          // Each hundred ticks.
+          self.hecto_tick_dispatcher.dispatch(&self.ecs);
+        }
+        _ = kilo_tick_timer.next().fuse() => {
+          // Each thousand ticks.
+          self.kilo_tick_dispatcher.dispatch(&self.ecs);
         }
         command = stdin.readline().fuse() => match command {
           Ok(line) => {

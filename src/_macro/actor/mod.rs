@@ -2,6 +2,7 @@
 macro_rules! create_actor {
   ($system_data: expr, $name: expr, $description: expr) => {{
     use $crate::ecs::components::*;
+    use $crate::initiative::Initiative;
     let actor = $system_data.entities.create();
     $system_data
       .is_an_actor
@@ -11,6 +12,16 @@ macro_rules! create_actor {
       .has_name
       .insert(actor, HasName($name.into()))
       .expect("Unable to insert name for entity!");
+    $system_data
+      .has_initiative
+      .insert(
+        actor,
+        HasInitiative(Initiative {
+          current: 0,
+          increment: 8,
+        }),
+      )
+      .expect("Unable to insert has-initiative for entity!");
     $system_data
       .has_description
       .insert(

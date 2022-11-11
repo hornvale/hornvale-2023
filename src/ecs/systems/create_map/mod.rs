@@ -22,6 +22,7 @@ pub struct CreateMapData<'a> {
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub has_description: WriteStorage<'a, HasDescription>,
+  pub has_initiative: WriteStorage<'a, HasInitiative>,
   pub has_name: WriteStorage<'a, HasName>,
   pub has_passages: WriteStorage<'a, HasPassages>,
   pub is_a_room: WriteStorage<'a, IsARoom>,

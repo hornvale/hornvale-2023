@@ -15,6 +15,8 @@ pub mod command_processor;
 pub use command_processor::CommandProcessor as CommandProcessorSystem;
 pub mod effect_processor;
 pub use effect_processor::EffectProcessor as EffectProcessorSystem;
+pub mod initiative_dispenser;
+pub use initiative_dispenser::InitiativeDispenser as InitiativeDispenserSystem;
 pub mod input_processor;
 pub use input_processor::InputProcessor as InputProcessorSystem;
 pub mod output_processor;
@@ -28,13 +30,13 @@ pub fn run_initial_systems(ecs: &mut World) {
 }
 
 pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
-  let input_processor_system = {
-    let reader_id = ecs.fetch_mut::<EventChannel<InputEvent>>().register_reader();
-    InputProcessorSystem { reader_id }
-  };
   let output_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<OutputEvent>>().register_reader();
     OutputProcessorSystem { reader_id }
+  };
+  let input_processor_system = {
+    let reader_id = ecs.fetch_mut::<EventChannel<InputEvent>>().register_reader();
+    InputProcessorSystem { reader_id }
   };
   let command_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<CommandEvent>>().register_reader();
@@ -48,21 +50,36 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     let reader_id = ecs.fetch_mut::<EventChannel<EffectEvent>>().register_reader();
     EffectProcessorSystem { reader_id }
   };
-  let tick_system = TickSystem {};
   let experiment_system = ExperimentSystem {};
+  let initiative_dispenser_system = InitiativeDispenserSystem {};
+  let tick_system = TickSystem {};
   let dispatcher = DispatcherBuilder::new()
     .with(experiment_system, "experiment", &[])
+    .with(initiative_dispenser_system, "initiative_dispenser", &[])
     .with(input_processor_system, "input_processor", &[])
-    .with(command_processor_system, "command_processor", &["input_processor"])
-    .with(action_processor_system, "action_processor", &["command_processor"])
-    .with(effect_processor_system, "effect_processor", &["action_processor"])
-    .with(output_processor_system, "output_processor", &["effect_processor"])
-    .with(tick_system, "tick", &["output_processor"])
+    .with(command_processor_system, "command_processor", &[])
+    .with(action_processor_system, "action_processor", &[])
+    .with(effect_processor_system, "effect_processor", &[])
+    .with(output_processor_system, "output_processor", &[])
+    .with(tick_system, "tick", &[])
     .build();
   dispatcher
 }
 
-pub fn get_second_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
+/// Every ten ticks.
+pub fn get_deca_tick_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
+  let dispatcher = DispatcherBuilder::new().build();
+  dispatcher
+}
+
+/// Every hundred ticks.
+pub fn get_hecto_tick_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
+  let dispatcher = DispatcherBuilder::new().build();
+  dispatcher
+}
+
+/// Every thousand ticks.
+pub fn get_kilo_tick_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
   let dispatcher = DispatcherBuilder::new().build();
   dispatcher
 }

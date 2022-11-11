@@ -20,6 +20,7 @@ pub struct ExperimentData<'a> {
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub has_description: WriteStorage<'a, HasDescription>,
+  pub has_initiative: WriteStorage<'a, HasInitiative>,
   pub has_name: WriteStorage<'a, HasName>,
   pub has_passages: WriteStorage<'a, HasPassages>,
   pub is_a_player: WriteStorage<'a, IsAPlayer>,
@@ -35,13 +36,23 @@ impl<'a> System<'a> for Experiment {
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
-    for (entity, _, _) in (&data.entities, &data.is_an_actor, !&data.is_a_player).join() {
-      let direction: Direction = data.random_resource.0.gen();
-      let action = Action::GoDirection(GoDirectionAction {
-        entity_id: EntityId(entity.id()),
-        direction,
-      });
-      data.action_event_channel.single_write(ActionEvent { action });
+    for (entity, mut has_initiative, _, _) in (
+      &data.entities,
+      &mut data.has_initiative,
+      &data.is_an_actor,
+      !&data.is_a_player,
+    )
+      .join()
+    {
+      if has_initiative.0.current > 250 {
+        let direction: Direction = data.random_resource.0.gen();
+        let action = Action::GoDirection(GoDirectionAction {
+          entity_id: EntityId(entity.id()),
+          direction,
+        });
+        data.action_event_channel.single_write(ActionEvent { action });
+        has_initiative.0.current = 0;
+      }
     }
   }
 }

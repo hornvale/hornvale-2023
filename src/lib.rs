@@ -49,6 +49,7 @@ pub mod formatting;
 pub mod game;
 pub mod geology;
 pub mod goap;
+pub mod initiative;
 pub mod linguistics;
 pub mod map;
 pub mod mythopoetics;
