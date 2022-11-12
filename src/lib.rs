@@ -36,6 +36,7 @@ pub mod _error;
 // Systems.
 pub mod action;
 pub mod actor;
+pub mod ailment;
 pub mod anatomy;
 pub mod astronomy;
 pub mod biology;
@@ -50,6 +51,7 @@ pub mod entity;
 pub mod event;
 pub mod formatting;
 pub mod game;
+pub mod gender;
 pub mod geology;
 pub mod goap;
 pub mod initiative;

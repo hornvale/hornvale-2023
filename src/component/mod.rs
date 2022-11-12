@@ -2,6 +2,8 @@ use specs::prelude::*;
 
 pub mod has_brief_description;
 pub use has_brief_description::HasBriefDescription;
+pub mod has_gender;
+pub use has_gender::HasGender;
 pub mod has_initiative;
 pub use has_initiative::HasInitiative;
 pub mod has_intent;
@@ -25,6 +27,7 @@ pub use is_in_room::IsInRoom;
 
 pub fn register_components(ecs: &mut World) {
   ecs.register::<HasBriefDescription>();
+  ecs.register::<HasGender>();
   ecs.register::<HasInitiative>();
   ecs.register::<HasIntent>();
   ecs.register::<HasName>();

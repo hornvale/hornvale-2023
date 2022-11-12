@@ -26,6 +26,7 @@ impl<'a> CreateMap {
       data,
       "Goblin",
       "The goblin is short, stout, and ugly.",
+      Gender::Male,
       RoomId(spawn_room.id())
     );
     let ne_room = create_room!(data, "Northeast Room", "This is the Northeastern Room.");

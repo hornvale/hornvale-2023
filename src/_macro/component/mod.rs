@@ -1,6 +1,8 @@
 #[macro_use]
 pub mod has_brief_description;
 #[macro_use]
+pub mod has_gender;
+#[macro_use]
 pub mod has_initiative;
 #[macro_use]
 pub mod has_intent;
