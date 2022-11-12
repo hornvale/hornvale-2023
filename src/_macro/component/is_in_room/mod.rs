@@ -9,3 +9,10 @@ macro_rules! is_in_room {
       .expect("Unable to insert is_in_room for entity!");
   }};
 }
+
+#[macro_export]
+macro_rules! get_current_room_id {
+  ($data: expr, $entity: expr) => {{
+    $data.is_in_room.get($entity).map(|is_in_room| is_in_room.0)
+  }};
+}

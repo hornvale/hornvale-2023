@@ -23,7 +23,7 @@ impl GoDirection {
       match get_passage_to!(data, room_entity, &self.direction) {
         Some(passage) => match passage.to {
           PassageDestination::Room(destination_id) => {
-            set_current_room_id!(data, entity, get_entity!(data, destination_id));
+            is_in_room!(data, entity, destination_id);
             data.effect_event_channel.single_write(EffectEvent {
               effect: Effect::EntityWalksOutOfRoom(EntityWalksOutOfRoom {
                 entity_id: self.entity_id,
