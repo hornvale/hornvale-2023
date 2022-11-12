@@ -41,10 +41,12 @@ pub mod astronomy;
 pub mod biology;
 pub mod combat;
 pub mod command;
+pub mod components;
 pub mod downdelving;
 pub mod economics;
-pub mod ecs;
 pub mod effect;
+pub mod entity;
+pub mod event;
 pub mod formatting;
 pub mod game;
 pub mod geology;
@@ -56,10 +58,12 @@ pub mod map;
 pub mod mythopoetics;
 pub mod perception;
 pub mod priority;
+pub mod resources;
 pub mod scripting;
 pub mod severity;
 pub mod sociology;
 pub mod supernatural;
+pub mod systems;
 
 #[cfg(test)]
 pub mod test {

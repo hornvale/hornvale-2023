@@ -5,11 +5,11 @@ use specs::prelude::*;
 use specs::shrev::EventChannel;
 use std::time::Duration;
 
-use crate::ecs::components::register_components;
-use crate::ecs::event_channels::insert_event_channels;
-use crate::ecs::event_channels::InputEvent;
-use crate::ecs::resources::*;
-use crate::ecs::systems::*;
+use crate::components::register_components;
+use crate::event::insert_event_channels;
+use crate::event::InputEvent;
+use crate::resources::*;
+use crate::systems::*;
 
 pub mod constants;
 use constants::*;

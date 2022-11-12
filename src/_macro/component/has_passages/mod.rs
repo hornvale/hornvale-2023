@@ -2,7 +2,7 @@
 macro_rules! has_passages {
   ($data: expr, $room: expr) => {{
     #[allow(unused_imports)]
-    use $crate::ecs::components::*;
+    use $crate::components::*;
     $data
       .has_passages
       .insert($room, HasPassages::default())

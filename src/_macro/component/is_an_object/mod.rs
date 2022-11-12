@@ -2,7 +2,7 @@
 macro_rules! is_an_object {
   ($data: expr, $entity: expr) => {{
     #[allow(unused_imports)]
-    use $crate::ecs::components::*;
+    use $crate::components::*;
     $data
       .is_an_object
       .insert($entity, IsAnObject)

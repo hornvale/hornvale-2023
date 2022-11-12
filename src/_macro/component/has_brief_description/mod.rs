@@ -2,7 +2,7 @@
 macro_rules! has_brief_description {
   ($data: expr, $entity: expr, $description: expr) => {{
     #[allow(unused_imports)]
-    use $crate::ecs::components::*;
+    use $crate::components::*;
     $data
       .has_brief_description
       .insert($entity, HasBriefDescription($description.into()))

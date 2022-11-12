@@ -1,6 +1,6 @@
-use crate::ecs::entity::EntityId;
-use crate::ecs::event_channels::*;
-use crate::ecs::systems::action_processor::Data as ActionProcessorData;
+use crate::entity::EntityId;
+use crate::event::*;
+use crate::systems::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 use specs::prelude::*;
 

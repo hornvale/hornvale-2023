@@ -1,4 +1,4 @@
-use crate::ecs::entity::RoomId;
+use crate::entity::RoomId;
 
 /// The `Destination` enum.
 ///

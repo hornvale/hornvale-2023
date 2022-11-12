@@ -2,7 +2,7 @@
 macro_rules! has_name {
   ($data: expr, $entity: expr, $name: expr) => {{
     #[allow(unused_imports)]
-    use $crate::ecs::components::*;
+    use $crate::components::*;
     $data
       .has_name
       .insert($entity, HasName($name.into()))

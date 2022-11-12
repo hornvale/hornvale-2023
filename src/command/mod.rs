@@ -1,5 +1,5 @@
 use crate::action::Action;
-use crate::ecs::systems::command_processor::Data as CommandProcessorData;
+use crate::systems::command_processor::Data as CommandProcessorData;
 use anyhow::Error as AnyError;
 
 pub mod echo;

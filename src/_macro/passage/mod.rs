@@ -3,7 +3,7 @@ macro_rules! create_passage {
   (@inner $data: expr, $from: expr, $to: expr, $direction: expr) => {{
     use $crate::map::Passage;
     use $crate::map::PassageDestination;
-    use $crate::ecs::entity::RoomId;
+    use $crate::entity::RoomId;
     if let Some(has_passages) = $data.has_passages.get_mut($from) {
       has_passages.set_passage(
         $direction,
