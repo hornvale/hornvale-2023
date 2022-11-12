@@ -5,13 +5,13 @@ use crate::resource::*;
 pub struct Tick {}
 
 #[derive(SystemData)]
-pub struct TickData<'a> {
+pub struct Data<'a> {
   pub entities: Entities<'a>,
   pub tick_resource: Write<'a, TickResource>,
 }
 
 impl<'a> System<'a> for Tick {
-  type SystemData = TickData<'a>;
+  type SystemData = Data<'a>;
 
   /// Run the system.
   fn run(&mut self, mut data: Self::SystemData) {

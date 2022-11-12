@@ -17,8 +17,12 @@ pub mod object;
 #[macro_use]
 pub mod output;
 #[macro_use]
+pub mod output_event;
+#[macro_use]
 pub mod passage;
 #[macro_use]
 pub mod player;
 #[macro_use]
 pub mod room;
+#[macro_use]
+pub mod you;

@@ -14,7 +14,6 @@ impl OutputProcessor {}
 #[derive(SystemData)]
 pub struct Data<'a> {
   pub entities: Entities<'a>,
-  pub random_resource: Write<'a, RandomResource>,
   pub output_resource: Write<'a, OutputResource>,
   pub output_event_channel: Read<'a, EventChannel<OutputEvent>>,
 }
