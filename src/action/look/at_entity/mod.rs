@@ -24,7 +24,7 @@ impl LookAtEntity {
         ),
       });
       data.output_event_channel.single_write(OutputEvent {
-        string: get_brief_description!(data, target_entity).0.clone(),
+        string: get_brief_description!(data, target_entity).unwrap().0.clone(),
       });
     }
     Ok(())

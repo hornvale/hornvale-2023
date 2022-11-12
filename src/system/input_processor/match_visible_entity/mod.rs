@@ -4,10 +4,7 @@ use anyhow::Error as AnyError;
 impl<'a> InputProcessor {
   /// Match any visible entity with specific text.
   pub fn match_visible_entity(&mut self, input: &str, data: &mut Data<'a>) -> Result<Entity, AnyError> {
-    info!(
-      "Attempting to match a visible entity with the descriptive text '{}'",
-      input
-    );
+    info!("Attempting to match a visible entity with the text '{}'", input);
     let player_id = data.player_resource.0.unwrap();
     let player = data.entities.entity(player_id.0);
     let mut result = Err(anyhow!("Not found"));

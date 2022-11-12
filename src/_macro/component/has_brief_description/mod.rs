@@ -13,6 +13,6 @@ macro_rules! has_brief_description {
 #[macro_export]
 macro_rules! get_brief_description {
   ($data: expr, $entity: expr) => {{
-    $data.has_brief_description.get($entity).unwrap()
+    $data.has_brief_description.get($entity)
   }};
 }

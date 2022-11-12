@@ -18,8 +18,9 @@ macro_rules! format_room {
     if let Some(name) = get_name!($data, $room) {
       string.push_str(format!("<bold>{}<reset>\n", name).as_str());
     }
-    let description = get_brief_description!($data, $room);
-    string.push_str(format!("{}\n", description.0).as_str());
+    if let Some(description) = get_brief_description!($data, $room) {
+      string.push_str(format!("{}\n", description.0).as_str());
+    }
     {
       let room_id = RoomId($room.id());
       for (_entities, _is_in_room, _is_an_object, has_brief_description) in (

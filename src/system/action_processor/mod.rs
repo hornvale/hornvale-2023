@@ -14,13 +14,15 @@ impl ActionProcessor {}
 #[derive(SystemData)]
 pub struct Data<'a> {
   pub entities: Entities<'a>,
-  pub player_resource: Read<'a, PlayerResource>,
   pub camera_resource: Read<'a, CameraResource>,
+  pub player_resource: Read<'a, PlayerResource>,
+  pub random_resource: Read<'a, RandomResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub effect_event_channel: Write<'a, EventChannel<EffectEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
   pub has_brief_description: ReadStorage<'a, HasBriefDescription>,
+  pub has_gender: ReadStorage<'a, HasGender>,
   pub has_name: ReadStorage<'a, HasName>,
   pub has_passages: ReadStorage<'a, HasPassages>,
   pub is_a_player: ReadStorage<'a, IsAPlayer>,

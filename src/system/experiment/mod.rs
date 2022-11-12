@@ -12,7 +12,7 @@ use specs::shrev::EventChannel;
 pub struct Experiment {}
 
 #[derive(SystemData)]
-pub struct ExperimentData<'a> {
+pub struct Data<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Write<'a, PlayerResource>,
   pub spawn_room_resource: Write<'a, SpawnRoomResource>,
@@ -33,7 +33,7 @@ pub struct ExperimentData<'a> {
 
 // This system should normally only be run at startup.
 impl<'a> System<'a> for Experiment {
-  type SystemData = ExperimentData<'a>;
+  type SystemData = Data<'a>;
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {

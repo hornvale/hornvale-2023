@@ -11,7 +11,6 @@ macro_rules! clone_output {
 #[macro_export]
 macro_rules! get_output {
   ($data: expr) => {{
-    #[allow(unused_imports)]
     &mut $data.output_event_channel
   }};
 }

@@ -15,7 +15,6 @@ pub struct Data<'a> {
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub command_event_channel: Read<'a, EventChannel<CommandEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
-  // pub script_event_channel: Write<'a, EventChannel<ScriptEvent>>,
 }
 
 impl<'a> System<'a> for CommandProcessor {
