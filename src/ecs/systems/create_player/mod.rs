@@ -11,7 +11,7 @@ pub struct CreatePlayerData<'a> {
   pub entities: Entities<'a>,
   pub player_resource: Write<'a, PlayerResource>,
   pub camera_resource: Write<'a, CameraResource>,
-  pub has_description: WriteStorage<'a, HasDescription>,
+  pub has_brief_description: WriteStorage<'a, HasBriefDescription>,
   pub has_initiative: WriteStorage<'a, HasInitiative>,
   pub has_name: WriteStorage<'a, HasName>,
   pub is_a_player: WriteStorage<'a, IsAPlayer>,

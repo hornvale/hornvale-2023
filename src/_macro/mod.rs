@@ -3,7 +3,11 @@ pub mod actor;
 #[macro_use]
 pub mod camera;
 #[macro_use]
+pub mod component;
+#[macro_use]
 pub mod entity;
+#[macro_use]
+pub mod error;
 #[macro_use]
 pub mod format;
 #[macro_use]

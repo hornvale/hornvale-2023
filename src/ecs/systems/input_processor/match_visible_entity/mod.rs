@@ -13,16 +13,16 @@ impl<'a> InputProcessor {
     let mut result = Err(anyhow!("Not found"));
     if let Some(current_room) = get_current_room_id!(data, player) {
       info!("Examining visible objects in room {:?}", current_room);
-      if let Some((target_entity, _is_in_room, _has_name, _has_description, _)) = (
+      if let Some((target_entity, _is_in_room, _has_name, _has_brief_description, _)) = (
         &data.entities,
         &data.is_in_room,
         &data.has_name,
-        &data.has_description,
+        &data.has_brief_description,
         !&data.is_a_player,
       )
         .join()
-        .filter(|(_entity, is_in_room, _has_name, _has_description, _)| is_in_room.0 == current_room)
-        .filter(|(_entity, _is_in_room, has_name, _has_description, _)| {
+        .filter(|(_entity, is_in_room, _has_name, _has_brief_description, _)| is_in_room.0 == current_room)
+        .filter(|(_entity, _is_in_room, has_name, _has_brief_description, _)| {
           has_name.0.to_lowercase() == input.to_lowercase()
         })
         .collect::<Vec<_>>()

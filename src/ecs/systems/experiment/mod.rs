@@ -4,9 +4,7 @@ use super::super::event_channels::*;
 use super::super::resources::*;
 use crate::action::Action;
 use crate::action::GoDirectionAction;
-use crate::intent::Intent;
 use crate::map::Direction;
-use crate::priority::Priority;
 use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
@@ -21,7 +19,7 @@ pub struct ExperimentData<'a> {
   pub random_resource: Write<'a, RandomResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
   pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
-  pub has_description: WriteStorage<'a, HasDescription>,
+  pub has_brief_description: WriteStorage<'a, HasBriefDescription>,
   pub has_initiative: WriteStorage<'a, HasInitiative>,
   pub has_intent: WriteStorage<'a, HasIntent>,
   pub has_name: WriteStorage<'a, HasName>,
@@ -53,17 +51,7 @@ impl<'a> System<'a> for Experiment {
           entity_id: EntityId(entity.id()),
           direction,
         });
-        data
-          .has_intent
-          .insert(
-            entity,
-            HasIntent(Intent {
-              action,
-              priority: Priority::Compulsory,
-              initiative_cost: 250,
-            }),
-          )
-          .unwrap();
+        has_intent!(data, entity, action, Priority::Compulsory, 250);
       }
     }
   }

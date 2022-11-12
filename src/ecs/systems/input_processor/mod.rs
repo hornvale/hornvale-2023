@@ -22,7 +22,7 @@ pub struct Data<'a> {
   pub command_event_channel: Write<'a, EventChannel<CommandEvent>>,
   pub input_event_channel: Read<'a, EventChannel<InputEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
-  pub has_description: ReadStorage<'a, HasDescription>,
+  pub has_brief_description: ReadStorage<'a, HasBriefDescription>,
   pub has_name: ReadStorage<'a, HasName>,
   pub has_passages: ReadStorage<'a, HasPassages>,
   pub is_a_player: ReadStorage<'a, IsAPlayer>,
