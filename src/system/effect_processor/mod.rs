@@ -1,15 +1,15 @@
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 
-use crate::components::*;
+use crate::component::*;
 use crate::event::*;
-use crate::resources::*;
+use crate::resource::*;
 
-pub struct ActionProcessor {
-  pub reader_id: ReaderId<ActionEvent>,
+pub struct EffectProcessor {
+  pub reader_id: ReaderId<EffectEvent>,
 }
 
-impl ActionProcessor {}
+impl EffectProcessor {}
 
 #[derive(SystemData)]
 pub struct Data<'a> {
@@ -17,7 +17,6 @@ pub struct Data<'a> {
   pub player_resource: Read<'a, PlayerResource>,
   pub camera_resource: Read<'a, CameraResource>,
   pub tile_map_resource: Write<'a, TileMapResource>,
-  pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
   pub effect_event_channel: Write<'a, EventChannel<EffectEvent>>,
   pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
   pub has_brief_description: ReadStorage<'a, HasBriefDescription>,
@@ -29,28 +28,30 @@ pub struct Data<'a> {
   pub is_in_room: WriteStorage<'a, IsInRoom>,
 }
 
-impl<'a> System<'a> for ActionProcessor {
+impl<'a> System<'a> for EffectProcessor {
   type SystemData = Data<'a>;
 
   /// Run the system.
   fn run(&mut self, mut data: Self::SystemData) {
     let events = data
-      .action_event_channel
+      .effect_event_channel
       .read(&mut self.reader_id)
       .into_iter()
       .cloned()
-      .collect::<Vec<ActionEvent>>();
+      .collect::<Vec<EffectEvent>>();
     let event_count = events.len();
     if event_count == 0 {
       return;
     }
-    info!("Processing {} action event(s)...", event_count);
+    info!("Processing {} effect event(s)...", event_count);
     for event in events.iter() {
-      debug!("Processing next action event, {:?}", event);
-      let ActionEvent { action } = event;
-      match action.execute(&mut data) {
+      debug!("Processing next effect event, {:?}", event);
+      let EffectEvent { effect } = event;
+      match effect.process(&mut data) {
         Ok(()) => {},
-        Err(error) => error!("{:#?}", error),
+        Err(error) => data.output_event_channel.single_write(OutputEvent {
+          string: format!("encountered an error ({})", error),
+        }),
       }
     }
   }

@@ -1,4 +1,4 @@
-use crate::components::*;
+use crate::component::*;
 use crate::event::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;

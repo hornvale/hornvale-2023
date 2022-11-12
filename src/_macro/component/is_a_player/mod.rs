@@ -2,7 +2,7 @@
 macro_rules! is_a_player {
   ($data: expr, $entity: expr) => {{
     #[allow(unused_imports)]
-    use $crate::components::*;
+    use $crate::component::*;
     $data
       .is_a_player
       .insert($entity, IsAPlayer)

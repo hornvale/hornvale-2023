@@ -2,7 +2,7 @@
 macro_rules! is_an_actor {
   ($data: expr, $entity: expr) => {{
     #[allow(unused_imports)]
-    use $crate::components::*;
+    use $crate::component::*;
     $data
       .is_an_actor
       .insert($entity, IsAnActor)

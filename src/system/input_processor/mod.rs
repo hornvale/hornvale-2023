@@ -1,7 +1,7 @@
-use crate::components::*;
+use crate::component::*;
 use crate::entity::*;
 use crate::event::*;
-use crate::resources::*;
+use crate::resource::*;
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 

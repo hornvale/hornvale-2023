@@ -1,7 +1,7 @@
 use crate::action::Action;
 use crate::entity::PlayerId;
 use crate::scripting::virtual_machine::VirtualMachine;
-use crate::systems::command_processor::Data as CommandProcessorData;
+use crate::system::command_processor::Data as CommandProcessorData;
 use anyhow::Error;
 
 /// The `Eval` command.

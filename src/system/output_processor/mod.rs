@@ -1,6 +1,6 @@
 use crate::event::OutputEvent;
 use crate::formatting::format_string;
-use crate::resources::*;
+use crate::resource::*;
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 use std::io::Write as _;

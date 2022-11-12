@@ -1,4 +1,4 @@
-use crate::systems::action_processor::Data as ActionProcessorData;
+use crate::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
 pub mod go_direction;

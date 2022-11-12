@@ -1,8 +1,8 @@
 use specs::prelude::*;
 
-use crate::components::*;
+use crate::component::*;
 use crate::entity::*;
-use crate::resources::*;
+use crate::resource::*;
 
 pub struct CreatePlayer {}
 

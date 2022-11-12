@@ -10,7 +10,7 @@ macro_rules! create_player {
     player
   }};
   ($data: expr, $in_room: expr) => {{
-    use $crate::components::*;
+    use $crate::component::*;
     let player = create_player!($data);
     is_in_room!($data, player, $room_id);
     player

@@ -1,7 +1,7 @@
 use crate::entity::EntityId;
 use crate::entity::RoomId;
 use crate::map::Direction;
-use crate::systems::effect_processor::Data as EffectProcessorData;
+use crate::system::effect_processor::Data as EffectProcessorData;
 use anyhow::Error;
 
 /// `EntityWalksOutOfRoom`.

@@ -1,6 +1,6 @@
 use crate::action::Action;
 use crate::entity::PlayerId;
-use crate::systems::command_processor::Data as CommandProcessorData;
+use crate::system::command_processor::Data as CommandProcessorData;
 use anyhow::Error;
 
 /// The `Quit` command.

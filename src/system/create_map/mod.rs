@@ -2,10 +2,10 @@ use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
-use crate::components::*;
+use crate::component::*;
 use crate::entity::*;
 use crate::event::*;
-use crate::resources::*;
+use crate::resource::*;
 
 mod compass_demo;
 mod trivial_maze;

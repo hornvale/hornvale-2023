@@ -1,4 +1,4 @@
-use crate::components::*;
+use crate::component::*;
 use crate::initiative::MAX_INITIATIVE;
 use specs::prelude::*;
 

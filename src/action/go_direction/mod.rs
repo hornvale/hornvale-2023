@@ -5,7 +5,7 @@ use crate::entity::EntityId;
 use crate::event::*;
 use crate::map::Direction;
 use crate::map::PassageDestination;
-use crate::systems::action_processor::Data as ActionProcessorData;
+use crate::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
 /// The `GoDirection` action.

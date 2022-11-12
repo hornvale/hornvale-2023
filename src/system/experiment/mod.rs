@@ -1,10 +1,10 @@
 use crate::action::Action;
 use crate::action::GoDirectionAction;
-use crate::components::*;
+use crate::component::*;
 use crate::entity::*;
 use crate::event::*;
 use crate::map::Direction;
-use crate::resources::*;
+use crate::resource::*;
 use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
