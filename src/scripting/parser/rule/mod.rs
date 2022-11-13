@@ -50,7 +50,6 @@ pub mod test {
       infix: None,
       precedence: Precedence::None,
     };
-
     println!("{:?}", rule);
   }
 }

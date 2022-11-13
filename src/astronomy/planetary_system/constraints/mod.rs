@@ -20,7 +20,6 @@ impl Constraints {
   pub fn habitable() -> Self {
     let host_star_constraints = Some(HostStarConstraints::habitable());
     let satellite_systems_constraints = Some(SatelliteSystemsConstraints::habitable());
-
     Self {
       host_star_constraints,
       satellite_systems_constraints,
@@ -73,7 +72,6 @@ pub mod test {
       is_habitable = planetary_system.is_habitable();
       counter += 1;
     }
-
     print_var!(planetary_system);
     planetary_system.check_habitable()?;
     assert!(planetary_system.is_habitable());
@@ -85,7 +83,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let planetary_system = Constraints::default().generate(&mut rng)?;
-
     print_var!(planetary_system);
     Ok(())
   }

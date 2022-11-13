@@ -37,7 +37,6 @@ impl Collector {
     let objects = Vec::new();
     let strings = HashMap::new();
     let gray_stack = VecDeque::new();
-
     Collector {
       bytes_allocated,
       next_threshold,
@@ -52,7 +51,6 @@ impl Collector {
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
     let repr = format!("{:?}", object).chars().into_iter().take(32).collect::<String>();
     let size = object.get_size() + size_of::<ObjectHeader>();
-
     self.bytes_allocated += size;
     let is_marked = false;
     let object = Box::new(object);
@@ -71,7 +69,6 @@ impl Collector {
         self.objects.len() - 1
       },
     };
-
     debug!(
       "alloc(id: {}, type: {}: repr: {}, bytes: {}, next: {})",
       index,
@@ -80,7 +77,6 @@ impl Collector {
       self.bytes_allocated,
       self.next_threshold,
     );
-
     Reference {
       index,
       marker: PhantomData,
@@ -93,11 +89,9 @@ impl Collector {
       value
     } else {
       let reference = self.alloc(name.clone());
-
       self.strings.insert(name, reference);
       reference
     };
-
     result
   }
 
@@ -110,7 +104,6 @@ impl Collector {
       .as_any()
       .downcast_ref()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index));
-
     result
   }
 
@@ -123,7 +116,6 @@ impl Collector {
       .as_any_mut()
       .downcast_mut()
       .unwrap_or_else(|| panic!("Reference {} not found", reference.index));
-
     result
   }
 
@@ -172,7 +164,6 @@ impl Collector {
   /// @see https://craftinginterpreters.com/garbage-collection.html
   pub fn collect_garbage(&mut self) {
     let before = self.bytes_allocated;
-
     self.trace_references();
     // Strings are handled a bit differently.
     self.remove_white_strings();

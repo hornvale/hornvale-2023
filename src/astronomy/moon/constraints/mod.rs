@@ -64,7 +64,6 @@ pub mod test {
     let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &PlanetConstraints::habitable().generate(&mut rng, host_star, star_distance)?;
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet, 400_000.0)?;
-
     print_var!(moon);
     Ok(())
   }

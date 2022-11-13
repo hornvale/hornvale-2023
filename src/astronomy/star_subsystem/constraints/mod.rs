@@ -33,11 +33,9 @@ impl Constraints {
     let generate_planetary_system: bool = rng.gen_range(0.0..1.0) > distant_binary_probability;
     let result = if generate_planetary_system {
       let planetary_system_constraints = self.planetary_system_constraints.unwrap_or_default();
-
       PlanetarySystem(planetary_system_constraints.generate(rng)?)
     } else {
       let distant_binary_star_constraints = self.distant_binary_star_constraints.unwrap_or_default();
-
       DistantBinaryStar(distant_binary_star_constraints.generate(rng)?)
     };
     Ok(result)
@@ -71,7 +69,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_subsystem = &Constraints::default().generate(&mut rng)?;
-
     print_var!(star_subsystem);
     Ok(())
   }
@@ -81,7 +78,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_subsystem = &Constraints::habitable().generate(&mut rng)?;
-
     print_var!(star_subsystem);
     star_subsystem.is_habitable();
     Ok(())

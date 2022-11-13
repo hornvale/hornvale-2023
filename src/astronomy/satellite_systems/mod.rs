@@ -25,7 +25,6 @@ impl SatelliteSystems {
       }
       Ok(())
     };
-
     result
   }
 

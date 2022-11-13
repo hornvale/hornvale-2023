@@ -20,7 +20,6 @@ impl Planet {
   /// Get density of the planet.
   pub fn get_density(&self) -> f64 {
     use Planet::*;
-
     match &self {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.density,
       GasGiantPlanet(gas_giant_planet) => gas_giant_planet.density,
@@ -30,7 +29,6 @@ impl Planet {
   /// Get mass of the planet.
   pub fn get_mass(&self) -> f64 {
     use Planet::*;
-
     match &self {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.mass,
       GasGiantPlanet(gas_giant_planet) => gas_giant_planet.mass,
@@ -40,7 +38,6 @@ impl Planet {
   /// Get radius of the planet.
   pub fn get_radius(&self) -> f64 {
     use Planet::*;
-
     match &self {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.radius,
       GasGiantPlanet(gas_giant_planet) => gas_giant_planet.radius,
@@ -50,7 +47,6 @@ impl Planet {
   /// Get the orbital period of the planet.
   pub fn get_orbital_period(&self) -> f64 {
     use Planet::*;
-
     match &self {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.orbital_period,
       GasGiantPlanet(gas_giant_planet) => gas_giant_planet.orbital_period,

@@ -66,7 +66,6 @@ impl Constraints {
     let minimum_axial_tilt = self.minimum_axial_tilt.unwrap_or(0.0);
     let maximum_axial_tilt = self.maximum_axial_tilt.unwrap_or(180.0);
     let axial_tilt = rng.gen_range(minimum_axial_tilt..maximum_axial_tilt);
-
     result.semi_major_axis = distance;
     result.axial_tilt = axial_tilt;
     result.rotation_direction = match axial_tilt {
@@ -161,7 +160,6 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
-
     print_var!(planet);
     Ok(())
   }
@@ -182,7 +180,6 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
-
     print_var!(planet);
     planet.is_habitable();
     Ok(())
@@ -204,7 +201,6 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let mut planet = Constraints::habitable().generate(&mut rng, &host_star, distance)?;
-
     print_var!(planet);
     planet.is_habitable();
     let old_gravity = planet.gravity;

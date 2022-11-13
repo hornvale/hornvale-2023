@@ -43,7 +43,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let name = generate_star_name(&mut rng);
-
     print_var!(name);
   }
 }

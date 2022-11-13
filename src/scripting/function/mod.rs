@@ -38,7 +38,6 @@ impl Function {
     let arity = 0;
     let chunk = Chunk::default();
     let upvalues = Vec::new();
-
     Self {
       arity,
       chunk,
@@ -51,7 +50,6 @@ impl Function {
 impl Trace for Function {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let name = garbage_collector.deref(self.name);
-
     if name.is_empty() {
       write!(f, "<script>")
     } else {

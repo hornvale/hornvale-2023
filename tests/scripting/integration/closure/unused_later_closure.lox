@@ -14,9 +14,7 @@ var closure;
     fun returnA() {
       return a;
     }
-
     closure = returnA;
-
     if (false) {
       fun returnB() {
         return b;

@@ -21,7 +21,6 @@ impl Constraints {
   pub fn habitable() -> Self {
     let star_constraints = Some(StarConstraints::habitable());
     let close_binary_star_constraints = Some(CloseBinaryStarConstraints::habitable());
-
     Self {
       star_constraints,
       close_binary_star_constraints,
@@ -68,7 +67,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let host_star = Constraints::default().generate(&mut rng)?;
-
     print_var!(host_star);
     Ok(())
   }

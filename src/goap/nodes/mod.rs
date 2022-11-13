@@ -15,7 +15,6 @@ impl Nodes {
   /// Constructor.
   pub fn new() -> Self {
     let nodes = Vec::new();
-
     Self { nodes }
   }
 
@@ -41,7 +40,6 @@ impl Nodes {
         lowest_value = node.f;
       }
     }
-
     result
   }
 

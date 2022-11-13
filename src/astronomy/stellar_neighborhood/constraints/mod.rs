@@ -43,7 +43,6 @@ impl Constraints {
       radius: Some(radius),
       system_constraints: Some(StarSystemConstraints::default()),
     });
-
     loop {
       let neighbor = neighbor_constraints.generate(rng)?;
       star_count += neighbor.get_stellar_count() as usize;

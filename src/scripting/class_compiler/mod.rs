@@ -15,7 +15,6 @@ impl ClassCompiler {
       enclosing,
       has_superclass,
     };
-
     Box::new(result)
   }
 }

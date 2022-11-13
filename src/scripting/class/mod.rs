@@ -20,7 +20,6 @@ impl Class {
   /// Constructor.
   pub fn new(name: Reference<String>) -> Self {
     let methods = Table::new();
-
     Class { name, methods }
   }
 }
@@ -29,7 +28,6 @@ impl Trace for Class {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let name = garbage_collector.deref(self.name);
     let result = write!(f, "{}", name);
-
     result
   }
 

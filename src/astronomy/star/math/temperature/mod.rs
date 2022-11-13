@@ -27,7 +27,6 @@ pub mod test {
   #[test]
   pub fn test_ms_star_mass_to_temperature() -> Result<(), Error> {
     init();
-
     // Jolly ol' Sol
     let mut mass = 1.0;
     let mut expected = 5776.0;

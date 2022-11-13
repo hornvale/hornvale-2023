@@ -34,9 +34,7 @@ impl<'source> Compiler<'source> {
       FunctionType::Method | FunctionType::Initializer => Token::synthesize("this"),
       _ => Token::synthesize(""),
     };
-
     locals.push(Local::new(token, 0));
-
     Self {
       enclosing,
       locals,
@@ -49,7 +47,6 @@ impl<'source> Compiler<'source> {
   /// Does a variable with this name exist already in this scope?
   pub fn has_local(&self, token: &Token<'source>) -> bool {
     let token_name = token.lexeme;
-
     for local in self.locals.iter().rev() {
       // We've entered a new scope, so we're safe.
       if local.depth != -1 && local.depth < self.depth {
@@ -59,14 +56,12 @@ impl<'source> Compiler<'source> {
         return true;
       }
     }
-
     false
   }
 
   /// Resolve a local variable.
   pub fn resolve_local(&mut self, token: Token, errors: &mut Vec<&'static str>) -> Option<u16> {
     let token_name = token.lexeme;
-
     for (i, local) in self.locals.iter().enumerate().rev() {
       if token_name == local.token.lexeme {
         if local.depth == -1 {
@@ -89,7 +84,6 @@ impl<'source> Compiler<'source> {
         return Some(self.add_upvalue(index, false, errors));
       }
     }
-
     None
   }
 
@@ -103,7 +97,6 @@ impl<'source> Compiler<'source> {
     let result = self.function.upvalues.len() as u16;
     let upvalue = FunctionUpvalue { index, is_local };
     self.function.upvalues.push(upvalue);
-
     result
   }
 }

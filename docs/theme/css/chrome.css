@@ -130,19 +130,16 @@ a > .hljs {
     font-size: 2.5em;
     text-align: center;
     text-decoration: none;
-
     position: fixed;
     top: 0;
     bottom: 0;
     margin: 0;
     max-width: 150px;
     min-width: 90px;
-
     display: flex;
     justify-content: center;
     align-content: center;
     flex-direction: column;
-
     transition: color 0.5s, background-color 0.5s;
 }
 
@@ -212,7 +209,6 @@ pre > .buttons {
     top: 2px;
     margin: 0px;
     padding: 2px 0px;
-
     color: var(--sidebar-fg);
     cursor: pointer;
     visibility: hidden;
@@ -236,7 +232,6 @@ pre > .buttons button {
     margin: 0px 5px;
     padding: 3px 5px;
     font-size: 14px;
-
     border-style: solid;
     border-width: 1px;
     border-radius: 4px;

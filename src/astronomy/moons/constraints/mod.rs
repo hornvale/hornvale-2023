@@ -50,7 +50,6 @@ impl Constraints {
       for _ in 1..count {
         let planet_distance = rng.gen_range(satellite_zone.0..satellite_zone.1);
         let moon = moon_constraints.generate(rng, host_star, star_distance, planet, planet_distance)?;
-
         moons.push(moon);
       }
       moons
@@ -87,7 +86,6 @@ pub mod test {
     let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance)?;
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet)?;
-
     print_var!(moon);
     Ok(())
   }

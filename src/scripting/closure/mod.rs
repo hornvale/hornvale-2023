@@ -24,7 +24,6 @@ impl Closure {
   /// Constructor.
   pub fn new(function: Reference<Function>) -> Self {
     let upvalues = Vec::new();
-
     Closure { function, upvalues }
   }
 }
@@ -32,7 +31,6 @@ impl Closure {
 impl Trace for Closure {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let function = garbage_collector.deref(self.function);
-
     function.format(f, garbage_collector)
   }
 

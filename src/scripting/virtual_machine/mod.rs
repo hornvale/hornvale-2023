@@ -68,7 +68,6 @@ impl VirtualMachine {
     result
       .define_native_function("clock", NativeFunction(standard_library::uptime))
       .unwrap();
-
     result
   }
 
@@ -76,10 +75,8 @@ impl VirtualMachine {
   pub fn interpret(&mut self, source: &str) -> Result<(), Error> {
     let mut interpreter = Interpreter::default();
     let function = interpreter.compile(source, &mut self.garbage_collector)?;
-
     self.push(Value::Function(function))?;
     let closure = self.alloc(ClosureStruct::new(function));
-
     self.call_frames.push(CallFrame::new(closure, 0));
     self.run()?;
     Ok(())
@@ -91,7 +88,6 @@ impl VirtualMachine {
       let instruction =
         self.get_current_chunk().instructions.instructions[self.get_current_frame().instruction_pointer];
       self.get_current_frame_mut().instruction_pointer += 1;
-
       use Instruction::*;
       use Value::*;
       debug_var!(self.get_current_frame().instruction_pointer);
@@ -99,16 +95,13 @@ impl VirtualMachine {
       match instruction {
         Constant(index) => {
           let constant = self.get_current_chunk().constants.constants[index as usize];
-
           self.push(constant)?;
         },
         Negate => {
           let pop = self.pop()?;
-
           match pop {
             Number(pop) => {
               let answer = -pop;
-
               self.push(Value::Number(answer))?;
             },
             _ => {
@@ -120,7 +113,6 @@ impl VirtualMachine {
         Add => {
           let a = self.pop()?;
           let b = self.pop()?;
-
           use Value::*;
           match (&a, &b) {
             (Number(a), Number(b)) => self.push(Value::Number(a + b))?,
@@ -148,13 +140,11 @@ impl VirtualMachine {
         Equal => {
           let a = self.pop()?;
           let b = self.pop()?;
-
           self.push(Value::Boolean(a == b))?;
         },
         NotEqual => {
           let a = self.pop()?;
           let b = self.pop()?;
-
           self.push(Value::Boolean(a != b))?;
         },
         GreaterThan => self.binary_arithmetic_operation(GreaterThan, |a, b| b > a, Value::Boolean)?,
@@ -164,7 +154,6 @@ impl VirtualMachine {
         Return => {
           let call_frame = self.call_frames.pop().unwrap();
           let return_value = self.pop()?;
-
           self.close_upvalues(call_frame.index)?;
           if self.call_frames.is_empty() {
             return Ok(());
@@ -187,18 +176,15 @@ impl VirtualMachine {
         Not => {
           let value = self.pop()?;
           let answer = self.is_falsey(&value);
-
           self.push(Value::Boolean(answer))?;
         },
         DefineGlobal(index) => {
           let identifier = self.get_current_chunk().read_string(index);
           let value = self.pop()?;
-
           self.globals.insert(identifier, value);
         },
         GetGlobal(index) => {
           let identifier = self.get_current_chunk().read_string(index);
-
           match self.globals.get(&identifier) {
             Some(&value) => self.push(value)?,
             None => {
@@ -298,7 +284,6 @@ impl VirtualMachine {
           let class_name = self.get_current_chunk().read_string(index);
           let class_object = ClassStruct::new(class_name);
           let class_reference = self.alloc(class_object);
-
           self.push(Value::Class(class_reference))?;
         },
         Method(index) => {
@@ -387,7 +372,6 @@ impl VirtualMachine {
   ) -> Result<(), Error> {
     let a = self.pop()?;
     let b = self.pop()?;
-
     use Value::*;
     match (a, b) {
       (Number(a), Number(b)) => self.push(valuate(function(a, b)))?,
@@ -409,7 +393,6 @@ impl VirtualMachine {
     if self.stack.len() > STACK_SIZE_MAX {
       return Err(Error::RuntimeError(RuntimeError::StackOverflow));
     }
-
     self.stack.push(value);
     Ok(())
   }
@@ -447,7 +430,6 @@ impl VirtualMachine {
   #[inline]
   pub fn is_falsey(&mut self, value: &Value) -> bool {
     use Value::*;
-
     match value {
       Nil => true,
       Boolean(value) => !value,
@@ -458,14 +440,12 @@ impl VirtualMachine {
   /// Allocate an object.
   pub fn alloc<T: Trace + 'static + Debug>(&mut self, object: T) -> Reference<T> {
     self.mark_and_sweep();
-
     self.garbage_collector.alloc(object)
   }
 
   /// Eliminates duplicate string references.
   pub fn intern(&mut self, name: String) -> Reference<String> {
     self.mark_and_sweep();
-
     self.garbage_collector.intern(name)
   }
 
@@ -517,21 +497,18 @@ impl VirtualMachine {
   /// Get current frame.
   pub fn get_current_frame(&self) -> &CallFrame {
     let result = self.call_frames.last().unwrap();
-
     result
   }
 
   /// Get current frame mutable.
   pub fn get_current_frame_mut(&mut self) -> &mut CallFrame {
     let result = self.call_frames.last_mut().unwrap();
-
     result
   }
 
   /// Get current closure.
   pub fn get_current_closure(&self) -> &ClosureStruct {
     let closure = self.get_current_frame().closure;
-
     self.garbage_collector.deref(closure) as _
   }
 
@@ -539,7 +516,6 @@ impl VirtualMachine {
   pub fn get_current_chunk(&self) -> &Chunk {
     let closure = self.get_current_closure();
     let function = self.garbage_collector.deref(closure.function);
-
     &function.chunk as _
   }
 
@@ -547,14 +523,12 @@ impl VirtualMachine {
   pub fn capture_upvalue(&mut self, location: usize) -> Result<Reference<Upvalue>, Error> {
     for &upvalue_ref in &self.open_upvalues {
       let upvalue = self.garbage_collector.deref(upvalue_ref);
-
       if upvalue.location == location {
         return Ok(upvalue_ref);
       }
     }
     let upvalue = Upvalue::new(location);
     let upvalue = self.alloc(upvalue);
-
     self.open_upvalues.push(upvalue);
     Ok(upvalue)
   }
@@ -567,7 +541,6 @@ impl VirtualMachine {
         let bound = self.garbage_collector.deref(bound_reference);
         let method = bound.method;
         let receiver = bound.receiver;
-
         self.set_in_stack(argument_count, receiver);
         self.call(method, argument_count)?;
       },
@@ -575,14 +548,12 @@ impl VirtualMachine {
       Value::NativeFunction(native_function) => {
         let start = self.stack.len() - argument_count;
         let result = native_function.0(self, &self.stack[start..])?;
-
         self.stack.truncate(start - 1);
         self.push(result)?;
       },
       Value::Class(class_reference) => {
         let instance_object = Instance::new(class_reference);
         let instance_reference = self.alloc(instance_object);
-
         self.set_in_stack(argument_count, Value::Instance(instance_reference));
         let class = self.garbage_collector.deref(class_reference);
         if let Some(&initializer) = class.methods.get(&self.init_string) {
@@ -611,16 +582,13 @@ impl VirtualMachine {
   /// Invoke a method with arguments.
   pub fn invoke(&mut self, name: Reference<String>, argument_count: usize) -> Result<(), Error> {
     let receiver = self.peek(argument_count)?;
-
     if let Value::Instance(instance_reference) = receiver {
       let instance = self.garbage_collector.deref(instance_reference);
-
       if let Some(&field) = instance.fields.get(&name) {
         self.set_in_stack(argument_count, field);
         self.call_value(argument_count)?;
       } else {
         let class = instance.class;
-
         self.invoke_from_class(class, name, argument_count)?;
       }
     } else {
@@ -638,7 +606,6 @@ impl VirtualMachine {
     argument_count: usize,
   ) -> Result<(), Error> {
     let class = self.garbage_collector.deref(class_reference);
-
     if let Some(&method_value) = class.methods.get(&name_reference) {
       if let Value::Closure(closure_reference) = method_value {
         self.call(closure_reference, argument_count)?;
@@ -657,7 +624,6 @@ impl VirtualMachine {
   pub fn call(&mut self, closure_reference: Reference<ClosureStruct>, argument_count: usize) -> Result<(), Error> {
     let closure = self.garbage_collector.deref(closure_reference);
     let function = self.garbage_collector.deref(closure.function);
-
     if argument_count != function.arity {
       let message = format!("Expected {} arguments but got {}.", function.arity, argument_count);
       self.did_encounter_runtime_error(&message);
@@ -669,7 +635,6 @@ impl VirtualMachine {
     } else {
       let start = self.stack.len() - argument_count - 1;
       let end = start + argument_count;
-
       debug!(
         "Calling {} {} with arguments ({:#?})",
         closure,
@@ -702,7 +667,6 @@ impl VirtualMachine {
   /// Define a native function.
   pub fn define_native_function(&mut self, name: &str, native_function: NativeFunction) -> Result<(), Error> {
     let name_reference = self.garbage_collector.intern(name.to_owned());
-
     self
       .globals
       .insert(name_reference, Value::NativeFunction(native_function));
@@ -712,7 +676,6 @@ impl VirtualMachine {
   /// Encountered an error.
   pub fn did_encounter_runtime_error(&self, message: &str) {
     let frame = self.get_current_frame();
-
     eprintln!("{}", message);
     let chunk = self.get_current_chunk();
     let line_number = chunk.instructions.line_numbers[frame.instruction_pointer - 1];
@@ -726,7 +689,6 @@ impl VirtualMachine {
     name_reference: Reference<String>,
   ) -> Result<(), Error> {
     let class = self.garbage_collector.deref(class_reference);
-
     if let Some(method) = class.methods.get(&name_reference) {
       let receiver = self.peek(0)?;
       let method = match method {
@@ -735,12 +697,10 @@ impl VirtualMachine {
       };
       let bound = BoundMethod::new(receiver, method);
       let bound_reference = self.alloc(bound);
-
       self.pop()?;
       self.push(Value::BoundMethod(bound_reference))?;
     } else {
       let name = self.garbage_collector.deref(name_reference);
-
       self.did_encounter_runtime_error(&format!("Undefined property '{}'.", name));
       return Err(Error::RuntimeError(RuntimeError::UndefinedProperty(name.to_string())));
     }

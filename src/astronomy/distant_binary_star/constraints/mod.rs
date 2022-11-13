@@ -67,7 +67,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let distant_binary_star = Constraints::default().generate(&mut rng)?;
-
     print_var!(distant_binary_star);
     Ok(())
   }
@@ -77,7 +76,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let distant_binary_star = Constraints::habitable().generate(&mut rng)?;
-
     print_var!(distant_binary_star);
     distant_binary_star.get_stellar_mass();
     distant_binary_star.is_habitable();

@@ -9,13 +9,11 @@ use crate::scripting::garbage_collection::trace::Trace;
 impl Trace for String {
   fn format(&self, f: &mut Formatter, _garbage_collector: &Collector) -> FmtResult {
     let result = write!(f, "{}", self);
-
     result
   }
 
   fn get_size(&self) -> usize {
     let result = size_of::<String>() + self.as_bytes().len();
-
     result
   }
 

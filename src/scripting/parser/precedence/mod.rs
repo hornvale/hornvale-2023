@@ -19,7 +19,6 @@ pub enum Precedence {
 impl Precedence {
   pub fn next(&self) -> Precedence {
     use Precedence::*;
-
     match self {
       None => Assignment,
       Assignment => Or,

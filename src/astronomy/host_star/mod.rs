@@ -28,7 +28,6 @@ impl HostStar {
   /// Calculated in Gyr.
   pub fn get_current_age(&self) -> f64 {
     use HostStar::*;
-
     match &self {
       Star(star) => star.current_age,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_current_age(),
@@ -40,7 +39,6 @@ impl HostStar {
   /// Calculated in Msol.
   pub fn get_stellar_mass(&self) -> f64 {
     use HostStar::*;
-
     match &self {
       Star(star) => star.mass,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_stellar_mass(),
@@ -50,7 +48,6 @@ impl HostStar {
   /// Retrieve or calculate the total number of stars in the system.
   pub fn get_stellar_count(&self) -> u8 {
     use HostStar::*;
-
     match &self {
       Star(_) => 1,
       CloseBinaryStar(_) => 2,
@@ -60,7 +57,6 @@ impl HostStar {
   /// Retrieve or calculate the frost line.
   pub fn get_frost_line(&self) -> f64 {
     use HostStar::*;
-
     match &self {
       Star(star) => star.frost_line,
       CloseBinaryStar(close_binary_star) => close_binary_star.frost_line,
@@ -70,7 +66,6 @@ impl HostStar {
   /// Retrieve or calculate the habitable zone.
   pub fn get_habitable_zone(&self) -> (f64, f64) {
     use HostStar::*;
-
     match &self {
       Star(star) => star.habitable_zone,
       CloseBinaryStar(close_binary_star) => close_binary_star.habitable_zone,
@@ -80,7 +75,6 @@ impl HostStar {
   /// Retrieve or calculate the satellite zone.
   pub fn get_satellite_zone(&self) -> (f64, f64) {
     use HostStar::*;
-
     match &self {
       Star(star) => star.satellite_zone,
       CloseBinaryStar(close_binary_star) => close_binary_star.satellite_zone,
@@ -90,7 +84,6 @@ impl HostStar {
   /// Retrieve or calculate the luminosity.
   pub fn get_luminosity(&self) -> f64 {
     use HostStar::*;
-
     match &self {
       Star(star) => star.luminosity,
       CloseBinaryStar(close_binary_star) => close_binary_star.get_luminosity(),

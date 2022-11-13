@@ -28,7 +28,6 @@ impl Constraints {
     let generate_primary_gas_giant = true;
     let generate_habitable = true;
     let satellite_system_constraints = Some(SatelliteSystemConstraints::habitable());
-
     Self {
       generate_primary_gas_giant,
       generate_habitable,
@@ -46,7 +45,6 @@ impl Constraints {
     let orbits = self.generate_orbits(rng, host_star)?;
     for orbit in orbits.into_iter() {
       let satellite_system = satellite_system_constraints.generate(rng, host_star, orbit)?;
-
       satellite_systems.push(satellite_system);
     }
     let result = SatelliteSystems { satellite_systems };
@@ -128,7 +126,6 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let satellite_systems = &Constraints::default().generate(&mut rng, host_star)?;
-
     print_var!(satellite_systems);
     Ok(())
   }
@@ -139,7 +136,6 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
     let satellite_systems = &Constraints::habitable().generate(&mut rng, host_star)?;
-
     print_var!(satellite_systems);
     Ok(())
   }

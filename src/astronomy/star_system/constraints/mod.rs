@@ -106,7 +106,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_system = &Constraints::default().generate(&mut rng)?;
-
     print_var!(star_system);
     Ok(())
   }
@@ -116,7 +115,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_system = &Constraints::habitable().generate(&mut rng)?;
-
     print_var!(star_system);
     star_system.get_stellar_count();
     star_system.get_stellar_mass();
@@ -129,7 +127,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_system = &Constraints::habitable_close_binary().generate(&mut rng)?;
-
     print_var!(star_system);
     Ok(())
   }
@@ -139,7 +136,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_system = &Constraints::habitable_distant_binary().generate(&mut rng)?;
-
     print_var!(star_system);
     Ok(())
   }
@@ -149,7 +145,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star_system = &Constraints::main_sequence().generate(&mut rng)?;
-
     print_var!(star_system);
     Ok(())
   }

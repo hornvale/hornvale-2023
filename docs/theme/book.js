@@ -6,7 +6,6 @@ window.onunload = function () { };
 // Global variable, shared between modules
 function playground_text(playground) {
     let code_block = playground.querySelector("code");
-
     if (window.ace && code_block.classList.contains("editable")) {
         let editor = window.ace.edit(code_block);
         return editor.getValue();
@@ -22,7 +21,6 @@ function playground_text(playground) {
             new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
         ]);
     }
-
     var playgrounds = Array.from(document.querySelectorAll(".playground"));
     if (playgrounds.length > 0) {
         fetch_with_timeout("https://rust.darkdell.net/meta/crates", {
@@ -39,11 +37,9 @@ function playground_text(playground) {
             playgrounds.forEach(block => handle_crate_list_update(block, playground_crates));
         });
     }
-
     function handle_crate_list_update(playground_block, playground_crates) {
         // update the play buttons after receiving the response
         update_play_button(playground_block, playground_crates);
-
         // and install on change listener to dynamically update ACE editors
         if (window.ace) {
             let code_block = playground_block.querySelector("code");
@@ -64,18 +60,15 @@ function playground_text(playground) {
             }
         }
     }
-
     // updates the visibility of play button based on `no_run` class and
     // used crates vs ones available on http://play.rust-lang.org
     function update_play_button(pre_block, playground_crates) {
         var play_button = pre_block.querySelector(".play-button");
-
         // skip if code is `no_run`
         if (pre_block.querySelector('code').classList.contains("no_run")) {
             play_button.classList.add("hidden");
             return;
         }
-
         // get list of `extern crate`'s from snippet
         var txt = playground_text(pre_block);
         var re = /extern\s+crate\s+([a-zA-Z_0-9]+)\s*;/g;
@@ -84,28 +77,23 @@ function playground_text(playground) {
         while (item = re.exec(txt)) {
             snippet_crates.push(item[1]);
         }
-
         // check if all used crates are available on play.rust-lang.org
         var all_available = snippet_crates.every(function (elem) {
             return playground_crates.indexOf(elem) > -1;
         });
-
         if (all_available) {
             play_button.classList.remove("hidden");
         } else {
             play_button.classList.add("hidden");
         }
     }
-
     function run_rust_code(code_block) {
         var result_block = code_block.querySelector(".result");
         if (!result_block) {
             result_block = document.createElement('code');
             result_block.className = 'result hljs language-bash';
-
             code_block.append(result_block);
         }
-
         let text = playground_text(code_block);
         let classes = code_block.querySelector('code').classList;
         let edition = "2015";
@@ -120,13 +108,10 @@ function playground_text(playground) {
             code: text,
             edition: edition
         };
-
         if (text.indexOf("#![feature") !== -1) {
             params.version = "nightly";
         }
-
         result_block.innerText = "Running...";
-
         fetch_with_timeout("https://rust.darkdell.net/evaluate.json", {
             headers: {
                 'Content-Type': "application/json",
@@ -147,25 +132,21 @@ function playground_text(playground) {
         })
         .catch(error => result_block.innerText = "Playground Communication: " + error.message);
     }
-
     // Syntax highlighting Configuration
     hljs.configure({
         tabReplace: '    ', // 4 spaces
         languages: [],      // Languages used for auto-detection
     });
-
     let code_nodes = Array
         .from(document.querySelectorAll('code'))
         // Don't highlight `inline code` blocks in headers.
         .filter(function (node) {return !node.parentElement.classList.contains("header"); });
-
     if (window.ace) {
         // language-rust class needs to be removed for editable
         // blocks or highlightjs will capture events
         code_nodes
             .filter(function (node) {return node.classList.contains("editable"); })
             .forEach(function (block) { block.classList.remove('language-rust'); });
-
         Array
         code_nodes
             .filter(function (node) {return !node.classList.contains("editable"); })
@@ -173,45 +154,36 @@ function playground_text(playground) {
     } else {
         code_nodes.forEach(function (block) { hljs.highlightBlock(block); });
     }
-
     // Adding the hljs class gives code blocks the color css
     // even if highlighting doesn't apply
     code_nodes.forEach(function (block) { block.classList.add('hljs'); });
-
     Array.from(document.querySelectorAll("code.language-rust")).forEach(function (block) {
-
         var lines = Array.from(block.querySelectorAll('.boring'));
         // If no lines were hidden, return
         if (!lines.length) { return; }
         block.classList.add("hide-boring");
-
         var buttons = document.createElement('div');
         buttons.className = 'buttons';
         buttons.innerHTML = "<button class=\"fa fa-eye\" title=\"Show hidden lines\" aria-label=\"Show hidden lines\"></button>";
-
         // add expand button
         var pre_block = block.parentNode;
         pre_block.insertBefore(buttons, pre_block.firstChild);
-
         pre_block.querySelector('.buttons').addEventListener('click', function (e) {
             if (e.target.classList.contains('fa-eye')) {
                 e.target.classList.remove('fa-eye');
                 e.target.classList.add('fa-eye-slash');
                 e.target.title = 'Hide lines';
                 e.target.setAttribute('aria-label', e.target.title);
-
                 block.classList.remove('hide-boring');
             } else if (e.target.classList.contains('fa-eye-slash')) {
                 e.target.classList.remove('fa-eye-slash');
                 e.target.classList.add('fa-eye');
                 e.target.title = 'Show hidden lines';
                 e.target.setAttribute('aria-label', e.target.title);
-
                 block.classList.add('hide-boring');
             }
         });
     });
-
     if (window.playground_copyable) {
         Array.from(document.querySelectorAll('pre code')).forEach(function (block) {
             var pre_block = block.parentNode;
@@ -222,18 +194,15 @@ function playground_text(playground) {
                     buttons.className = 'buttons';
                     pre_block.insertBefore(buttons, pre_block.firstChild);
                 }
-
                 var clipButton = document.createElement('button');
                 clipButton.className = 'fa fa-copy clip-button';
                 clipButton.title = 'Copy to clipboard';
                 clipButton.setAttribute('aria-label', clipButton.title);
                 clipButton.innerHTML = '<i class=\"tooltiptext\"></i>';
-
                 buttons.insertBefore(clipButton, buttons.firstChild);
             }
         });
     }
-
     // Process playground code blocks
     Array.from(document.querySelectorAll(".playground")).forEach(function (pre_block) {
         // Add play button
@@ -243,37 +212,30 @@ function playground_text(playground) {
             buttons.className = 'buttons';
             pre_block.insertBefore(buttons, pre_block.firstChild);
         }
-
         var runCodeButton = document.createElement('button');
         runCodeButton.className = 'fa fa-play play-button';
         runCodeButton.hidden = true;
         runCodeButton.title = 'Run this code';
         runCodeButton.setAttribute('aria-label', runCodeButton.title);
-
         buttons.insertBefore(runCodeButton, buttons.firstChild);
         runCodeButton.addEventListener('click', function (e) {
             run_rust_code(pre_block);
         });
-
         if (window.playground_copyable) {
             var copyCodeClipboardButton = document.createElement('button');
             copyCodeClipboardButton.className = 'fa fa-copy clip-button';
             copyCodeClipboardButton.innerHTML = '<i class="tooltiptext"></i>';
             copyCodeClipboardButton.title = 'Copy to clipboard';
             copyCodeClipboardButton.setAttribute('aria-label', copyCodeClipboardButton.title);
-
             buttons.insertBefore(copyCodeClipboardButton, buttons.firstChild);
         }
-
         let code_block = pre_block.querySelector("code");
         if (window.ace && code_block.classList.contains("editable")) {
             var undoChangesButton = document.createElement('button');
             undoChangesButton.className = 'fa fa-history reset-button';
             undoChangesButton.title = 'Undo changes';
             undoChangesButton.setAttribute('aria-label', undoChangesButton.title);
-
             buttons.insertBefore(undoChangesButton, buttons.firstChild);
-
             undoChangesButton.addEventListener('click', function () {
                 let editor = window.ace.edit(code_block);
                 editor.setValue(editor.originalCode);
@@ -293,19 +255,16 @@ function playground_text(playground) {
         tomorrowNight: document.querySelector("[href$='tomorrow-night.css']"),
         highlight: document.querySelector("[href$='highlight.css']"),
     };
-
     function showThemes() {
         themePopup.style.display = 'block';
         themeToggleButton.setAttribute('aria-expanded', true);
         themePopup.querySelector("button#" + get_theme()).focus();
     }
-
     function hideThemes() {
         themePopup.style.display = 'none';
         themeToggleButton.setAttribute('aria-expanded', false);
         themeToggleButton.focus();
     }
-
     function get_theme() {
         var theme;
         try { theme = localStorage.getItem('mdbook-theme'); } catch (e) { }
@@ -315,15 +274,12 @@ function playground_text(playground) {
             return theme;
         }
     }
-
     function set_theme(theme, store = true) {
         let ace_theme;
-
         if (theme == 'coal' || theme == 'navy') {
             stylesheets.ayuHighlight.disabled = true;
             stylesheets.tomorrowNight.disabled = false;
             stylesheets.highlight.disabled = true;
-
             ace_theme = "ace/theme/tomorrow_night";
         } else if (theme == 'ayu') {
             stylesheets.ayuHighlight.disabled = false;
@@ -336,32 +292,24 @@ function playground_text(playground) {
             stylesheets.highlight.disabled = false;
             ace_theme = "ace/theme/dawn";
         }
-
         setTimeout(function () {
             themeColorMetaTag.content = getComputedStyle(document.body).backgroundColor;
         }, 1);
-
         if (window.ace && window.editors) {
             window.editors.forEach(function (editor) {
                 editor.setTheme(ace_theme);
             });
         }
-
         var previousTheme = get_theme();
-
         if (store) {
             try { localStorage.setItem('mdbook-theme', theme); } catch (e) { }
         }
-
         html.classList.remove(previousTheme);
         html.classList.add(theme);
     }
-
     // Set theme
     var theme = get_theme();
-
     set_theme(theme, false);
-
     themeToggleButton.addEventListener('click', function () {
         if (themePopup.style.display === 'block') {
             hideThemes();
@@ -369,7 +317,6 @@ function playground_text(playground) {
             showThemes();
         }
     });
-
     themePopup.addEventListener('click', function (e) {
         var theme;
         if (e.target.className === "theme") {
@@ -381,25 +328,21 @@ function playground_text(playground) {
         }
         set_theme(theme);
     });
-
     themePopup.addEventListener('focusout', function(e) {
         // e.relatedTarget is null in Safari and Firefox on macOS (see workaround below)
         if (!!e.relatedTarget && !themeToggleButton.contains(e.relatedTarget) && !themePopup.contains(e.relatedTarget)) {
             hideThemes();
         }
     });
-
     // Should not be needed, but it works around an issue on macOS & iOS: https://github.com/rust-lang/mdBook/issues/628
     document.addEventListener('click', function(e) {
         if (themePopup.style.display === 'block' && !themeToggleButton.contains(e.target) && !themePopup.contains(e.target)) {
             hideThemes();
         }
     });
-
     document.addEventListener('keydown', function (e) {
         if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) { return; }
         if (!themePopup.contains(e.target)) { return; }
-
         switch (e.key) {
             case 'Escape':
                 e.preventDefault();
@@ -438,7 +381,6 @@ function playground_text(playground) {
     var sidebarToggleButton = document.getElementById("sidebar-toggle");
     var sidebarResizeHandle = document.getElementById("sidebar-resize-handle");
     var firstContact = null;
-
     function showSidebar() {
         html.classList.remove('sidebar-hidden')
         html.classList.add('sidebar-visible');
@@ -450,17 +392,13 @@ function playground_text(playground) {
         try { localStorage.setItem('mdbook-sidebar', 'visible'); } catch (e) { }
     }
 
-
     var sidebarAnchorToggles = document.querySelectorAll('#sidebar a.toggle');
-
     function toggleSection(ev) {
         ev.currentTarget.parentElement.classList.toggle('expanded');
     }
-
     Array.from(sidebarAnchorToggles).forEach(function (el) {
         el.addEventListener('click', toggleSection);
     });
-
     function hideSidebar() {
         html.classList.remove('sidebar-visible')
         html.classList.add('sidebar-hidden');
@@ -471,7 +409,6 @@ function playground_text(playground) {
         sidebar.setAttribute('aria-hidden', true);
         try { localStorage.setItem('mdbook-sidebar', 'hidden'); } catch (e) { }
     }
-
     // Toggle sidebar
     sidebarToggleButton.addEventListener('click', function sidebarToggle() {
         if (html.classList.contains("sidebar-hidden")) {
@@ -491,9 +428,7 @@ function playground_text(playground) {
             }
         }
     });
-
     sidebarResizeHandle.addEventListener('mousedown', initResize, false);
-
     function initResize(e) {
         window.addEventListener('mousemove', resize, false);
         window.addEventListener('mouseup', stopResize, false);
@@ -517,32 +452,26 @@ function playground_text(playground) {
         window.removeEventListener('mousemove', resize, false);
         window.removeEventListener('mouseup', stopResize, false);
     }
-
     document.addEventListener('touchstart', function (e) {
         firstContact = {
             x: e.touches[0].clientX,
             time: Date.now()
         };
     }, { passive: true });
-
     document.addEventListener('touchmove', function (e) {
         if (!firstContact)
             return;
-
         var curX = e.touches[0].clientX;
         var xDiff = curX - firstContact.x,
             tDiff = Date.now() - firstContact.time;
-
         if (tDiff < 250 && Math.abs(xDiff) >= 150) {
             if (xDiff >= 0 && firstContact.x < Math.min(document.body.clientWidth * 0.25, 300))
                 showSidebar();
             else if (xDiff < 0 && curX < 300)
                 hideSidebar();
-
             firstContact = null;
         }
     }, { passive: true });
-
     // Scroll sidebar to current active section
     var activeSection = document.getElementById("sidebar").querySelector(".active");
     if (activeSection) {
@@ -555,7 +484,6 @@ function playground_text(playground) {
     document.addEventListener('keydown', function (e) {
         if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) { return; }
         if (window.search && window.search.hasFocus()) { return; }
-
         switch (e.key) {
             case 'ArrowRight':
                 e.preventDefault();
@@ -577,17 +505,14 @@ function playground_text(playground) {
 
 (function clipboard() {
     var clipButtons = document.querySelectorAll('.clip-button');
-
     function hideTooltip(elem) {
         elem.firstChild.innerText = "";
         elem.className = 'fa fa-copy clip-button';
     }
-
     function showTooltip(elem, msg) {
         elem.firstChild.innerText = msg;
         elem.className = 'fa fa-copy tooltipped';
     }
-
     var clipboardSnippets = new ClipboardJS('.clip-button', {
         text: function (trigger) {
             hideTooltip(trigger);
@@ -595,18 +520,15 @@ function playground_text(playground) {
             return playground_text(playground);
         }
     });
-
     Array.from(clipButtons).forEach(function (clipButton) {
         clipButton.addEventListener('mouseout', function (e) {
             hideTooltip(e.currentTarget);
         });
     });
-
     clipboardSnippets.on('success', function (e) {
         e.clearSelection();
         showTooltip(e.trigger, "Copied!");
     });
-
     clipboardSnippets.on('error', function (e) {
         showTooltip(e.trigger, "Clipboard error!");
     });
@@ -614,7 +536,6 @@ function playground_text(playground) {
 
 (function scrollToTop () {
     var menuTitle = document.querySelector('.menu-title');
-
     menuTitle.addEventListener('click', function () {
         document.scrollingElement.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -622,7 +543,6 @@ function playground_text(playground) {
 
 (function controllMenu() {
     var menu = document.getElementById('menu-bar');
-
     (function controllPosition() {
         var scrollTop = document.scrollingElement.scrollTop;
         var prevScrollTop = scrollTop;

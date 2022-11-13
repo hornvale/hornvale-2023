@@ -41,7 +41,6 @@ impl Value {
   #[inline]
   pub fn is_falsey(&self) -> bool {
     use Value::*;
-
     match &self {
       Nil => true,
       Boolean(value) => !value,
@@ -66,7 +65,6 @@ impl Trace for Value {
       Number(value) => write!(f, "{}", value),
       String(value) => garbage_collector.deref(*value).format(f, garbage_collector),
     };
-
     result
   }
   /// Get the size.
@@ -104,7 +102,6 @@ pub mod test {
   #[test]
   pub fn test_math() {
     init();
-
     test_instructions!([Negate], [Number(53.0)] => [Number(-53.0)]);
     test_instructions!([Negate], [Number(-53.0)] => [Number(53.0)]);
     // The order of the following binary operations can be a bit counterintuitive.

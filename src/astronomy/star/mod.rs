@@ -130,7 +130,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star = Constraints::default().generate(&mut rng)?;
-
     print_var!(star);
     Ok(())
   }

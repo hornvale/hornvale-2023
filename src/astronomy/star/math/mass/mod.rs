@@ -41,7 +41,6 @@ pub mod test {
   #[test]
   pub fn test_msol_to_kg() {
     init();
-
     assert_approx_eq!(kg_to_msol(msol_to_kg(1.0)), 1.0);
     assert_approx_eq!(msol_to_kg(1.0), KG_PER_SOLAR_MASS);
   }

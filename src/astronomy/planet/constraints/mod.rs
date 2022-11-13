@@ -31,11 +31,9 @@ impl Constraints {
     let result = {
       if distance >= host_star.get_frost_line() {
         let constraints = self.gas_giant_planet_constraints.unwrap_or_default();
-
         GasGiantPlanet(constraints.generate(rng, host_star, distance)?)
       } else {
         let constraints = self.terrestrial_planet_constraints.unwrap_or_default();
-
         TerrestrialPlanet(constraints.generate(rng, host_star, distance)?)
       }
     };
@@ -72,7 +70,6 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &Constraints::default().generate(&mut rng, host_star, distance)?;
-
     print_var!(planet);
     Ok(())
   }
@@ -85,7 +82,6 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &Constraints::habitable().generate(&mut rng, host_star, distance)?;
-
     print_var!(planet);
     planet.is_habitable();
     Ok(())

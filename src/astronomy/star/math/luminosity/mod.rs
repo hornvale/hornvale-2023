@@ -62,7 +62,6 @@ pub mod test {
   #[test]
   pub fn test_ergs_to_lsol() {
     init();
-
     assert_approx_eq!(ergs_to_lsol(lsol_to_ergs(1.0)), 1.0);
     assert_approx_eq!(lsol_to_ergs(1.0), ERGS_PER_SEC_PER_LSOL);
   }
@@ -70,7 +69,6 @@ pub mod test {
   #[test]
   pub fn test_joules_to_lsol() {
     init();
-
     assert_approx_eq!(joules_to_lsol(lsol_to_joules(1.0)), 1.0);
     assert_approx_eq!(lsol_to_joules(1.0), JOULES_PER_SEC_PER_LSOL);
   }
@@ -78,7 +76,6 @@ pub mod test {
   #[test]
   pub fn test_watts_to_lsol() {
     init();
-
     assert_approx_eq!(watts_to_lsol(lsol_to_watts(1.0)), 1.0);
     assert_approx_eq!(lsol_to_watts(1.0), JOULES_PER_SEC_PER_LSOL);
   }
@@ -87,7 +84,6 @@ pub mod test {
   #[should_panic]
   pub fn test_star_mass_to_luminosity1() {
     init();
-
     star_mass_to_luminosity(0.0000001).unwrap();
   }
 
@@ -95,21 +91,18 @@ pub mod test {
   #[should_panic]
   pub fn test_star_mass_to_luminosity2() {
     init();
-
     star_mass_to_luminosity(350.0).unwrap();
   }
 
   #[test]
   pub fn test_star_mass_to_luminosity3() {
     init();
-
     star_mass_to_luminosity(MAXIMUM_MASS).unwrap();
   }
 
   #[test]
   pub fn test_ms_star_mass_to_luminosity() -> Result<(), Error> {
     init();
-
     // Jolly ol' Sol
     let mut mass = 1.0;
     let mut expected = 1.0;

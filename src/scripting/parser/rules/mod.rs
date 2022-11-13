@@ -18,7 +18,6 @@ impl<'source> Rules<'source> {
   /// Constructor.
   pub fn new() -> Self {
     let rules = HashMap::new();
-
     Self { rules }
   }
 
@@ -45,7 +44,6 @@ impl<'source> Default for Rules<'source> {
   /// No constraints, just let it all hang out.
   fn default() -> Self {
     let mut result = Rules::new();
-
     use TokenType::*;
     result.add_rule(
       LeftParenthesis,
@@ -106,7 +104,6 @@ impl<'source> Default for Rules<'source> {
     result.add_rule(Var, None, None, Precedence::None);
     result.add_rule(While, None, None, Precedence::None);
     result.add_rule(Eof, None, None, Precedence::None);
-
     result
   }
 }

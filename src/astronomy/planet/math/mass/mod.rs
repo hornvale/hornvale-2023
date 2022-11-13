@@ -19,7 +19,6 @@ pub mod test {
   #[test]
   pub fn test_msol_to_kg() {
     init();
-
     assert_approx_eq!(jupiter_mass_to_earth_mass(earth_mass_to_jupiter_mass(1.0)), 1.0);
     assert_approx_eq!(jupiter_mass_to_earth_mass(1.0), EARTH_MASS_PER_JUPITER_MASS);
   }

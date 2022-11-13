@@ -11,16 +11,13 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
-
       - name: Update local toolchain
         run: |
           rustup toolchain install stable --profile minimal;
           rustup update;
           rustup component add clippy;
-
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
-
       - name: Install dependencies
         run: |
           sudo apt-get update;
@@ -32,23 +29,19 @@ jobs:
             libdbus-1-dev \
             libudev-dev \
             ;
-
       - name: Toolchain info
         run: |
           cargo --version --verbose;
           rustc --version;
           cargo clippy --version;
-
       - name: Lint
         run: |
           cargo fmt -- --check;
           cargo clippy -- -D warnings;         
-
       - name: Test
         run: |
           cargo check;
           cargo test --all;
-
       - name: Build
         run: |
           cargo build --release;

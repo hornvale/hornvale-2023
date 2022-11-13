@@ -29,7 +29,6 @@ impl<'source> Scanner<'source> {
     let current = 0;
     let line_number = 1;
     let source_bytes = source.as_bytes().to_vec();
-
     Self {
       start,
       current,
@@ -258,7 +257,6 @@ pub mod test {
   #[test]
   pub fn test_scanner() {
     init();
-
     test_scanner_tokens!(
       "",
       [Ok(Token {

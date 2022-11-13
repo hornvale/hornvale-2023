@@ -79,23 +79,18 @@ impl Moon {
   ) -> Result<Moon, Error> {
     let density = 3.34;
     let radius = (mass / (density / 3.34)).powf(1.0 / 3.0);
-
     // This gives gravity in Earth equivalents, since other units are relative
     // to the Moon, and Gmoon is 0.1654 * Gearth.
     let gravity = (mass / radius.powf(2.0)) * 0.1654;
-
     // This is in KM/sec.
     let escape_velocity = (mass / radius).sqrt() * 2.380;
-
     // Peg this to the albedo of the Moon for the time being.
     let bond_albedo = 0.136;
     let semi_major_axis = planet_distance;
-
     // Pegged for the time being.
     let orbital_eccentricity = 0.05;
     let periapsis = (1.0 - orbital_eccentricity) * semi_major_axis;
     let apoapsis = (1.0 + orbital_eccentricity) * semi_major_axis;
-
     // Pegged.
     let orbital_inclination = 5.15;
     let rotation_direction = RotationDirection::Prograde;

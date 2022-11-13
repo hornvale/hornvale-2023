@@ -21,7 +21,6 @@ impl StarSubsystem {
   /// Indicate whether this star is capable of supporting conventional life.
   pub fn check_habitable(&self) -> Result<(), Error> {
     use StarSubsystem::*;
-
     match &self {
       DistantBinaryStar(distant_binary_star) => Ok(distant_binary_star.check_habitable()?),
       PlanetarySystem(planetary_system) => Ok(planetary_system.check_habitable()?),
@@ -41,7 +40,6 @@ impl StarSubsystem {
   /// Calculated in Msol.
   pub fn get_stellar_mass(&self) -> f64 {
     use StarSubsystem::*;
-
     match &self {
       DistantBinaryStar(distant_binary_star) => distant_binary_star.get_stellar_mass(),
       PlanetarySystem(planetary_system) => planetary_system.get_stellar_mass(),
@@ -51,7 +49,6 @@ impl StarSubsystem {
   /// Retrieve or calculate the total number of stars in the system.
   pub fn get_stellar_count(&self) -> u8 {
     use StarSubsystem::*;
-
     match &self {
       DistantBinaryStar(distant_binary_star) => distant_binary_star.get_stellar_count(),
       PlanetarySystem(planetary_system) => planetary_system.get_stellar_count(),
@@ -74,7 +71,6 @@ pub mod test {
     let mut rng = thread_rng();
     let constraints = Constraints::default();
     let result = constraints.generate(&mut rng)?;
-
     print_var!(result);
     Ok(())
   }

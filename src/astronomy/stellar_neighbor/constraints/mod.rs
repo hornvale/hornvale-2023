@@ -20,7 +20,6 @@ impl Constraints {
   /// Generate a habitable star system.
   pub fn habitable() -> Self {
     let system_constraints = Some(StarSystemConstraints::habitable());
-
     Self {
       system_constraints,
       ..Constraints::default()
@@ -77,7 +76,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let stellar_neighbor = &Constraints::default().generate(&mut rng)?;
-
     print_var!(stellar_neighbor);
     Ok(())
   }
@@ -87,7 +85,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let stellar_neighbor = &Constraints::habitable().generate(&mut rng)?;
-
     print_var!(stellar_neighbor);
     Ok(())
   }

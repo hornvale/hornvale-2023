@@ -9,19 +9,15 @@ jobs:
   code_coverage:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout project
         uses: actions/checkout@v3
-
       - name: Update toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           override: true
-
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
-
       - name: Install dependencies
         run: |
           sudo apt-get update;
@@ -33,13 +29,10 @@ jobs:
             libdbus-1-dev \
             libudev-dev \
             ;
-
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
-
       - name: Generate code coverage
         run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:

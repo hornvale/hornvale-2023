@@ -22,7 +22,6 @@ impl State {
   pub fn get_distance(&self, other: &State) -> usize {
     let matter = self.mask ^ u64::MAX;
     let difference = (self.values & matter) ^ (other.values & matter);
-
     difference.count_ones() as usize
   }
 }

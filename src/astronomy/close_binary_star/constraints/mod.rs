@@ -58,7 +58,6 @@ impl Constraints {
     let minimum_age = Some(MINIMUM_HABITABLE_AGE);
     let enforce_habitability = true;
     let star_constraints = Some(StarConstraints::habitable());
-
     Self {
       minimum_combined_mass,
       maximum_combined_mass,

@@ -27,7 +27,6 @@ impl BoundMethod {
 impl Trace for BoundMethod {
   fn format(&self, f: &mut Formatter, garbage_collector: &GarbageCollector) -> FmtResult {
     let method = garbage_collector.deref(self.method);
-
     method.format(f, garbage_collector)
   }
 

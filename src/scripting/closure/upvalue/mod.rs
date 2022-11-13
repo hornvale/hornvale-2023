@@ -20,7 +20,6 @@ impl Upvalue {
   /// Constructor.
   pub fn new(location: usize) -> Self {
     let closed = None;
-
     Upvalue { location, closed }
   }
 }
@@ -28,7 +27,6 @@ impl Upvalue {
 impl Trace for Upvalue {
   fn format(&self, f: &mut Formatter, _garbage_collector: &GarbageCollector) -> FmtResult {
     let result = write!(f, "upvalue");
-
     result
   }
 

@@ -15,7 +15,6 @@ impl<'source> Local<'source> {
   /// Constructor.
   pub fn new(token: Token<'source>, depth: i32) -> Self {
     let is_captured = false;
-
     Local {
       token,
       depth,

@@ -28,7 +28,6 @@ impl GasGiantPlanet {
   pub fn from_mass(mass: f64) -> Result<Self, Error> {
     // @todo: fix.
     let density: f64 = 1.0;
-
     // @todo: fix.
     let radius: f64 = 1.0;
     let semi_major_axis: f64 = 5.2;

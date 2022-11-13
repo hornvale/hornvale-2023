@@ -17,7 +17,6 @@ fn main() {
   );
   for _ in 1..20 {
     let name = generate_star_name(&mut rng);
-
     print_var!(name);
   }
 }

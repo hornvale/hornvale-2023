@@ -68,7 +68,6 @@ impl<'source> Parser<'source> {
     let did_encounter_error = false;
     let resolver_errors = Vec::new();
     let class_compiler = None;
-
     Self {
       scanner,
       garbage_collector,
@@ -864,7 +863,6 @@ impl<'source> Parser<'source> {
   pub fn parse_precedence(&mut self, precedence: Precedence) -> Result<(), Error> {
     self.advance()?;
     let previous_rule = self.get_previous_rule().unwrap();
-
     if previous_rule.prefix.is_none() {
       self.did_encounter_error("Expect expression.");
       return Err(Error::ExpectedExpression);

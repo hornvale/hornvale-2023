@@ -34,7 +34,6 @@ where
     if line.is_empty() {
       break;
     }
-
     match vm.interpret(&line) {
       Ok(_) => writeln!(&mut output, "OK")?,
       Err(error) => writeln!(&mut output, "Error: {}", error)?,

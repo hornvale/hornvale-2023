@@ -22,7 +22,6 @@ impl Instance {
   /// Constructor.
   pub fn new(class: Reference<Class>) -> Self {
     let fields = Table::new();
-
     Instance { class, fields }
   }
 }
@@ -32,7 +31,6 @@ impl Trace for Instance {
     let class = garbage_collector.deref(self.class);
     let name = garbage_collector.deref(class.name);
     let result = write!(f, "{} instance", name);
-
     result
   }
 

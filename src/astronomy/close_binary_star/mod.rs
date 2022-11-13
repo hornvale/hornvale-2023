@@ -75,7 +75,6 @@ impl CloseBinaryStar {
     let minimum_distances_from_barycenter =
       get_minimum_distances_from_barycenter(average_separation, primary.mass, secondary.mass, orbital_eccentricity);
     let minimum_separation = get_minimum_separation(minimum_distances_from_barycenter);
-
     if minimum_separation < MINIMUM_SEPARATION {
       return Err(Error::BinaryStarsTooCloseForComfort);
     }
@@ -132,7 +131,6 @@ impl CloseBinaryStar {
 
   pub fn get_name(&self) -> String {
     let result = format!("{}-{}", self.primary.name, self.secondary.name);
-
     result
   }
 
@@ -177,7 +175,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star = &Constraints::default().generate(&mut rng)?;
-
     print_var!(star);
     Ok(())
   }

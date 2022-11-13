@@ -42,7 +42,6 @@ impl Constraints {
       false => 0.1 * result.life_expectancy,
     };
     let maximum_age = 0.9 * result.life_expectancy;
-
     result.current_age = rng.gen_range(minimum_age..maximum_age);
     Ok(result)
   }
@@ -75,7 +74,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star = Constraints::default().generate(&mut rng)?;
-
     print_var!(star);
     Ok(())
   }
@@ -85,7 +83,6 @@ pub mod test {
     init();
     let mut rng = thread_rng();
     let star = Constraints::habitable().generate(&mut rng)?;
-
     print_var!(star);
     assert!(star.is_habitable());
     Ok(())

@@ -161,7 +161,6 @@ pub mod test {
     assert_approx_eq!(planet.escape_velocity, 1.00, 0.01);
     assert_approx_eq!(planet.gravity, 1.00, 0.01);
     assert_approx_eq!(planet.radius, 1.00, 0.01);
-
     print_var!(planet);
     Ok(())
   }

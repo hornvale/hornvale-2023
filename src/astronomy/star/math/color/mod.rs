@@ -81,7 +81,6 @@ pub mod test {
   #[test]
   pub fn test_ms_star_mass_to_rgb() -> Result<(), Error> {
     init();
-
     // Jolly ol' Sol
     let mut mass = 1.0;
     let mut expected = (255, 252, 245);

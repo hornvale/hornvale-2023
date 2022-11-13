@@ -25,7 +25,6 @@ impl Planner {
   pub fn new(start: State, goal: State, actions: Vec<Action>) -> Self {
     let open = Nodes::new();
     let closed = Nodes::new();
-
     Self {
       start,
       goal,
@@ -56,10 +55,8 @@ impl Planner {
       }
     }
     plan.reverse();
-
     states.reverse();
     let length = plan.len();
-
     Plan {
       start,
       goal,
@@ -72,24 +69,20 @@ impl Planner {
   /// Plan!
   pub fn plan(&mut self) -> Result<Plan, Error> {
     let node0 = Node::new_start(self.start, self.goal);
-
     self.open.nodes.push(node0);
     loop {
       let current = self.open.take_cheapest_node()?;
       let at_goal = current.state.get_distance(&self.goal) == 0;
-
       if at_goal {
         return Ok(self.reconstruct_plan(current));
       }
       self.closed.nodes.push(current.clone());
       let actions = self.get_possible_actions(&current.state);
-
       for action in actions.iter() {
         let cost = current.g + action.cost;
         let post_state = self.apply_action(action, &current.state);
         let mut open_index_result = self.open.find_node_matching_state(&post_state);
         let mut closed_index_result = self.closed.find_node_matching_state(&post_state);
-
         if let Ok(open_index) = open_index_result {
           if self.open.nodes[open_index].g > cost {
             let neighbor = self.open.nodes.swap_remove(open_index);
@@ -119,7 +112,6 @@ impl Planner {
             f,
             action_name,
           };
-
           self.open.nodes.push(neighbor);
         }
       }
@@ -134,7 +126,6 @@ impl Planner {
     let mut result = *state;
     result.values = (result.values & mask) | (postconditions.values & affected);
     result.mask &= postconditions.mask;
-
     result
   }
 
@@ -146,7 +137,6 @@ impl Planner {
         result.push(action.clone());
       }
     }
-
     result
   }
 }
