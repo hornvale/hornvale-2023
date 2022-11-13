@@ -88,9 +88,7 @@ impl<'source> Scanner<'source> {
   #[inline]
   pub fn advance(&mut self) -> char {
     let position = self.current;
-
     self.current += 1;
-
     self.source_bytes[position] as char
   }
 
@@ -103,7 +101,6 @@ impl<'source> Scanner<'source> {
   pub fn make_token(&self, r#type: TokenType) -> Token<'source> {
     let lexeme = self.get_lexeme();
     let line_number = self.line_number;
-
     Token {
       r#type,
       lexeme,
@@ -125,7 +122,6 @@ impl<'source> Scanner<'source> {
       return false;
     }
     self.current += 1;
-
     true
   }
 
@@ -190,7 +186,6 @@ impl<'source> Scanner<'source> {
   pub fn get_error_token(&self, message: &'static str) -> Token<'source> {
     let mut result = Token::synthesize(message);
     result.line_number = self.line_number;
-
     result
   }
 
