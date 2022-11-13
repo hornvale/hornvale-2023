@@ -28,10 +28,8 @@ impl<T: Trace> Copy for Reference<T> {}
 impl<T: Trace> Debug for Reference<T> {
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let full_name = type_name::<T>();
-
     full_name.split("::").last().unwrap();
     let result = write!(f, "ref({}:{})", self.index, full_name);
-
     result
   }
 }
@@ -40,7 +38,6 @@ impl<T: Trace> Debug for Reference<T> {
 impl<T: Trace> Display for Reference<T> {
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let result = write!(f, "{:?}", self);
-
     result
   }
 }
