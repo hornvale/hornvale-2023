@@ -46,11 +46,9 @@ impl<'a> System<'a> for InputProcessor {
     }
     info!("Processing {} input event(s)...", event_count);
     for event in input_events.iter() {
-      data.output_event_channel.single_write(OutputEvent {
-        string: format!("> {}\n\n", event.input.trim()),
-      });
+      write_output_event!(data, format!("> {}\n\n", event.input.trim()));
       if let Ok(command) = self.get_command(&event.input, &mut data) {
-        data.command_event_channel.single_write(CommandEvent { command });
+        write_command_event!(data, command);
       } else {
         error!("Something was screwed up about {:?}", event);
       }

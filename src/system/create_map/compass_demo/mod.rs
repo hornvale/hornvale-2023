@@ -10,11 +10,12 @@ impl<'a> CreateMap {
     let spawn_room = create_room!(data, "Spawn Room", "Dark olive trees crowd in on all sides, the air steams with the mist of a warm recent rain, midges hang in the air.");
     if let Some(player_id) = data.player_resource.0 {
       is_in_room!(data, get_entity!(data, player_id), RoomId(spawn_room.id()));
-      data.action_event_channel.single_write(ActionEvent {
-        action: Action::LookAround(LookAroundAction {
+      write_action_event!(
+        data,
+        Action::LookAround(LookAroundAction {
           entity_id: player_id.into(),
-        }),
-      });
+        })
+      );
     }
     let _mushroom = create_object!(
       data,

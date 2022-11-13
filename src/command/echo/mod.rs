@@ -13,7 +13,7 @@ pub struct Echo {
 
 impl Echo {
   pub fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    write_output!(data, self.string.clone());
+    write_output_event!(data, self.string.clone());
     Ok(None)
   }
 }

@@ -1,5 +1,4 @@
 use crate::entity::EntityId;
-use crate::event::*;
 use crate::map::Direction;
 use crate::map::PassageDestination;
 use crate::system::action_processor::Data as ActionProcessorData;
@@ -23,29 +22,21 @@ impl LookDirection {
           PassageDestination::Room(destination_id) => {
             if entity_id_has_camera!(data, self.entity_id) {
               info!("Sending event (description of indicated room).");
-              data.output_event_channel.single_write(OutputEvent {
-                string: format!("You look to the {}...", &self.direction.get_lowercase()),
-              });
+              you!(
+                data,
+                entity,
+                format!("look to the {}...", &self.direction.get_lowercase())
+              );
               let destination_room = get_entity!(data, destination_id);
-              data.output_event_channel.single_write(OutputEvent {
-                string: format_room!(data, destination_room),
-              });
+              write_output_event!(data, format_room!(data, destination_room));
             }
           },
           _ => {
-            if entity_id_has_camera!(data, self.entity_id) {
-              data.output_event_channel.single_write(OutputEvent {
-                string: "You are unable to look in that direction!".into(),
-              });
-            }
+            you!(data, entity, "are unable to look in that direction!");
           },
         },
         None => {
-          if entity_id_has_camera!(data, self.entity_id) {
-            data.output_event_channel.single_write(OutputEvent {
-              string: "You are unable to look in that direction!".into(),
-            });
-          }
+          you!(data, entity, "are unable to look in that direction!");
         },
       }
     }

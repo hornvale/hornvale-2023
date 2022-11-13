@@ -21,11 +21,12 @@ impl<'a> CreateMap {
     }
     if let Some(player_id) = data.player_resource.0 {
       is_in_room!(data, get_entity!(data, player_id), RoomId(rooms[0].id()));
-      data.action_event_channel.single_write(ActionEvent {
-        action: Action::LookAround(LookAroundAction {
+      write_action_event!(
+        data,
+        Action::LookAround(LookAroundAction {
           entity_id: player_id.into(),
-        }),
-      });
+        })
+      );
     }
     for (index, room) in rooms.iter().enumerate() {
       // We don't need to create passages to the west or north, since they

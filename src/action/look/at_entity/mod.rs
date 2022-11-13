@@ -1,5 +1,4 @@
 use crate::entity::EntityId;
-use crate::event::*;
 use crate::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
@@ -13,19 +12,15 @@ pub struct LookAtEntity {
 impl LookAtEntity {
   pub fn execute(&self, data: &mut ActionProcessorData) -> Result<(), Error> {
     let target_entity = get_entity!(data, self.target_entity_id);
+    info!("Sending event (description of indicated entity).");
+    let entity = get_entity!(data, self.entity_id);
+    you!(
+      data,
+      entity,
+      format!("look at the {}...", get_lc_name!(data, target_entity).unwrap())
+    );
     if entity_id_has_camera!(data, self.entity_id) {
-      info!("Sending event (description of indicated entity).");
-      data.output_event_channel.single_write(OutputEvent {
-        string: format!(
-          "You look at the {}...",
-          get_name!(data, target_entity)
-            .unwrap_or(&"<WTF>".to_owned())
-            .to_lowercase()
-        ),
-      });
-      data.output_event_channel.single_write(OutputEvent {
-        string: get_brief_description!(data, target_entity).unwrap().0.clone(),
-      });
+      write_output_event!(data, get_brief_description!(data, target_entity).unwrap().0.clone());
     }
     Ok(())
   }

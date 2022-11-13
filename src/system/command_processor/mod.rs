@@ -37,15 +37,16 @@ impl<'a> System<'a> for CommandProcessor {
       let CommandEvent { command } = event;
       match command.get_action(&mut data) {
         Ok(Some(action)) => {
-          info!("Calculated action {:?} for command {:?}...", action, command);
-          data.action_event_channel.single_write(ActionEvent { action });
+          info!(
+            "Calculated intradigetic action {:?} for command {:?}...",
+            action, command
+          );
+          write_action_event!(data, action);
         },
         Ok(None) => {
-          info!("Processed extradiagetic command {:?}...", command);
+          info!("Processed extradiegetic command {:?}...", command);
         },
-        Err(error) => data.output_event_channel.single_write(OutputEvent {
-          string: format!("encountered an error ({})", error),
-        }),
+        Err(error) => write_output_event!(data, format!("encountered an error ({})", error)),
       }
     }
   }

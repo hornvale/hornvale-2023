@@ -4,9 +4,7 @@ macro_rules! you {
     #[allow(unused_imports)]
     use $crate::event::OutputEvent;
     if entity_has_camera!($data, $entity) {
-      get_output!($data).single_write(OutputEvent {
-        string: format!("{}", $string),
-      });
+      write_output_event!($data, format!("You {}", $string));
     }
   }};
 }

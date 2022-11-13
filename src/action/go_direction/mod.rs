@@ -2,7 +2,6 @@ use crate::action::Action;
 use crate::action::LookAroundAction;
 use crate::effect::*;
 use crate::entity::EntityId;
-use crate::event::*;
 use crate::map::Direction;
 use crate::map::PassageDestination;
 use crate::system::action_processor::Data as ActionProcessorData;
@@ -23,37 +22,36 @@ impl GoDirection {
       match get_passage_to!(data, room_entity, &self.direction) {
         Some(passage) => match passage.to {
           PassageDestination::Room(destination_id) => {
-            is_in_room!(data, entity, destination_id);
-            data.effect_event_channel.single_write(EffectEvent {
-              effect: Effect::EntityWalksOutOfRoom(EntityWalksOutOfRoom {
+            write_effect_event!(
+              data,
+              Effect::EntityWalksOutOfRoom(EntityWalksOutOfRoom {
                 entity_id: self.entity_id,
                 direction: self.direction,
                 room_id,
-              }),
-            });
-            data.effect_event_channel.single_write(EffectEvent {
-              effect: Effect::EntityWalksIntoRoom(EntityWalksIntoRoom {
+              })
+            );
+            is_in_room!(data, entity, destination_id);
+            write_effect_event!(
+              data,
+              Effect::EntityWalksIntoRoom(EntityWalksIntoRoom {
                 entity_id: self.entity_id,
                 direction: self.direction.get_inverse(),
                 room_id: destination_id,
-              }),
-            });
-            data.action_event_channel.single_write(ActionEvent {
-              action: Action::LookAround(LookAroundAction {
+              })
+            );
+            write_action_event!(
+              data,
+              Action::LookAround(LookAroundAction {
                 entity_id: self.entity_id,
-              }),
-            });
+              })
+            );
           },
           _ => {
-            if entity_id_has_camera!(data, self.entity_id) {
-              write_output!(data, "You are unable to move in that direction!".to_string());
-            }
+            you!(data, entity, "are unable to move in that direction!");
           },
         },
         None => {
-          if entity_id_has_camera!(data, self.entity_id) {
-            write_output!(data, "You are unable to move in that direction!".to_string());
-          }
+          you!(data, entity, "are unable to move in that direction!");
         },
       }
     }

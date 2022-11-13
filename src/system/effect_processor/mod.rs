@@ -49,9 +49,7 @@ impl<'a> System<'a> for EffectProcessor {
       let EffectEvent { effect } = event;
       match effect.process(&mut data) {
         Ok(()) => {},
-        Err(error) => data.output_event_channel.single_write(OutputEvent {
-          string: format!("encountered an error ({})", error),
-        }),
+        Err(error) => write_output_event!(data, format!("encountered an error ({})", error)),
       }
     }
   }
