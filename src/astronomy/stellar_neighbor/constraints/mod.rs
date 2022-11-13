@@ -48,7 +48,6 @@ impl Constraints {
       distance,
       name,
     };
-
     Ok(result)
   }
 }
@@ -80,7 +79,6 @@ pub mod test {
     let stellar_neighbor = &Constraints::default().generate(&mut rng)?;
 
     print_var!(stellar_neighbor);
-
     Ok(())
   }
 
@@ -91,7 +89,6 @@ pub mod test {
     let stellar_neighbor = &Constraints::habitable().generate(&mut rng)?;
 
     print_var!(stellar_neighbor);
-
     Ok(())
   }
 }

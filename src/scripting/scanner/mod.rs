@@ -81,7 +81,6 @@ impl<'source> Scanner<'source> {
       char if self.is_alpha(char) => self.match_identifier()?,
       _ => return Err(error::Error::UnexpectedCharacter(char)),
     };
-
     Ok(result)
   }
 
@@ -143,7 +142,6 @@ impl<'source> Scanner<'source> {
     }
     let _value = &self.source[self.start..self.current];
     let result = self.make_token(TokenType::Number);
-
     Ok(result)
   }
 
@@ -161,7 +159,6 @@ impl<'source> Scanner<'source> {
       self.advance();
       self.make_token(TokenType::String)
     };
-
     Ok(result)
   }
 
@@ -175,7 +172,6 @@ impl<'source> Scanner<'source> {
       Err(_) => TokenType::Identifier,
     };
     let result = self.make_token(value_type);
-
     Ok(result)
   }
 

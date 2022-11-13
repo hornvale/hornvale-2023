@@ -68,7 +68,6 @@ pub mod test {
     expected = 6.264;
     actual = star_mass_to_radius(mass)?;
     assert_approx_eq!(expected, actual, 1f64);
-
     Ok(())
   }
 }

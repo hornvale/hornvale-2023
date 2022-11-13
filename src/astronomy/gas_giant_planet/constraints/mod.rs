@@ -37,7 +37,6 @@ impl Constraints {
     result.aphelion = aphelion;
     let orbital_period = distance.powf(3.0).sqrt();
     result.orbital_period = orbital_period;
-
     Ok(result)
   }
 }
@@ -81,7 +80,6 @@ pub mod test {
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
 
     print_var!(planet);
-
     Ok(())
   }
 }

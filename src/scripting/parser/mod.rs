@@ -93,7 +93,6 @@ impl<'source> Parser<'source> {
       }
     }
     self.emit_return()?;
-
     match self.did_encounter_error {
       false => Ok(self.garbage_collector.alloc(self.compiler.function)),
       true => Err(first_error.unwrap_or(Error::UnknownError)),
@@ -117,7 +116,6 @@ impl<'source> Parser<'source> {
   /// Consume.
   pub fn consume(&mut self, expected: TokenType, message: &str) -> Result<(), Error> {
     let current_type = self.current.unwrap().r#type;
-
     if current_type == expected {
       self.advance()?;
       Ok(())
@@ -131,7 +129,6 @@ impl<'source> Parser<'source> {
   pub fn parse_grouping(&mut self, _can_assign: bool) -> Result<(), Error> {
     self.parse_expression()?;
     self.consume(TokenType::RightParenthesis, "expected ')' after expression")?;
-
     Ok(())
   }
 
@@ -149,7 +146,6 @@ impl<'source> Parser<'source> {
     if self.suppress_new_errors {
       self.synchronize()?;
     }
-
     Ok(())
   }
 
@@ -158,7 +154,6 @@ impl<'source> Parser<'source> {
     self.consume(TokenType::Identifier, "Expect class name.")?;
     let class_name = self.previous.unwrap();
     let name_constant = self.get_identifier_constant(class_name)?;
-
     self.declare_variable()?;
     self.emit_instruction(Instruction::Class(name_constant))?;
     self.define_variable(name_constant)?;
@@ -193,7 +188,6 @@ impl<'source> Parser<'source> {
       Some(class_compiler) => self.class_compiler = class_compiler.enclosing,
       None => self.class_compiler = None,
     }
-
     Ok(())
   }
 
@@ -208,25 +202,21 @@ impl<'source> Parser<'source> {
     };
     self.parse_function(function_type)?;
     self.emit_instruction(Instruction::Method(constant))?;
-
     Ok(())
   }
 
   /// Function declaration.
   pub fn parse_function_declaration(&mut self) -> Result<(), Error> {
     let function_index = self.parse_variable_identifier("expected a function name")?;
-
     self.mark_initialized()?;
     self.parse_function(FunctionType::Function)?;
     self.define_variable(function_index)?;
-
     Ok(())
   }
 
   /// Variable declaration.
   pub fn parse_variable_declaration(&mut self) -> Result<(), Error> {
     let variable_index = self.parse_variable_identifier("Expect variable name.")?;
-
     if self.r#match(TokenType::Equal)? {
       self.parse_expression()?;
     } else {
@@ -234,7 +224,6 @@ impl<'source> Parser<'source> {
     }
     self.consume(TokenType::Semicolon, "expected ';' after variable declaration")?;
     self.define_variable(variable_index)?;
-
     Ok(())
   }
 
@@ -257,14 +246,12 @@ impl<'source> Parser<'source> {
     } else {
       self.parse_expression_statement()?;
     }
-
     Ok(())
   }
 
   /// Begin a scope.
   pub fn begin_scope(&mut self) -> Result<(), Error> {
     self.compiler.depth += 1;
-
     Ok(())
   }
 
@@ -294,7 +281,6 @@ impl<'source> Parser<'source> {
     let function_id = self.garbage_collector.alloc(function);
     let index = self.make_constant(Value::Function(function_id))?;
     self.emit_instruction(Instruction::Closure(index))?;
-
     Ok(())
   }
 
@@ -331,7 +317,6 @@ impl<'source> Parser<'source> {
       self.parse_declaration()?;
     }
     self.consume(TokenType::RightBrace, "expected '}' after block")?;
-
     Ok(())
   }
 
@@ -358,7 +343,6 @@ impl<'source> Parser<'source> {
       self.did_name_variable(Token::synthesize("super"), false)?;
       self.emit_instruction(Instruction::GetSuper(name))?;
     }
-
     Ok(())
   }
 
@@ -375,7 +359,6 @@ impl<'source> Parser<'source> {
     } else {
       self.emit_instruction(Instruction::GetProperty(name))?;
     }
-
     Ok(())
   }
 
@@ -386,7 +369,6 @@ impl<'source> Parser<'source> {
       return Err(Error::AttemptedToUseThisOutsideClass);
     }
     self.parse_variable(false)?;
-
     Ok(())
   }
 
@@ -403,7 +385,6 @@ impl<'source> Parser<'source> {
         self.compiler.locals.pop();
       }
     }
-
     Ok(())
   }
 
@@ -412,7 +393,6 @@ impl<'source> Parser<'source> {
     self.parse_expression()?;
     self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
     self.emit_instruction(Instruction::Print)?;
-
     Ok(())
   }
 
@@ -433,7 +413,6 @@ impl<'source> Parser<'source> {
       self.parse_statement()?;
     }
     self.patch_jump(else_jump as u16)?;
-
     Ok(())
   }
 
@@ -452,7 +431,6 @@ impl<'source> Parser<'source> {
       self.consume(TokenType::Semicolon, "expected ';' after return value")?;
       self.emit_instruction(Instruction::Return)?;
     }
-
     Ok(())
   }
 
@@ -466,13 +444,11 @@ impl<'source> Parser<'source> {
   pub fn patch_jump(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
     let offset = latest - index;
-
     match self.compiler.function.chunk.instructions.instructions[index as usize] {
       Instruction::JumpIfFalse(ref mut dest) => *dest = offset,
       Instruction::Jump(ref mut dest) => *dest = offset,
       instruction => panic!("Incorrect instruction {:#?} at position", instruction),
     };
-
     Ok(())
   }
 
@@ -489,7 +465,6 @@ impl<'source> Parser<'source> {
     self.emit_loop(loop_start as u16)?;
     self.patch_jump(exit_jump as u16)?;
     self.emit_instruction(Instruction::Pop)?;
-
     Ok(())
   }
 
@@ -503,25 +478,20 @@ impl<'source> Parser<'source> {
   pub fn emit_loop(&mut self, index: u16) -> Result<(), Error> {
     let latest = self.compiler.function.chunk.instructions.instructions.len() as u16 - 1;
     let offset = (latest - index) + 2;
-
     self.emit_instruction(Instruction::Loop(offset))?;
-
     Ok(())
   }
 
   /// Parse a function call.
   pub fn parse_call(&mut self, _can_assign: bool) -> Result<(), Error> {
     let argument_count = self.parse_argument_list()?;
-
     self.emit_instruction(Instruction::Call(argument_count))?;
-
     Ok(())
   }
 
   /// Parse the argument length.
   pub fn parse_argument_list(&mut self) -> Result<u8, Error> {
     let mut count: usize = 0;
-
     if !self.check(TokenType::RightParenthesis) {
       loop {
         self.parse_expression()?;
@@ -537,7 +507,6 @@ impl<'source> Parser<'source> {
     }
     self.consume(TokenType::RightParenthesis, "expected ')' after call arguments")?;
     let result = count as u8;
-
     Ok(result)
   }
 
@@ -545,7 +514,6 @@ impl<'source> Parser<'source> {
   pub fn parse_for_statement(&mut self) -> Result<(), Error> {
     self.begin_scope()?;
     self.consume(TokenType::LeftParenthesis, "expected '(' after 'for'.")?;
-
     // Process initializer segment.
     if self.r#match(TokenType::Semicolon)? {
       // No initializer, no problem.
@@ -555,7 +523,6 @@ impl<'source> Parser<'source> {
       self.parse_expression_statement()?;
     }
     let mut loop_start = self.compiler.function.chunk.instructions.instructions.len();
-
     // Process condition segment.
     let mut exit_jump: Option<usize> = None;
     if !self.r#match(TokenType::Semicolon)? {
@@ -565,7 +532,6 @@ impl<'source> Parser<'source> {
       self.emit_instruction(Instruction::JumpIfFalse(0xFFFF))?;
       self.emit_instruction(Instruction::Pop)?;
     }
-
     // Process increment segment.
     if !self.r#match(TokenType::RightParenthesis)? {
       let body_jump = self.compiler.function.chunk.instructions.instructions.len();
@@ -586,7 +552,6 @@ impl<'source> Parser<'source> {
       self.emit_instruction(Instruction::Pop)?;
     }
     self.end_scope()?;
-
     Ok(())
   }
 
@@ -595,14 +560,12 @@ impl<'source> Parser<'source> {
     self.parse_expression()?;
     self.consume(TokenType::Semicolon, "Expect ';' after expression.")?;
     self.emit_instruction(Instruction::Pop)?;
-
     Ok(())
   }
 
   /// Expression.
   pub fn parse_expression(&mut self) -> Result<(), Error> {
     self.parse_precedence(Precedence::Assignment)?;
-
     Ok(())
   }
 
@@ -612,9 +575,7 @@ impl<'source> Parser<'source> {
     let previous = self.previous.unwrap();
     let string = previous.lexeme;
     let value = string.parse::<f64>()?;
-
     self.emit_constant(Value::Number(value))?;
-
     Ok(())
   }
 
@@ -624,9 +585,7 @@ impl<'source> Parser<'source> {
     let previous = self.previous.unwrap();
     let string = &previous.lexeme[1..(previous.lexeme.len() - 1)];
     let value = self.garbage_collector.intern(string.to_owned());
-
     self.emit_constant(Value::String(value))?;
-
     Ok(())
   }
 
@@ -635,14 +594,12 @@ impl<'source> Parser<'source> {
   pub fn intern_token(&mut self, token: &Token) -> Result<Reference<String>, Error> {
     let string = token.lexeme;
     let result = self.garbage_collector.intern(string.to_owned());
-
     Ok(result)
   }
 
   /// Parse a variable.
   pub fn parse_variable(&mut self, can_assign: bool) -> Result<(), Error> {
     self.did_name_variable(self.previous.unwrap(), can_assign)?;
-
     Ok(())
   }
 
@@ -653,7 +610,6 @@ impl<'source> Parser<'source> {
     self.emit_instruction(Instruction::Pop)?;
     self.parse_precedence(Precedence::And)?;
     self.patch_jump(end_jump as u16)?;
-
     Ok(())
   }
 
@@ -667,7 +623,6 @@ impl<'source> Parser<'source> {
     self.emit_instruction(Instruction::Pop)?;
     self.parse_precedence(Precedence::Or)?;
     self.patch_jump(end_jump as u16)?;
-
     Ok(())
   }
 
@@ -679,7 +634,6 @@ impl<'source> Parser<'source> {
       return Ok(0);
     }
     let result = self.get_identifier_constant(self.previous.unwrap())?;
-
     Ok(result)
   }
 
@@ -702,7 +656,6 @@ impl<'source> Parser<'source> {
       Slash => self.emit_instruction(Instruction::Divide)?,
       _ => {},
     }
-
     Ok(())
   }
 
@@ -716,7 +669,6 @@ impl<'source> Parser<'source> {
       Bang => self.emit_instruction(Instruction::Not)?,
       _ => {},
     }
-
     Ok(())
   }
 
@@ -730,7 +682,6 @@ impl<'source> Parser<'source> {
       Nil => self.emit_instruction(Instruction::Nil)?,
       _ => {},
     }
-
     Ok(())
   }
 
@@ -754,7 +705,6 @@ impl<'source> Parser<'source> {
       }
       self.advance()?;
     }
-
     Ok(())
   }
 
@@ -770,14 +720,12 @@ impl<'source> Parser<'source> {
       return Err(Error::AttemptedToRedeclareVariable);
     }
     self.add_local(token)?;
-
     Ok(())
   }
 
   /// Add a local variable.
   pub fn add_local(&mut self, token: Token<'source>) -> Result<(), Error> {
     self.compiler.locals.push(Local::new(token, -1));
-
     Ok(())
   }
 
@@ -789,7 +737,6 @@ impl<'source> Parser<'source> {
       return Ok(());
     }
     self.emit_instruction(Instruction::DefineGlobal(index))?;
-
     Ok(())
   }
 
@@ -799,9 +746,7 @@ impl<'source> Parser<'source> {
       return Ok(());
     }
     let last_local = self.compiler.locals.last_mut().unwrap();
-
     last_local.depth = self.compiler.depth;
-
     Ok(())
   }
 
@@ -811,7 +756,6 @@ impl<'source> Parser<'source> {
     let reference = self.intern_token(&token)?;
     let value = Value::String(reference);
     let result = self.make_constant(value)?;
-
     Ok(result)
   }
 
@@ -821,7 +765,6 @@ impl<'source> Parser<'source> {
     let new_compiler = Box::new(Compiler::new(function_name, function_type));
     let old_compiler = replace(&mut self.compiler, new_compiler);
     self.compiler.enclosing = Some(old_compiler);
-
     Ok(())
   }
 
@@ -837,7 +780,6 @@ impl<'source> Parser<'source> {
         return Err(Error::TriedToPopTopCompiler);
       },
     };
-
     Ok(result)
   }
 
@@ -846,7 +788,6 @@ impl<'source> Parser<'source> {
   pub fn make_constant(&mut self, value: Value) -> Result<u16, Error> {
     self.compiler.function.chunk.constants.push(value)?;
     let result = (self.compiler.function.chunk.constants.constants.len() - 1) as u16;
-
     Ok(result)
   }
 
@@ -857,7 +798,6 @@ impl<'source> Parser<'source> {
     }
     self.advance()?;
     let result = true;
-
     Ok(result)
   }
 
@@ -871,7 +811,6 @@ impl<'source> Parser<'source> {
   pub fn emit_constant(&mut self, value: Value) -> Result<(), Error> {
     let instruction = self.compiler.function.chunk.constants.push(value)?;
     self.emit_instruction(instruction)?;
-
     Ok(())
   }
 
@@ -884,7 +823,6 @@ impl<'source> Parser<'source> {
       .chunk
       .instructions
       .append(instruction, self.previous.unwrap().line_number);
-
     Ok(())
   }
 
@@ -895,7 +833,6 @@ impl<'source> Parser<'source> {
       _ => self.emit_instruction(Instruction::Nil)?,
     };
     self.emit_instruction(Instruction::Return)?;
-
     Ok(())
   }
 
@@ -920,7 +857,6 @@ impl<'source> Parser<'source> {
     } else {
       self.emit_instruction(get_op)?;
     }
-
     Ok(())
   }
 
@@ -946,14 +882,12 @@ impl<'source> Parser<'source> {
       self.did_encounter_error("Invalid assignment target.");
       return Err(Error::InvalidAssignmentTarget);
     }
-
     Ok(())
   }
 
   /// Is this current operation lower precedence?
   pub fn is_lower_precedence(&self, precedence: Precedence) -> bool {
     let current_precedence = self.get_current_rule().unwrap().precedence;
-
     precedence <= current_precedence
   }
 
@@ -963,7 +897,6 @@ impl<'source> Parser<'source> {
       None => None,
       Some(token) => self.get_rule(&token.r#type),
     };
-
     result
   }
 
@@ -973,14 +906,12 @@ impl<'source> Parser<'source> {
       None => None,
       Some(token) => self.get_rule(&token.r#type),
     };
-
     result
   }
 
   /// Get a rule.
   pub fn get_rule(&self, token_type: &TokenType) -> Option<Rule<'source>> {
     let result = self.rules.rules.get(token_type).cloned();
-
     result
   }
 
@@ -999,7 +930,6 @@ impl<'source> Parser<'source> {
     while let Some(error) = self.resolver_errors.pop() {
       self.did_encounter_error(error);
     }
-
     result
   }
 }

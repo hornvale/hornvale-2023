@@ -104,7 +104,6 @@ impl HostStar {
       Star(star) => star.check_habitable()?,
       CloseBinaryStar(close_binary_star) => close_binary_star.check_habitable()?,
     }
-
     Ok(())
   }
 

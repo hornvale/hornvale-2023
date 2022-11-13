@@ -29,7 +29,6 @@ impl Constraints {
     let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
     let mass = rng.gen_range(minimum_mass..maximum_mass);
     let result = Moon::from_environment(mass, host_star, star_distance, planet, planet_distance)?;
-
     Ok(result)
   }
 }
@@ -67,7 +66,6 @@ pub mod test {
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet, 400_000.0)?;
 
     print_var!(moon);
-
     Ok(())
   }
 }

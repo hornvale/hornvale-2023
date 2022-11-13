@@ -39,7 +39,6 @@ impl Constraints {
         TerrestrialPlanet(constraints.generate(rng, host_star, distance)?)
       }
     };
-
     Ok(result)
   }
 }
@@ -75,7 +74,6 @@ pub mod test {
     let planet = &Constraints::default().generate(&mut rng, host_star, distance)?;
 
     print_var!(planet);
-
     Ok(())
   }
 
@@ -90,7 +88,6 @@ pub mod test {
 
     print_var!(planet);
     planet.is_habitable();
-
     Ok(())
   }
 }

@@ -58,7 +58,6 @@ impl Constraints {
       neighbors,
       star_count,
     };
-
     Ok(result)
   }
 }
@@ -93,7 +92,6 @@ pub mod test {
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);
     print_var!(stellar_neighborhood);
-
     Ok(())
   }
 
@@ -105,7 +103,6 @@ pub mod test {
     let stellar_neighborhood = constraints.generate(&mut rng)?;
     info_var!(stellar_neighborhood);
     print_var!(stellar_neighborhood);
-
     Ok(())
   }
 }

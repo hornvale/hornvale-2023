@@ -64,7 +64,6 @@ impl Planet {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.check_habitable()?,
       _ => return Err(Error::UninhabitablePlanetType),
     }
-
     Ok(())
   }
 

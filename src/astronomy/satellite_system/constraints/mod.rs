@@ -37,7 +37,6 @@ impl Constraints {
     let planet = planet_constraints.generate(rng, host_star, star_distance)?;
     let moons = moons_constraints.generate(rng, host_star, star_distance, &planet)?;
     let result = SatelliteSystem { planet, moons };
-
     Ok(result)
   }
 }
@@ -73,7 +72,6 @@ pub mod test {
     let satellite_system = &Constraints::default().generate(&mut rng, &host_star, distance)?;
 
     print_var!(satellite_system);
-
     Ok(())
   }
 }

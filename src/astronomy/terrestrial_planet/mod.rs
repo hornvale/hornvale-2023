@@ -100,7 +100,6 @@ impl TerrestrialPlanet {
       equilibrium_temperature,
       is_atmospherically_stable,
     };
-
     Ok(result)
   }
 
@@ -164,7 +163,6 @@ pub mod test {
     assert_approx_eq!(planet.radius, 1.00, 0.01);
 
     print_var!(planet);
-
     Ok(())
   }
 }

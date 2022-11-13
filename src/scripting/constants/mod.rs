@@ -19,7 +19,6 @@ impl Constants {
     let index = self.constants.len();
     self.constants.push(value);
     let result = Instruction::Constant(index as u16);
-
     Ok(result)
   }
 }

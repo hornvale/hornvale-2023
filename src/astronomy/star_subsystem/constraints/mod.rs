@@ -40,7 +40,6 @@ impl Constraints {
 
       DistantBinaryStar(distant_binary_star_constraints.generate(rng)?)
     };
-
     Ok(result)
   }
 }
@@ -74,7 +73,6 @@ pub mod test {
     let star_subsystem = &Constraints::default().generate(&mut rng)?;
 
     print_var!(star_subsystem);
-
     Ok(())
   }
 
@@ -86,7 +84,6 @@ pub mod test {
 
     print_var!(star_subsystem);
     star_subsystem.is_habitable();
-
     Ok(())
   }
 }

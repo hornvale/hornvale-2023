@@ -133,7 +133,6 @@ impl Constraints {
       (primary, secondary)
     };
     let result = CloseBinaryStar::from_stars(rng, primary, secondary, average_separation, orbital_eccentricity)?;
-
     Ok(result)
   }
 }
@@ -212,7 +211,6 @@ pub mod test {
       }
     }
     print_var!(success);
-
     Ok(())
   }
 
@@ -235,7 +233,6 @@ pub mod test {
     }
     print_var!(success);
     assert_eq!(counter, trials);
-
     Ok(())
   }
 }

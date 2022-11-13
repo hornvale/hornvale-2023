@@ -22,7 +22,6 @@ impl Chunk {
   #[inline]
   pub fn dump_fmt<W: FmtWrite>(&self, out: &mut W) -> Result<(), Box<dyn StdError>> {
     self.instructions.dump(out)?;
-
     Ok(())
   }
 
@@ -32,7 +31,6 @@ impl Chunk {
     let mut string = String::new();
     self.dump_fmt(&mut string)?;
     write!(out, "{}", string)?;
-
     Ok(())
   }
 

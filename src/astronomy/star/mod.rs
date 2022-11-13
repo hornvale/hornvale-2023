@@ -90,7 +90,6 @@ impl Star {
       absolute_rgb,
       name,
     };
-
     Ok(result)
   }
 
@@ -105,7 +104,6 @@ impl Star {
     if self.current_age < MINIMUM_HABITABLE_AGE {
       return Err(Error::TooYoungToSupportLife);
     }
-
     Ok(())
   }
 
@@ -134,7 +132,6 @@ pub mod test {
     let star = Constraints::default().generate(&mut rng)?;
 
     print_var!(star);
-
     Ok(())
   }
 }

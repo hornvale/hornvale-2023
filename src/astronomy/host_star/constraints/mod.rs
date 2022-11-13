@@ -39,7 +39,6 @@ impl Constraints {
       let constraints = self.close_binary_star_constraints.unwrap_or_default();
       CloseBinaryStar(Box::new(constraints.generate(rng)?))
     };
-
     Ok(result)
   }
 }
@@ -71,7 +70,6 @@ pub mod test {
     let host_star = Constraints::default().generate(&mut rng)?;
 
     print_var!(host_star);
-
     Ok(())
   }
 
@@ -88,7 +86,6 @@ pub mod test {
       }
     }
     print_var!(binary_count);
-
     Ok(())
   }
 
@@ -110,7 +107,6 @@ pub mod test {
       }
     }
     print_var!(habitable_count);
-
     Ok(())
   }
 }

@@ -17,7 +17,6 @@ pub struct NativeFunction(pub FunctionType);
 impl Debug for NativeFunction {
   fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
     let result = write!(f, "<native fn>");
-
     result
   }
 }
@@ -25,7 +24,6 @@ impl Debug for NativeFunction {
 impl Display for NativeFunction {
   fn fmt(&self, f: &mut Formatter) -> FmtResult {
     let result = write!(f, "{:#?}", self);
-
     result
   }
 }

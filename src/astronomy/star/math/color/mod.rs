@@ -122,7 +122,6 @@ pub mod test {
     expected = (217, 253, 255);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
-
     Ok(())
   }
 }

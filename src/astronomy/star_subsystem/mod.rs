@@ -76,7 +76,6 @@ pub mod test {
     let result = constraints.generate(&mut rng)?;
 
     print_var!(result);
-
     Ok(())
   }
 }

@@ -136,7 +136,6 @@ impl Moon {
       is_planet_tidally_locked,
       is_moon_tidally_locked,
     };
-
     Ok(result)
   }
 }

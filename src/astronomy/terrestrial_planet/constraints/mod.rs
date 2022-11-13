@@ -103,7 +103,6 @@ impl Constraints {
     result.greenhouse_effect = greenhouse_effect;
     let luminosity = host_star.get_luminosity();
     result.equilibrium_temperature = get_equilibrium_temperature(bond_albedo, greenhouse_effect, luminosity, distance);
-
     Ok(result)
   }
 }
@@ -164,7 +163,6 @@ pub mod test {
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
 
     print_var!(planet);
-
     Ok(())
   }
 
@@ -187,7 +185,6 @@ pub mod test {
 
     print_var!(planet);
     planet.is_habitable();
-
     Ok(())
   }
 
@@ -246,7 +243,6 @@ pub mod test {
     // Check nitrogen stability.
     planet.escape_velocity = (34_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
     assert_eq!(planet.check_habitable(), Err(Error::AtmosphereUnstableForNitrogen));
-
     Ok(())
   }
 }

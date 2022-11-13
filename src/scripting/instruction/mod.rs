@@ -117,7 +117,6 @@ impl Instruction {
       self.to_string(),
       result,
     )?;
-
     Ok(result)
   }
 }
@@ -137,7 +136,6 @@ pub mod test {
   #[test]
   pub fn test_fmt() {
     init();
-
     assert_eq!(Instruction::Negate.to_string(), "Negate");
     assert_eq!(Instruction::Return.to_string(), "Return");
     assert_eq!(Instruction::Constant(5).to_string(), "Constant(5)");

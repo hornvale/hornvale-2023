@@ -56,7 +56,6 @@ impl Constraints {
       moons
     };
     let result = Moons { moons };
-
     Ok(result)
   }
 }
@@ -90,7 +89,6 @@ pub mod test {
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet)?;
 
     print_var!(moon);
-
     Ok(())
   }
 }

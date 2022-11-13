@@ -29,7 +29,6 @@ impl DistantBinaryStar {
   pub fn check_habitable(&self) -> Result<(), Error> {
     self.primary.check_habitable()?;
     self.secondary.check_habitable()?;
-
     Ok(())
   }
 

@@ -34,7 +34,6 @@ impl Constraints {
     let secondary_constraints = PlanetarySystemConstraints::default();
     let secondary = secondary_constraints.generate(rng)?;
     let result = DistantBinaryStar { primary, secondary };
-
     Ok(result)
   }
 }
@@ -70,7 +69,6 @@ pub mod test {
     let distant_binary_star = Constraints::default().generate(&mut rng)?;
 
     print_var!(distant_binary_star);
-
     Ok(())
   }
 
@@ -83,7 +81,6 @@ pub mod test {
     print_var!(distant_binary_star);
     distant_binary_star.get_stellar_mass();
     distant_binary_star.is_habitable();
-
     Ok(())
   }
 }

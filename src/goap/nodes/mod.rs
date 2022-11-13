@@ -48,7 +48,6 @@ impl Nodes {
   /// Take cheapest node.
   pub fn take_cheapest_node(&mut self) -> Result<Node, Error> {
     let index = self.find_cheapest_node()?;
-
     Ok(self.nodes.swap_remove(index))
   }
 }

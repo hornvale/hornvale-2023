@@ -108,7 +108,6 @@ impl CloseBinaryStar {
       habitable_zone_is_forbidden,
       habitable_zone_is_dangerous,
     };
-
     Ok(result)
   }
 
@@ -152,7 +151,6 @@ impl CloseBinaryStar {
       Ok(_) => {},
       Err(error) => return Err(error.into()),
     }
-
     Ok(())
   }
 
@@ -181,7 +179,6 @@ pub mod test {
     let star = &Constraints::default().generate(&mut rng)?;
 
     print_var!(star);
-
     Ok(())
   }
 }

@@ -23,7 +23,6 @@ impl Interpreter {
     let scanner = Scanner::new(source);
     let parser = Parser::new(scanner, garbage_collector);
     let result = parser.compile()?;
-
     Ok(result)
   }
 }

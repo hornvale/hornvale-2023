@@ -46,7 +46,6 @@ impl GasGiantPlanet {
       aphelion,
       orbital_period,
     };
-
     Ok(result)
   }
 }

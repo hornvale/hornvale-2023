@@ -37,7 +37,6 @@ impl Constraints {
       host_star,
       satellite_systems,
     };
-
     Ok(result)
   }
 }
@@ -78,7 +77,6 @@ pub mod test {
     print_var!(planetary_system);
     planetary_system.check_habitable()?;
     assert!(planetary_system.is_habitable());
-
     Ok(())
   }
 
@@ -89,7 +87,6 @@ pub mod test {
     let planetary_system = Constraints::default().generate(&mut rng)?;
 
     print_var!(planetary_system);
-
     Ok(())
   }
 }

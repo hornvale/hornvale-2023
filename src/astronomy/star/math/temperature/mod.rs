@@ -68,7 +68,6 @@ pub mod test {
     expected = 41970.0;
     actual = star_mass_to_temperature(mass)?;
     assert_approx_eq!(expected, actual, 1f64);
-
     Ok(())
   }
 }

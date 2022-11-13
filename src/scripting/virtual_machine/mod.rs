@@ -82,7 +82,6 @@ impl VirtualMachine {
 
     self.call_frames.push(CallFrame::new(closure, 0));
     self.run()?;
-
     Ok(())
   }
 
@@ -401,7 +400,6 @@ impl VirtualMachine {
         )));
       },
     }
-
     Ok(())
   }
 
@@ -413,7 +411,6 @@ impl VirtualMachine {
     }
 
     self.stack.push(value);
-
     Ok(())
   }
 
@@ -424,7 +421,6 @@ impl VirtualMachine {
       return Err(Error::RuntimeError(RuntimeError::StackUnderflow));
     }
     let result = self.stack.pop().unwrap();
-
     Ok(result)
   }
 
@@ -437,7 +433,6 @@ impl VirtualMachine {
     let max_index = self.stack.len() - 1;
     let index = max_index - offset;
     let result = self.stack[index];
-
     Ok(result)
   }
 
@@ -561,7 +556,6 @@ impl VirtualMachine {
     let upvalue = self.alloc(upvalue);
 
     self.open_upvalues.push(upvalue);
-
     Ok(upvalue)
   }
 
@@ -611,7 +605,6 @@ impl VirtualMachine {
         return Err(Error::RuntimeError(RuntimeError::CalledUncallableValue(value)));
       },
     }
-
     Ok(())
   }
 
@@ -634,7 +627,6 @@ impl VirtualMachine {
       self.did_encounter_runtime_error("Only instances have methods.");
       return Err(Error::RuntimeError(RuntimeError::CalledMethodOnNonInstance));
     }
-
     Ok(())
   }
 
@@ -658,7 +650,6 @@ impl VirtualMachine {
       self.did_encounter_runtime_error(&format!("Undefined property '{}'.", name));
       return Err(Error::RuntimeError(RuntimeError::CalledNonexistentMethod));
     }
-
     Ok(())
   }
 
@@ -688,7 +679,6 @@ impl VirtualMachine {
       let call_frame = CallFrame::new(closure_reference, start);
       self.call_frames.push(call_frame);
     }
-
     Ok(())
   }
 
@@ -706,7 +696,6 @@ impl VirtualMachine {
         i += 1;
       }
     }
-
     Ok(())
   }
 
@@ -717,7 +706,6 @@ impl VirtualMachine {
     self
       .globals
       .insert(name_reference, Value::NativeFunction(native_function));
-
     Ok(())
   }
 
@@ -756,7 +744,6 @@ impl VirtualMachine {
       self.did_encounter_runtime_error(&format!("Undefined property '{}'.", name));
       return Err(Error::RuntimeError(RuntimeError::UndefinedProperty(name.to_string())));
     }
-
     Ok(())
   }
 
@@ -770,7 +757,6 @@ impl VirtualMachine {
     } else {
       return Err(Error::RuntimeError(RuntimeError::DefinedMethodOutsideClassContext));
     }
-
     Ok(())
   }
 }
@@ -835,7 +821,6 @@ pub mod test {
     vm.interpret("nil;")?;
     vm.interpret("true;")?;
     vm.interpret("false;")?;
-
     Ok(())
   }
 }

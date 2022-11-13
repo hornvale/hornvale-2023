@@ -38,7 +38,6 @@ impl Instructions {
       offset += instruction.dump(index, offset, line, same_line, out)? + 1;
     }
     writeln!(out)?;
-
     Ok(())
   }
 }

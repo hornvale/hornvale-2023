@@ -27,7 +27,6 @@ impl Constraints {
     let stellar_neighborhood_constraints = self.stellar_neighborhood_constraints.unwrap_or_default();
     let stellar_neighborhood = stellar_neighborhood_constraints.generate(rng)?;
     let result = Galaxy { stellar_neighborhood };
-
     Ok(result)
   }
 }
@@ -58,7 +57,6 @@ pub mod test {
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);
     print_var!(galaxy);
-
     Ok(())
   }
 
@@ -70,7 +68,6 @@ pub mod test {
     let galaxy = constraints.generate(&mut rng)?;
     info_var!(galaxy);
     print_var!(galaxy);
-
     Ok(())
   }
 }

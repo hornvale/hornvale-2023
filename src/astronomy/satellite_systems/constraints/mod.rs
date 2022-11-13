@@ -50,7 +50,6 @@ impl Constraints {
       satellite_systems.push(satellite_system);
     }
     let result = SatelliteSystems { satellite_systems };
-
     Ok(result)
   }
 
@@ -91,7 +90,6 @@ impl Constraints {
       }
     }
     result.sort_by(|a, b| a.partial_cmp(b).unwrap());
-
     Ok(result)
   }
 }
@@ -132,7 +130,6 @@ pub mod test {
     let satellite_systems = &Constraints::default().generate(&mut rng, host_star)?;
 
     print_var!(satellite_systems);
-
     Ok(())
   }
 
@@ -144,7 +141,6 @@ pub mod test {
     let satellite_systems = &Constraints::habitable().generate(&mut rng, host_star)?;
 
     print_var!(satellite_systems);
-
     Ok(())
   }
 }

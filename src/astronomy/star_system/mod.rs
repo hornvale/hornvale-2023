@@ -69,7 +69,6 @@ pub mod test {
     print_var!(star_system);
     star_system.get_stellar_mass();
     star_system.is_habitable();
-
     Ok(())
   }
 }
