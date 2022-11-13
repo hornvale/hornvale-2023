@@ -47,16 +47,16 @@ pub enum Command {
 impl Command {
   /// Retrieve an action for this command, or evaluate it.
   ///
-  /// Commands come in two forms: extradiagetic and intradiagetic.
+  /// Commands come in two forms: extradiegetic and intradiegetic.
   ///
-  /// Extradiagetic or out-of-character/OOC commands operate outside the game
+  /// Extradiegetic or out-of-character/OOC commands operate outside the game
   /// world.  They generally perform some operation on game state and return
   /// directly.
   ///
-  /// Intradiagetic or in-character/IC commands are translated to an Action
+  /// Intradiegetic or in-character/IC commands are translated to an Action
   /// object that represents the in-game action to take.
   ///
-  /// Thus extradiagetic commands will return None here, and intradiagetic
+  /// Thus extradiegetic commands will return None here, and intradiegetic
   /// commands will return Some(action).
   pub fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
     use Command::*;
