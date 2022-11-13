@@ -46,7 +46,6 @@ impl<'a> System<'a> for InputProcessor {
     }
     info!("Processing {} input event(s)...", event_count);
     for event in input_events.iter() {
-      write_output_event!(data, format!("> {}\n\n", event.input.trim()));
       if let Ok(command) = self.get_command(&event.input, &mut data) {
         write_command_event!(data, command);
       } else {

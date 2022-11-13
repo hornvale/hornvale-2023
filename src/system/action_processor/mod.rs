@@ -39,7 +39,6 @@ impl<'a> System<'a> for ActionProcessor {
     let events = data
       .action_event_channel
       .read(&mut self.reader_id)
-      .into_iter()
       .cloned()
       .collect::<Vec<ActionEvent>>();
     let event_count = events.len();

@@ -3,6 +3,7 @@ use futures::prelude::*;
 use rustyline_async::SharedWriter;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
+use std::io::Write;
 use std::time::Duration;
 
 use crate::component::register_components;
@@ -70,7 +71,7 @@ impl Game {
   pub async fn run(&mut self) -> Result<(), Error> {
     run_initial_systems(&mut self.ecs);
     // If we need to print without sending it through the whole thing.
-    let _stdout = self.output.clone();
+    let mut stdout = self.output.clone();
     // It'd be interesting to store this in a resource and possibly modify it
     // on the fly.  Very FRP.  Much signal.
     let mut tick_timer = stream::interval(Duration::from_millis(TICK_INTERVAL));
@@ -115,6 +116,7 @@ impl Game {
             // from here rather than sending them through the system, but I
             // think that's a bad architectural decision.
             let line = line.trim();
+            writeln!(stdout, "> {}\n", line)?;
             stdin.add_history_entry(line.to_owned());
             // We could write "input" in other places.  This might be a way
             // (however unsophisticated) of building macros into the UI.

@@ -36,7 +36,6 @@ impl<'a> System<'a> for EffectProcessor {
     let events = data
       .effect_event_channel
       .read(&mut self.reader_id)
-      .into_iter()
       .cloned()
       .collect::<Vec<EffectEvent>>();
     let event_count = events.len();

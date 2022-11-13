@@ -24,9 +24,7 @@ impl<'a> System<'a> for IntentProcessor {
     {
       if has_initiative.0.current > has_intent.0.initiative_cost {
         has_initiative.0.current -= has_intent.0.initiative_cost;
-        data.action_event_channel.single_write(ActionEvent {
-          action: has_intent.0.action.clone(),
-        });
+        write_action_event!(data, has_intent.0.action.clone());
         data.lazy_updater.remove::<HasIntent>(entity);
       }
     }
