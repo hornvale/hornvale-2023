@@ -20,6 +20,7 @@ impl IntoRoom {
     let entity = get_entity!(data, self.entity_id);
     let room = get_entity!(data, self.room_id);
     let name = get_name!(data, entity).unwrap();
+    is_in_room!(data, entity, self.room_id);
     write_output_3rd!(
       data,
       entity,

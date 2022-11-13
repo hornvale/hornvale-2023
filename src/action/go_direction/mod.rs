@@ -30,7 +30,6 @@ impl GoDirection {
                 room_id,
               })
             );
-            is_in_room!(data, entity, destination_id);
             write_effect_event!(
               data,
               Effect::EntityWalksIntoRoom(EntityWalksIntoRoom {
