@@ -1,12 +1,14 @@
+use super::super::Direction;
 use crate::action::Action;
 use crate::action::LookAroundAction;
-use crate::map::Direction;
+use crate::entity::RoomId;
+use crate::system::create_map::CreateMapData as Data;
 
-use super::*;
+pub struct CompassRose {}
 
-impl<'a> CreateMap {
+impl<'a> CompassRose {
   /// Create the "compass rose" demo.
-  pub fn create_compass_demo(&mut self, data: &mut CreateMapData<'a>) {
+  pub fn build(&mut self, data: &mut Data<'a>) {
     let spawn_room = create_room!(data, "Spawn Room", "Dark olive trees crowd in on all sides, the air steams with the mist of a warm recent rain, midges hang in the air.");
     if let Some(player_id) = data.player_resource.0 {
       is_in_room!(data, get_entity!(data, player_id), RoomId(spawn_room.id()));

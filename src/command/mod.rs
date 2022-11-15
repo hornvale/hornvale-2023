@@ -8,6 +8,8 @@ pub mod eval;
 pub use eval::Eval as EvalCommand;
 pub mod go_direction;
 pub use go_direction::GoDirection as GoDirectionCommand;
+pub mod idle;
+pub use idle::Idle as IdleCommand;
 pub mod look;
 pub use look::*;
 pub mod quit;
@@ -37,6 +39,7 @@ pub use quit::Quit as QuitCommand;
 pub enum Command {
   Echo(EchoCommand),
   Eval(EvalCommand),
+  Idle(IdleCommand),
   GoDirection(GoDirectionCommand),
   LookAround(LookAroundCommand),
   LookAtEntity(LookAtEntityCommand),
@@ -64,6 +67,7 @@ impl Command {
       Echo(command) => Ok(command.get_action(data)?),
       Eval(command) => Ok(command.get_action(data)?),
       GoDirection(command) => Ok(command.get_action(data)?),
+      Idle(command) => Ok(command.get_action(data)?),
       LookAround(command) => Ok(command.get_action(data)?),
       LookAtEntity(command) => Ok(command.get_action(data)?),
       LookDirection(command) => Ok(command.get_action(data)?),

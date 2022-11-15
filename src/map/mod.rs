@@ -1,3 +1,5 @@
+pub mod builder;
+pub use builder::*;
 pub mod direction;
 pub use direction::error::Error as DirectionError;
 pub use direction::Direction;

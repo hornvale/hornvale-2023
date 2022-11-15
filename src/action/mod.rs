@@ -3,6 +3,8 @@ use anyhow::Error;
 
 pub mod go_direction;
 pub use go_direction::GoDirection as GoDirectionAction;
+pub mod idle;
+pub use idle::Idle as IdleAction;
 pub mod look;
 pub use look::*;
 
@@ -32,6 +34,8 @@ pub enum Action {
   /// Go in a specific direction.  This should respect current movement method
   /// (e.g. walking, flying, etc).
   GoDirection(GoDirectionAction),
+  /// Idle.  This does nothing.  NOTHING!
+  Idle(IdleAction),
   /// Look at the current room.  This should provide a snapshot the sensory
   /// data of the room.
   LookAround(LookAroundAction),
@@ -48,6 +52,7 @@ impl Action {
     use Action::*;
     match &self {
       GoDirection(action) => action.execute(data)?,
+      Idle(action) => action.execute(data)?,
       LookAround(action) => action.execute(data)?,
       LookAtEntity(action) => action.execute(data)?,
       LookDirection(action) => action.execute(data)?,

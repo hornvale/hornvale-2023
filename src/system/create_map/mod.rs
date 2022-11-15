@@ -1,14 +1,10 @@
-use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
 use crate::component::*;
-use crate::entity::*;
 use crate::event::*;
+use crate::map::builder::*;
 use crate::resource::*;
-
-mod compass_demo;
-mod trivial_maze;
 
 pub struct CreateMap {}
 
@@ -38,11 +34,6 @@ impl<'a> System<'a> for CreateMap {
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
-    let rng = &mut data.random_resource.0;
-    if rng.gen::<bool>() {
-      self.create_compass_demo(&mut data);
-    } else {
-      self.create_trivial_maze(&mut data);
-    }
+    RandomBuilder {}.build(&mut data);
   }
 }

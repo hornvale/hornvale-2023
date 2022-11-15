@@ -1,11 +1,15 @@
-use super::*;
+use super::super::{Direction, Tile, TileMap};
 use crate::action::Action;
 use crate::action::LookAroundAction;
-use crate::map::{Direction, Tile, TileMap};
+use crate::entity::RoomId;
+use crate::system::create_map::CreateMapData as Data;
+use rand::prelude::*;
 
-impl<'a> CreateMap {
+pub struct TrivialMaze {}
+
+impl<'a> TrivialMaze {
   /// Create a "trivial maze" demo.
-  pub fn create_trivial_maze(&mut self, data: &mut CreateMapData<'a>) {
+  pub fn build(&mut self, data: &mut Data<'a>) {
     let mut rooms = Vec::new();
     let width = 30;
     let height = 10;
