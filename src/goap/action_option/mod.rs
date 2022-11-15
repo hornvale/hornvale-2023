@@ -1,8 +1,8 @@
 use crate::goap::state::State;
 
-/// An action.
+/// An action option.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Action {
+pub struct ActionOption {
   /// The name of this action.
   pub name: String,
   /// The cost of this action.

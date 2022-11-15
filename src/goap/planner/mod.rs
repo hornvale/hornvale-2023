@@ -1,4 +1,4 @@
-use crate::goap::action::Action;
+use crate::goap::action_option::ActionOption;
 use crate::goap::error::Error;
 use crate::goap::node::Node;
 use crate::goap::nodes::Nodes;
@@ -17,12 +17,12 @@ pub struct Planner {
   /// The closed set.
   pub closed: Nodes,
   /// The action set.
-  pub actions: Vec<Action>,
+  pub actions: Vec<ActionOption>,
 }
 
 impl Planner {
   /// Constructor.
-  pub fn new(start: State, goal: State, actions: Vec<Action>) -> Self {
+  pub fn new(start: State, goal: State, actions: Vec<ActionOption>) -> Self {
     let open = Nodes::new();
     let closed = Nodes::new();
     Self {
@@ -119,7 +119,7 @@ impl Planner {
   }
 
   /// Apply an action to the specified state and return the altered state.
-  pub fn apply_action(&self, action: &Action, state: &State) -> State {
+  pub fn apply_action(&self, action: &ActionOption, state: &State) -> State {
     let postconditions = action.postconditions;
     let mask = postconditions.mask;
     let affected = mask ^ u64::MAX;
@@ -130,7 +130,7 @@ impl Planner {
   }
 
   /// Get possible state transitions.
-  pub fn get_possible_actions(&self, from: &State) -> Vec<Action> {
+  pub fn get_possible_actions(&self, from: &State) -> Vec<ActionOption> {
     let mut result = Vec::new();
     for action in self.actions.iter() {
       if action.preconditions.get_distance(from) == 0 {
@@ -151,7 +151,7 @@ pub mod test {
 
   fn test_1_action_plan() {
     init();
-    let setbit0_action = Action {
+    let setbit0_action = ActionOption {
       name: "Set Bit 0".to_string(),
       cost: 1,
       preconditions: State {
@@ -186,7 +186,7 @@ pub mod test {
 
   fn test_2_action_plan() {
     init();
-    let setbit0_action = Action {
+    let setbit0_action = ActionOption {
       name: "Set Bit 0".to_string(),
       cost: 1,
       preconditions: State {
@@ -198,7 +198,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-    let setbit1_action = Action {
+    let setbit1_action = ActionOption {
       name: "Set Bit 1".to_string(),
       cost: 1,
       preconditions: State {
@@ -233,7 +233,7 @@ pub mod test {
 
   fn test_3_action_plan() {
     init();
-    let setbit0_action = Action {
+    let setbit0_action = ActionOption {
       name: "Set Bit 0".to_string(),
       cost: 1,
       preconditions: State {
@@ -245,7 +245,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-    let setbit1_action = Action {
+    let setbit1_action = ActionOption {
       name: "Set Bit 1".to_string(),
       cost: 1,
       preconditions: State {
@@ -257,7 +257,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-    let setbit2_action = Action {
+    let setbit2_action = ActionOption {
       name: "Set Bit 2".to_string(),
       cost: 1,
       preconditions: State {
@@ -291,7 +291,7 @@ pub mod test {
 
   fn test_3_action_plan_2() {
     init();
-    let setbit0_action = Action {
+    let setbit0_action = ActionOption {
       name: "Set Bit 0".to_string(),
       cost: 1,
       preconditions: State {
@@ -303,7 +303,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-    let setbit1_action = Action {
+    let setbit1_action = ActionOption {
       name: "Set Bit 1".to_string(),
       cost: 1,
       preconditions: State {
@@ -315,7 +315,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-    let setbit2_action = Action {
+    let setbit2_action = ActionOption {
       name: "Set Bit 2".to_string(),
       cost: 1,
       preconditions: State {
@@ -349,7 +349,7 @@ pub mod test {
 
   fn test_4_action_plan() {
     init();
-    let setbit0_action = Action {
+    let setbit0_action = ActionOption {
       name: "Set Bit 0".to_string(),
       cost: 1,
       preconditions: State {
@@ -361,7 +361,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
       },
     };
-    let setbit1_action = Action {
+    let setbit1_action = ActionOption {
       name: "Set Bit 1".to_string(),
       cost: 1,
       preconditions: State {
@@ -373,7 +373,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
       },
     };
-    let setbit2_action = Action {
+    let setbit2_action = ActionOption {
       name: "Set Bit 2".to_string(),
       cost: 1,
       preconditions: State {
@@ -385,7 +385,7 @@ pub mod test {
         mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1011,
       },
     };
-    let setbit3_action = Action {
+    let setbit3_action = ActionOption {
       name: "Set Bit 3".to_string(),
       cost: 1,
       preconditions: State {
@@ -422,7 +422,7 @@ pub mod test {
     let limit = 63;
     let mut actions = Vec::new();
     for i in 0..limit {
-      let action = Action {
+      let action = ActionOption {
         name: format!("Set Bit {}", i),
         cost: 1,
         preconditions: State {
@@ -465,7 +465,7 @@ pub mod test {
         counter >>= 1;
         precondition_values |= counter;
       }
-      let action = Action {
+      let action = ActionOption {
         name: format!("Set Bit {}", i),
         cost: precondition_values.count_ones() as usize,
         preconditions: State {
