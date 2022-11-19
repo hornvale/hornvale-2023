@@ -36,7 +36,7 @@ macro_rules! get_camera_room_id {
 #[macro_export]
 macro_rules! in_camera_room {
   ($data: expr, $room: expr) => {{
-    use $crate::entity::RoomId;
+    use $crate::ecs::entity::RoomId;
     Some(RoomId($room.id())) == get_camera_room_id!($data)
   }};
 }

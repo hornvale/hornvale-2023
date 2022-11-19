@@ -1,7 +1,7 @@
 use crate::action::*;
-use crate::entity::PlayerId;
+use crate::ecs::entity::PlayerId;
+use crate::ecs::system::command_processor::Data as CommandProcessorData;
 use crate::map::Direction;
-use crate::system::command_processor::Data as CommandProcessorData;
 use anyhow::Error;
 
 /// The `LookDirection` command.

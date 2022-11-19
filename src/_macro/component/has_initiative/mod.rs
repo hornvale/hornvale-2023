@@ -2,7 +2,7 @@
 macro_rules! has_initiative {
   ($data: expr, $entity: expr, $current: expr, $increment: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     use $crate::initiative::Initiative;
     $data
       .has_initiative

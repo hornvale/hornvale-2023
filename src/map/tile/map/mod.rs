@@ -1,5 +1,5 @@
 use super::Tile;
-use crate::entity::RoomId;
+use crate::ecs::entity::RoomId;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 

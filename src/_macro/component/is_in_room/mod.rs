@@ -2,7 +2,7 @@
 macro_rules! is_in_room {
   ($data: expr, $entity: expr, $room_id: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     $data
       .is_in_room
       .insert($entity, IsInRoom($room_id))
@@ -14,7 +14,7 @@ macro_rules! is_in_room {
 macro_rules! remove_is_in_room {
   ($data: expr, $entity: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     $data
       .is_in_room
       .remove($entity)

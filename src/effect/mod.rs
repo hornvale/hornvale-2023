@@ -1,4 +1,4 @@
-use crate::system::effect_processor::Data as EffectProcessorData;
+use crate::ecs::system::effect_processor::Data as EffectProcessorData;
 use anyhow::Error;
 
 pub mod entity;

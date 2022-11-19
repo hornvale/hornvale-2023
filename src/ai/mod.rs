@@ -1,6 +1,6 @@
 use crate::action::Action;
-use crate::entity::EntityId;
-use crate::system::ai_processor::Data;
+use crate::ecs::entity::EntityId;
+use crate::ecs::system::ai_processor::Data;
 use anyhow::Error as AnyError;
 
 pub mod move_randomly;

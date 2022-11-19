@@ -1,7 +1,7 @@
 use specs::prelude::*;
 
-use crate::component::*;
-use crate::entity::*;
+use crate::ecs::component::*;
+use crate::ecs::entity::*;
 use crate::resource::*;
 
 pub struct CreatePlayer {}

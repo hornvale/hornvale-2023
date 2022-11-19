@@ -1,4 +1,4 @@
-use crate::system::action_processor::Data as ActionProcessorData;
+use crate::ecs::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
 pub mod actions;

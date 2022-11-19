@@ -1,8 +1,8 @@
 use super::super::{Direction, Tile, TileMap};
 use crate::action::Action;
 use crate::action::LookAroundAction;
-use crate::entity::RoomId;
-use crate::system::create_map::CreateMapData as Data;
+use crate::ecs::entity::RoomId;
+use crate::ecs::system::create_map::CreateMapData as Data;
 use rand::prelude::*;
 
 pub struct TrivialMaze {}

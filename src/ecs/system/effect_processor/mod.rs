@@ -1,8 +1,8 @@
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 
-use crate::component::*;
-use crate::event::*;
+use crate::ecs::component::*;
+use crate::ecs::event::*;
 use crate::resource::*;
 
 pub struct EffectProcessor {

@@ -1,4 +1,4 @@
-use crate::entity::EntityId;
+use crate::ecs::entity::EntityId;
 
 /// The `Camera` resource.
 ///

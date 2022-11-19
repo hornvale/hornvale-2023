@@ -1,4 +1,4 @@
-use crate::event::OutputEvent;
+use crate::ecs::event::OutputEvent;
 use crate::formatting::format_string;
 use crate::resource::*;
 use specs::prelude::*;

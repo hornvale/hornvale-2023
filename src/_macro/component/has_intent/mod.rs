@@ -2,7 +2,7 @@
 macro_rules! has_intent {
   ($data: expr, $entity: expr, $action: expr, $priority: expr, $initiative_cost: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     use $crate::intent::Intent;
     use $crate::priority::Priority;
     $data

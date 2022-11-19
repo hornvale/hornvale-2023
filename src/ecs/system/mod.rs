@@ -1,7 +1,7 @@
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
-use super::event::*;
+use crate::ecs::event::*;
 
 pub mod action_processor;
 pub use action_processor::ActionProcessor as ActionProcessorSystem;

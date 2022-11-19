@@ -1,6 +1,6 @@
-use crate::entity::EntityId;
+use crate::ecs::entity::EntityId;
+use crate::ecs::system::effect_processor::Data as EffectProcessorData;
 use crate::map::{Direction, PassageDestination};
-use crate::system::effect_processor::Data as EffectProcessorData;
 use anyhow::Error;
 
 /// `EntityLooksDirection`.

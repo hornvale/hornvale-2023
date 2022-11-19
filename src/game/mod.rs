@@ -6,11 +6,11 @@ use specs::shrev::EventChannel;
 use std::io::Write;
 use std::time::Duration;
 
-use crate::component::register_components;
-use crate::event::insert_event_channels;
-use crate::event::InputEvent;
+use crate::ecs::component::register_components;
+use crate::ecs::event::insert_event_channels;
+use crate::ecs::event::InputEvent;
+use crate::ecs::system::*;
 use crate::resource::*;
-use crate::system::*;
 
 pub mod constants;
 use constants::*;

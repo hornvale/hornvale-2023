@@ -9,7 +9,7 @@ macro_rules! get_action_event_channel {
 macro_rules! write_action_event {
   ($data: expr, $action: expr) => {{
     #[allow(unused_imports)]
-    use $crate::event::ActionEvent;
+    use $crate::ecs::event::ActionEvent;
     get_action_event_channel!($data).single_write(ActionEvent { action: $action });
   }};
 }

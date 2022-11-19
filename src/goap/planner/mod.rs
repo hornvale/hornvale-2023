@@ -146,7 +146,7 @@ pub mod test {
 
   use super::*;
   use crate::action::{Action, IdleAction};
-  use crate::entity::EntityId;
+  use crate::ecs::entity::EntityId;
   use crate::test::*;
 
   #[test]

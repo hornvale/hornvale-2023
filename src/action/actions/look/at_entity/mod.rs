@@ -1,5 +1,5 @@
-use crate::entity::EntityId;
-use crate::system::action_processor::Data as ActionProcessorData;
+use crate::ecs::entity::EntityId;
+use crate::ecs::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
 /// The `LookAtEntity` command.

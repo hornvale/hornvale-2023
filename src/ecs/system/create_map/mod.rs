@@ -1,8 +1,8 @@
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
-use crate::component::*;
-use crate::event::*;
+use crate::ecs::component::*;
+use crate::ecs::event::*;
 use crate::map::builder::*;
 use crate::resource::*;
 

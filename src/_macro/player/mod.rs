@@ -11,7 +11,7 @@ macro_rules! create_player {
     player
   }};
   ($data: expr, $in_room: expr, $gender: expr) => {{
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     let player = create_player!($data);
     is_in_room!($data, player, $room_id, $gender);
     player

@@ -2,7 +2,7 @@
 macro_rules! has_gender {
   ($data: expr, $entity: expr, $gender: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     use $crate::gender::Gender;
     $data
       .has_gender

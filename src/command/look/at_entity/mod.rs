@@ -1,8 +1,8 @@
 use crate::action::Action;
 use crate::action::LookAtEntityAction;
-use crate::entity::EntityId;
-use crate::entity::PlayerId;
-use crate::system::command_processor::Data as CommandProcessorData;
+use crate::ecs::entity::EntityId;
+use crate::ecs::entity::PlayerId;
+use crate::ecs::system::command_processor::Data as CommandProcessorData;
 use anyhow::Error;
 
 /// The `LookAtEntity` command.

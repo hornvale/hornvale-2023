@@ -1,9 +1,9 @@
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
-use crate::component::*;
-use crate::entity::EntityId;
-use crate::event::*;
+use crate::ecs::component::*;
+use crate::ecs::entity::EntityId;
+use crate::ecs::event::*;
 use crate::resource::*;
 
 pub struct AiProcessor {}

@@ -1,4 +1,4 @@
-use crate::entity::PlayerId;
+use crate::ecs::entity::PlayerId;
 
 /// The `Player` resource.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq, Serialize)]

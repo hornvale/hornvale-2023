@@ -2,7 +2,7 @@
 macro_rules! has_state {
   ($data: expr, $entity: expr) => {{
     #[allow(unused_imports)]
-    use $crate::component::*;
+    use $crate::ecs::component::*;
     use $crate::goap::State;
     $data
       .has_state

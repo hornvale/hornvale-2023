@@ -1,5 +1,5 @@
 use super::{CompassRoseBuilder, TrivialMazeBuilder};
-use crate::system::create_map::CreateMapData as Data;
+use crate::ecs::system::create_map::CreateMapData as Data;
 use rand::prelude::*;
 
 pub struct Random {}

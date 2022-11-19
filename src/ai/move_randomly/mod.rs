@@ -1,10 +1,10 @@
 use crate::action::{Action, GoDirectionAction, LookAroundAction, LookDirectionAction};
-use crate::entity::EntityId;
+use crate::ecs::entity::EntityId;
+use crate::ecs::system::ai_processor::Data;
 use crate::goap::ActionOption;
 use crate::goap::Planner;
 use crate::goap::State;
 use crate::map::Direction;
-use crate::system::ai_processor::Data;
 use anyhow::Error as AnyError;
 use rand::prelude::*;
 

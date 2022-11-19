@@ -1,5 +1,5 @@
-use crate::entity::EntityId;
-use crate::system::effect_processor::Data as EffectProcessorData;
+use crate::ecs::entity::EntityId;
+use crate::ecs::system::effect_processor::Data as EffectProcessorData;
 use anyhow::Error;
 
 /// `EntitySetInitiative`.

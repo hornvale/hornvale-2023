@@ -1,6 +1,6 @@
 use super::Direction;
 
-use crate::entity::RoomId;
+use crate::ecs::entity::RoomId;
 
 pub mod destination;
 use destination::Destination;

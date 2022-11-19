@@ -10,7 +10,7 @@
 macro_rules! show {
   ($data: expr, $entity: expr, $string: expr) => {{
     #[allow(unused_imports)]
-    use $crate::event::OutputEvent;
+    use $crate::ecs::event::OutputEvent;
     if entity_has_camera!($data, $entity) {
       write_output_event!($data, $string);
     }
