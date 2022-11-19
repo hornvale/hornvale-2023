@@ -1,12 +1,8 @@
 use crate::system::action_processor::Data as ActionProcessorData;
 use anyhow::Error;
 
-pub mod go_direction;
-pub use go_direction::GoDirection as GoDirectionAction;
-pub mod idle;
-pub use idle::Idle as IdleAction;
-pub mod look;
-pub use look::*;
+pub mod actions;
+pub use actions::*;
 
 /// The `Action` enum.
 ///

@@ -5,6 +5,8 @@ use super::event::*;
 
 pub mod action_processor;
 pub use action_processor::ActionProcessor as ActionProcessorSystem;
+pub mod ai_processor;
+pub use ai_processor::AiProcessor as AiProcessorSystem;
 pub mod command_processor;
 pub use command_processor::CommandProcessor as CommandProcessorSystem;
 pub mod create_map;
@@ -52,6 +54,7 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     let reader_id = ecs.fetch_mut::<EventChannel<EffectEvent>>().register_reader();
     EffectProcessorSystem { reader_id }
   };
+  let ai_processor_system = AiProcessorSystem {};
   let intent_processor_system = IntentProcessorSystem {};
   let experiment_system = ExperimentSystem {};
   let initiative_dispenser_system = InitiativeDispenserSystem {};
@@ -60,6 +63,7 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     .with(experiment_system, "experiment", &[])
     .with(initiative_dispenser_system, "initiative_dispenser", &[])
     .with(input_processor_system, "input_processor", &[])
+    .with(ai_processor_system, "ai_processor", &[])
     .with(command_processor_system, "command_processor", &[])
     .with(intent_processor_system, "intent_processor", &[])
     .with(action_processor_system, "action_processor", &[])

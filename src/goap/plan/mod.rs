@@ -1,3 +1,4 @@
+use crate::action::Action;
 use crate::goap::state::State;
 
 /// The `Plan` type.
@@ -10,7 +11,7 @@ pub struct Plan {
   /// The goal state.
   pub goal: State,
   /// The plan itself.
-  pub plan: Vec<String>,
+  pub plan: Vec<Action>,
   /// All intermediate world states.
   pub states: Vec<State>,
   /// Number of steps.

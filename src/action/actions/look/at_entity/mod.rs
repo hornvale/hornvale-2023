@@ -14,14 +14,10 @@ impl LookAtEntity {
     let target_entity = get_entity!(data, self.target_entity_id);
     info!("Sending event (description of indicated entity).");
     let entity = get_entity!(data, self.entity_id);
-    you!(
-      data,
-      entity,
-      format!("look at the {}...", get_lc_name!(data, target_entity).unwrap())
-    );
-    if entity_id_has_camera!(data, self.entity_id) {
-      write_output_event!(data, get_brief_description!(data, target_entity).unwrap().0.clone());
-    }
+    let lc_name = get_lc_name!(data, target_entity).unwrap();
+    you!(data, entity, format!("look at the {}...", lc_name));
+    let brief = get_brief_description!(data, target_entity).unwrap().0.clone();
+    show!(data, entity, brief);
     Ok(())
   }
 }

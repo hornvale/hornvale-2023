@@ -1,5 +1,7 @@
 use specs::prelude::*;
 
+pub mod has_ai;
+pub use has_ai::HasAi;
 pub mod has_brief_description;
 pub use has_brief_description::HasBriefDescription;
 pub mod has_gender;
@@ -12,6 +14,8 @@ pub mod has_name;
 pub use has_name::HasName;
 pub mod has_passages;
 pub use has_passages::HasPassages;
+pub mod has_state;
+pub use has_state::HasState;
 pub mod is_a_player;
 pub use is_a_player::IsAPlayer;
 pub mod is_a_room;
@@ -26,12 +30,14 @@ pub mod is_in_room;
 pub use is_in_room::IsInRoom;
 
 pub fn register_components(ecs: &mut World) {
+  ecs.register::<HasAi>();
   ecs.register::<HasBriefDescription>();
   ecs.register::<HasGender>();
   ecs.register::<HasInitiative>();
   ecs.register::<HasIntent>();
   ecs.register::<HasName>();
   ecs.register::<HasPassages>();
+  ecs.register::<HasState>();
   ecs.register::<IsAnActor>();
   ecs.register::<IsAPlayer>();
   ecs.register::<IsARoom>();

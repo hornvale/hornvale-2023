@@ -1,11 +1,6 @@
-use crate::action::Action;
-use crate::action::GoDirectionAction;
 use crate::component::*;
-use crate::entity::*;
 use crate::event::*;
-use crate::map::Direction;
 use crate::resource::*;
-use rand::prelude::*;
 use specs::prelude::*;
 use specs::shrev::EventChannel;
 
@@ -37,7 +32,7 @@ impl<'a> System<'a> for Experiment {
 
   /// Run system.
   fn run(&mut self, mut data: Self::SystemData) {
-    for (entity, has_initiative, _, _) in (
+    for (_entity, has_initiative, _, _) in (
       &data.entities,
       &mut data.has_initiative,
       &data.is_an_actor,
@@ -46,12 +41,14 @@ impl<'a> System<'a> for Experiment {
       .join()
     {
       if has_initiative.0.current > 250 {
+        /*
         let direction: Direction = data.random_resource.0.gen();
         let action = Action::GoDirection(GoDirectionAction {
           entity_id: EntityId(entity.id()),
           direction,
         });
         has_intent!(data, entity, action, Priority::Compulsory, 250);
+        */
       }
     }
   }

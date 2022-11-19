@@ -1,4 +1,6 @@
 #[macro_use]
+pub mod has_ai;
+#[macro_use]
 pub mod has_brief_description;
 #[macro_use]
 pub mod has_gender;
@@ -10,6 +12,8 @@ pub mod has_intent;
 pub mod has_name;
 #[macro_use]
 pub mod has_passages;
+#[macro_use]
+pub mod has_state;
 #[macro_use]
 pub mod is_a_player;
 #[macro_use]

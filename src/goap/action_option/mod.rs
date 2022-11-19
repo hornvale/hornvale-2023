@@ -1,10 +1,11 @@
+use crate::action::Action;
 use crate::goap::state::State;
 
 /// An action option.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ActionOption {
-  /// The name of this action.
-  pub name: String,
+  /// The represented action.
+  pub action: Action,
   /// The cost of this action.
   pub cost: usize,
   /// The expectations of this action of the state.

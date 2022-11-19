@@ -5,7 +5,7 @@ macro_rules! create_player {
     is_an_actor!($data, player);
     is_a_player!($data, player);
     has_name!($data, player, "Player");
-    has_initiative!($data, player, 1);
+    has_initiative!($data, player, 0, 1);
     has_brief_description!($data, player, "It's you, you idiot!");
     has_gender!($data, player, $gender);
     player

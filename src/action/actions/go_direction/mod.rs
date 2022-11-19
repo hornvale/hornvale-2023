@@ -1,5 +1,3 @@
-use crate::action::Action;
-use crate::action::LookAroundAction;
 use crate::effect::*;
 use crate::entity::EntityId;
 use crate::map::Direction;
@@ -38,10 +36,17 @@ impl GoDirection {
                 room_id: destination_id,
               })
             );
-            write_action_event!(
+            write_effect_event!(
               data,
-              Action::LookAround(LookAroundAction {
+              Effect::EntityLooksAround(EntityLooksAround {
                 entity_id: self.entity_id,
+              })
+            );
+            write_effect_event!(
+              data,
+              Effect::EntitySetInitiative(EntitySetInitiative {
+                entity_id: self.entity_id,
+                value: 0,
               })
             );
           },

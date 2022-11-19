@@ -37,6 +37,7 @@ pub mod _error;
 // Systems.
 pub mod action;
 pub mod actor;
+pub mod ai;
 pub mod ailment;
 pub mod anatomy;
 pub mod astronomy;

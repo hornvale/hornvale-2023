@@ -27,6 +27,8 @@ impl IntoRoom {
       room,
       format!("{} walks in from the {}.", name, self.direction.get_lowercase())
     );
+    reset_state!(data, entity, 0);
+    set_state!(data, entity, 1);
     Ok(())
   }
 }

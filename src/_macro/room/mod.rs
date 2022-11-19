@@ -13,6 +13,7 @@ macro_rules! create_room {
 #[macro_export]
 macro_rules! format_room {
   ($data: expr, $room: expr) => {{
+    use specs::prelude::*;
     use $crate::entity::RoomId;
     let mut string = String::new();
     if let Some(name) = get_name!($data, $room) {

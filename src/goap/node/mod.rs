@@ -1,3 +1,4 @@
+use crate::action::Action;
 use crate::goap::state::State;
 
 /// An individual A* node.
@@ -13,21 +14,21 @@ pub struct Node {
   pub g: usize,
   /// Heuristic for remaining cost.
   pub h: usize,
-  /// The name of the action.
-  pub action_name: Option<String>,
+  /// The action to take.
+  pub action: Option<Action>,
 }
 
 impl Node {
   /// Constructor for start node.
   pub fn new_start(state: State, goal: State) -> Self {
     let parent_state = None;
-    let action_name = None;
+    let action = None;
     let g = 0;
-    Self::new(state, parent_state, goal, action_name, g)
+    Self::new(state, parent_state, goal, action, g)
   }
 
   /// Constructor.
-  pub fn new(state: State, parent_state: Option<State>, goal: State, action_name: Option<String>, g: usize) -> Self {
+  pub fn new(state: State, parent_state: Option<State>, goal: State, action: Option<Action>, g: usize) -> Self {
     let h = state.get_distance(&goal);
     let f = g + h;
     Self {
@@ -36,7 +37,7 @@ impl Node {
       f,
       g,
       h,
-      action_name,
+      action,
     }
   }
 }

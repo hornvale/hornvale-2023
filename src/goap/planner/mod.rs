@@ -17,12 +17,12 @@ pub struct Planner {
   /// The closed set.
   pub closed: Nodes,
   /// The action set.
-  pub actions: Vec<ActionOption>,
+  pub action_options: Vec<ActionOption>,
 }
 
 impl Planner {
   /// Constructor.
-  pub fn new(start: State, goal: State, actions: Vec<ActionOption>) -> Self {
+  pub fn new(start: State, goal: State, action_options: Vec<ActionOption>) -> Self {
     let open = Nodes::new();
     let closed = Nodes::new();
     Self {
@@ -30,7 +30,7 @@ impl Planner {
       goal,
       open,
       closed,
-      actions,
+      action_options,
     }
   }
 
@@ -42,8 +42,8 @@ impl Planner {
     let mut states = Vec::new();
     let mut pointer = current;
     loop {
-      if let Some(action_name) = pointer.action_name {
-        plan.push(action_name);
+      if let Some(action) = pointer.action {
+        plan.push(action);
       }
       states.push(pointer.state);
       match pointer.parent_state {
@@ -77,10 +77,10 @@ impl Planner {
         return Ok(self.reconstruct_plan(current));
       }
       self.closed.nodes.push(current.clone());
-      let actions = self.get_possible_actions(&current.state);
-      for action in actions.iter() {
-        let cost = current.g + action.cost;
-        let post_state = self.apply_action(action, &current.state);
+      let options = self.get_options(&current.state);
+      for option in options.iter() {
+        let cost = current.g + option.cost;
+        let post_state = self.apply_action(option, &current.state);
         let mut open_index_result = self.open.find_node_matching_state(&post_state);
         let mut closed_index_result = self.closed.find_node_matching_state(&post_state);
         if let Ok(open_index) = open_index_result {
@@ -103,14 +103,14 @@ impl Planner {
           let g = cost;
           let h = post_state.get_distance(&self.goal);
           let f = g + h;
-          let action_name = Some(action.name.clone());
+          let action = Some(option.action.clone());
           let neighbor = Node {
             state,
             parent_state,
             g,
             h,
             f,
-            action_name,
+            action,
           };
           self.open.nodes.push(neighbor);
         }
@@ -122,19 +122,19 @@ impl Planner {
   pub fn apply_action(&self, action: &ActionOption, state: &State) -> State {
     let postconditions = action.postconditions;
     let mask = postconditions.mask;
-    let affected = mask ^ u64::MAX;
+    let affected = !mask ^ u64::MAX;
     let mut result = *state;
-    result.values = (result.values & mask) | (postconditions.values & affected);
-    result.mask &= postconditions.mask;
+    result.values = (result.values & !mask) | (postconditions.values & affected);
+    result.mask |= postconditions.mask;
     result
   }
 
   /// Get possible state transitions.
-  pub fn get_possible_actions(&self, from: &State) -> Vec<ActionOption> {
+  pub fn get_options(&self, from: &State) -> Vec<ActionOption> {
     let mut result = Vec::new();
-    for action in self.actions.iter() {
-      if action.preconditions.get_distance(from) == 0 {
-        result.push(action.clone());
+    for option in self.action_options.iter() {
+      if option.preconditions.get_distance(from) == 0 {
+        result.push(option.clone());
       }
     }
     result
@@ -145,6 +145,8 @@ impl Planner {
 pub mod test {
 
   use super::*;
+  use crate::action::{Action, IdleAction};
+  use crate::entity::EntityId;
   use crate::test::*;
 
   #[test]
@@ -152,33 +154,35 @@ pub mod test {
   fn test_1_action_plan() {
     init();
     let setbit0_action = ActionOption {
-      name: "Set Bit 0".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       },
     };
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
     };
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
     };
-    let actions = vec![setbit0_action.clone()];
-    let mut planner = Planner::new(start, goal, actions);
+    let action_options = vec![setbit0_action.clone()];
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
     assert_eq!(plan.goal, goal);
     assert_eq!(plan.plan.len(), 1);
-    assert_eq!(plan.plan, vec![setbit0_action.name]);
+    assert_eq!(plan.plan, vec![setbit0_action.action]);
     assert_eq!(plan.states.len(), plan.plan.len() + 1);
   }
 
@@ -187,45 +191,49 @@ pub mod test {
   fn test_2_action_plan() {
     init();
     let setbit0_action = ActionOption {
-      name: "Set Bit 0".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       },
     };
     let setbit1_action = ActionOption {
-      name: "Set Bit 1".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
       },
     };
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
     };
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
     };
-    let actions = vec![setbit0_action.clone(), setbit1_action.clone()];
-    let mut planner = Planner::new(start, goal, actions);
+    let action_options = vec![setbit0_action.clone(), setbit1_action.clone()];
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
     assert_eq!(plan.goal, goal);
     assert_eq!(plan.plan.len(), 2);
-    assert_eq!(plan.plan, vec![setbit0_action.name, setbit1_action.name,]);
+    assert_eq!(plan.plan, vec![setbit0_action.action, setbit1_action.action,]);
     assert_eq!(plan.states.len(), plan.plan.len() + 1);
   }
 
@@ -234,51 +242,57 @@ pub mod test {
   fn test_3_action_plan() {
     init();
     let setbit0_action = ActionOption {
-      name: "Set Bit 0".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       },
     };
     let setbit1_action = ActionOption {
-      name: "Set Bit 1".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
       },
     };
     let setbit2_action = ActionOption {
-      name: "Set Bit 2".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1011,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
       },
     };
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
     };
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
     };
-    let actions = vec![setbit0_action, setbit1_action, setbit2_action];
-    let mut planner = Planner::new(start, goal, actions);
+    let action_options = vec![setbit0_action, setbit1_action, setbit2_action];
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -292,51 +306,57 @@ pub mod test {
   fn test_3_action_plan_2() {
     init();
     let setbit0_action = ActionOption {
-      name: "Set Bit 0".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       },
     };
     let setbit1_action = ActionOption {
-      name: "Set Bit 1".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
       },
     };
     let setbit2_action = ActionOption {
-      name: "Set Bit 2".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0011,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1100,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
       },
     };
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
     };
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0111,
     };
-    let actions = vec![setbit0_action, setbit1_action, setbit2_action];
-    let mut planner = Planner::new(start, goal, actions);
+    let action_options = vec![setbit0_action, setbit1_action, setbit2_action];
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -350,63 +370,71 @@ pub mod test {
   fn test_4_action_plan() {
     init();
     let setbit0_action = ActionOption {
-      name: "Set Bit 0".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1110,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0001,
       },
     };
     let setbit1_action = ActionOption {
-      name: "Set Bit 1".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1101,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0010,
       },
     };
     let setbit2_action = ActionOption {
-      name: "Set Bit 2".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1011,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0100,
       },
     };
     let setbit3_action = ActionOption {
-      name: "Set Bit 3".to_string(),
+      action: Action::Idle(IdleAction {
+        entity_id: EntityId(3u32),
+      }),
       cost: 1,
       preconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
       },
       postconditions: State {
         values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1000,
-        mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0111,
+        mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1000,
       },
     };
     let start = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111,
     };
     let goal = State {
       values: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111,
-      mask: 0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_0000,
+      mask: 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111,
     };
-    let actions = vec![setbit0_action, setbit1_action, setbit2_action, setbit3_action];
-    let mut planner = Planner::new(start, goal, actions);
+    let action_options = vec![setbit0_action, setbit1_action, setbit2_action, setbit3_action];
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     assert_eq!(plan.start, start);
@@ -420,35 +448,40 @@ pub mod test {
   fn test_many_simple_action_plan() {
     init();
     let limit = 63;
-    let mut actions = Vec::new();
-    for i in 0..limit {
+    let mut action_options = Vec::new();
+    for i in 0..=limit {
       let action = ActionOption {
-        name: format!("Set Bit {}", i),
+        action: Action::Idle(IdleAction {
+          entity_id: EntityId(3u32),
+        }),
         cost: 1,
         preconditions: State {
-          values: 0,
-          mask: u64::MAX,
+          values: !(1 << i),
+          mask: 1 << i,
         },
         postconditions: State {
           values: 1 << i,
-          mask: !(1 << i),
+          mask: 1 << i,
         },
       };
-      actions.push(action);
-      actions.reverse();
+      action_options.push(action);
+      action_options.reverse();
     }
-    let start = State { values: 0, mask: 0 };
-    let goal = State {
-      values: (1 << limit) - 1,
-      mask: !((1 << limit) - 1),
+    let start = State {
+      values: 0,
+      mask: u64::MAX,
     };
-    let mut planner = Planner::new(start, goal, actions);
+    let goal = State {
+      values: u64::MAX,
+      mask: u64::MAX,
+    };
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     println!("{:#?}", plan);
     assert_eq!(plan.start, start);
     assert_eq!(plan.goal, goal);
-    assert_eq!(plan.plan.len(), limit as usize);
+    assert_eq!(plan.plan.len(), (limit + 1) as usize);
     assert_eq!(plan.states.len(), plan.plan.len() + 1);
   }
 
@@ -457,8 +490,8 @@ pub mod test {
   fn test_many_complex_action_plan() {
     init();
     let limit = 63;
-    let mut actions = Vec::new();
-    for i in 0..limit {
+    let mut action_options = Vec::new();
+    for i in 0..=limit {
       let mut precondition_values: u64 = 0;
       let mut counter = 1 << i;
       while counter > 1 {
@@ -466,32 +499,37 @@ pub mod test {
         precondition_values |= counter;
       }
       let action = ActionOption {
-        name: format!("Set Bit {}", i),
+        action: Action::Idle(IdleAction {
+          entity_id: EntityId(3u32),
+        }),
         cost: precondition_values.count_ones() as usize,
         preconditions: State {
           values: precondition_values,
-          mask: !precondition_values,
+          mask: u64::MAX,
         },
         postconditions: State {
           values: 1 << i,
-          mask: !(1 << i),
+          mask: 1 << i,
         },
       };
-      actions.push(action);
-      actions.reverse();
+      action_options.push(action);
+      action_options.reverse();
     }
-    let start = State { values: 0, mask: 0 };
-    let goal = State {
-      values: (1 << limit) - 1,
-      mask: !((1 << limit) - 1),
+    let start = State {
+      values: 0,
+      mask: u64::MAX,
     };
-    let mut planner = Planner::new(start, goal, actions);
+    let goal = State {
+      values: u64::MAX,
+      mask: u64::MAX,
+    };
+    let mut planner = Planner::new(start, goal, action_options);
     let plan = planner.plan().unwrap();
     print_var!(plan);
     println!("{:#?}", plan);
     assert_eq!(plan.start, start);
     assert_eq!(plan.goal, goal);
-    assert_eq!(plan.plan.len(), limit as usize);
+    assert_eq!(plan.plan.len(), (limit + 1) as usize);
     assert_eq!(plan.states.len(), plan.plan.len() + 1);
   }
 }

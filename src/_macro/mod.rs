@@ -31,4 +31,6 @@ pub mod player;
 #[macro_use]
 pub mod room;
 #[macro_use]
+pub mod show;
+#[macro_use]
 pub mod you;

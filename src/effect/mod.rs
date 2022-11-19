@@ -47,10 +47,16 @@ pub use entity::*;
 /// grained with creating `Effect`s.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub enum Effect {
+  /// An entity looks around.
+  EntityLooksAround(EntityLooksAround),
+  /// An entity looks in a specific direction.
+  EntityLooksDirection(EntityLooksDirection),
   /// An entity walks into a room.
   EntityWalksIntoRoom(EntityWalksIntoRoom),
   /// An entity walks out of a room.
   EntityWalksOutOfRoom(EntityWalksOutOfRoom),
+  /// An entity's initiative is set to a value.
+  EntitySetInitiative(EntitySetInitiative),
 }
 
 impl Effect {
@@ -58,8 +64,11 @@ impl Effect {
   pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     use Effect::*;
     match &self {
+      EntityLooksAround(effect) => effect.process(data)?,
+      EntityLooksDirection(effect) => effect.process(data)?,
       EntityWalksIntoRoom(effect) => effect.process(data)?,
       EntityWalksOutOfRoom(effect) => effect.process(data)?,
+      EntitySetInitiative(effect) => effect.process(data)?,
     }
     Ok(())
   }

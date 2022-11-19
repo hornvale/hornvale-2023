@@ -1,6 +1,5 @@
 use super::super::Direction;
-use crate::action::Action;
-use crate::action::LookAroundAction;
+use crate::effect::*;
 use crate::entity::RoomId;
 use crate::system::create_map::CreateMapData as Data;
 
@@ -12,9 +11,9 @@ impl<'a> CompassRose {
     let spawn_room = create_room!(data, "Spawn Room", "Dark olive trees crowd in on all sides, the air steams with the mist of a warm recent rain, midges hang in the air.");
     if let Some(player_id) = data.player_resource.0 {
       is_in_room!(data, get_entity!(data, player_id), RoomId(spawn_room.id()));
-      write_action_event!(
+      write_effect_event!(
         data,
-        Action::LookAround(LookAroundAction {
+        Effect::EntityLooksAround(EntityLooksAround {
           entity_id: player_id.into(),
         })
       );
