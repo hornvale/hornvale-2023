@@ -33,4 +33,8 @@ pub mod room;
 #[macro_use]
 pub mod show;
 #[macro_use]
+pub mod they;
+#[macro_use]
 pub mod you;
+#[macro_use]
+pub mod you_see;

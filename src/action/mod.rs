@@ -1,6 +1,12 @@
-use crate::ecs::system::action_processor::Data as ActionProcessorData;
-use anyhow::Error;
+use crate::ecs::system::action_processor::Data;
+use crate::effect::Effect;
+use anyhow::Error as AnyError;
 
+#[macro_use]
+pub mod _macro;
+pub use _macro::*;
+pub mod _trait;
+pub use _trait::actionable::Actionable;
 pub mod actions;
 pub use actions::*;
 
@@ -42,17 +48,17 @@ pub enum Action {
   LookDirection(LookDirectionAction),
 }
 
-impl Action {
+impl Actionable for Action {
+  fn get_effects(&self, data: &mut Data) -> Result<Vec<Effect>, AnyError> {
+    on_variants!(self, Action, get_effects, data)
+  }
+
+  fn can_execute(&self, data: &mut Data) -> Result<(), AnyError> {
+    on_variants!(self, Action, can_execute, data)
+  }
+
   /// Execute the action.
-  pub fn execute(&self, data: &mut ActionProcessorData) -> Result<(), Error> {
-    use Action::*;
-    match &self {
-      GoDirection(action) => action.execute(data)?,
-      Idle(action) => action.execute(data)?,
-      LookAround(action) => action.execute(data)?,
-      LookAtEntity(action) => action.execute(data)?,
-      LookDirection(action) => action.execute(data)?,
-    }
-    Ok(())
+  fn execute(&self, data: &mut Data) -> Result<(), AnyError> {
+    on_variants!(self, Action, execute, data)
   }
 }

@@ -15,7 +15,7 @@ impl LooksAround {
     let room_id = get_current_room_id!(data, entity).unwrap();
     let room = get_entity!(data, room_id);
     let name = get_name!(data, entity).unwrap();
-    write_output_3rd!(data, entity, room, format!("{} looks around.", name));
+    they!(data, entity, format!("{} looks around.", name));
     show!(data, entity, format_room!(data, room));
     reset_state!(data, entity, 1);
     reset_state!(data, entity, 0);

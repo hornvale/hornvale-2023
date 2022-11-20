@@ -49,6 +49,8 @@ pub use entity::*;
 pub enum Effect {
   /// An entity looks around.
   EntityLooksAround(EntityLooksAround),
+  /// An entity looks at another entity.
+  EntityLooksAtEntity(EntityLooksAtEntity),
   /// An entity looks in a specific direction.
   EntityLooksDirection(EntityLooksDirection),
   /// An entity walks into a room.
@@ -65,6 +67,7 @@ impl Effect {
     use Effect::*;
     match &self {
       EntityLooksAround(effect) => effect.process(data)?,
+      EntityLooksAtEntity(effect) => effect.process(data)?,
       EntityLooksDirection(effect) => effect.process(data)?,
       EntityWalksIntoRoom(effect) => effect.process(data)?,
       EntityWalksOutOfRoom(effect) => effect.process(data)?,

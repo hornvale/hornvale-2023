@@ -18,15 +18,13 @@ pub struct OutOfRoom {
 impl OutOfRoom {
   pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
-    let room = get_entity!(data, self.room_id);
     let name = get_name!(data, entity).unwrap();
-    remove_is_in_room!(data, entity);
-    write_output_3rd!(
+    they!(
       data,
       entity,
-      room,
       format!("{} walks out to the {}.", name, self.direction.get_lowercase())
     );
+    remove_is_in_room!(data, entity);
     Ok(())
   }
 }

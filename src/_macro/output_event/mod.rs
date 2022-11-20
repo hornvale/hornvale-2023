@@ -13,14 +13,3 @@ macro_rules! write_output_event {
     get_output_event_channel!($data).single_write(OutputEvent { string: $string.into() });
   }};
 }
-
-#[macro_export]
-macro_rules! write_output_3rd {
-  ($data: expr, $entity: expr, $room: expr, $string: expr) => {{
-    #[allow(unused_imports)]
-    use $crate::ecs::event::OutputEvent;
-    if in_camera_room!($data, $room) && !entity_has_camera!($data, $entity) {
-      write_output_event!($data, $string);
-    }
-  }};
-}

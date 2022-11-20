@@ -26,6 +26,8 @@ extern crate specs;
 extern crate specs_derive;
 #[macro_use]
 extern crate thiserror;
+#[macro_use]
+extern crate variation;
 
 // Utilities shared and relied upon by all systems.
 #[macro_use]

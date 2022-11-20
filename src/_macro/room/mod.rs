@@ -16,6 +16,7 @@ macro_rules! format_room {
     use specs::prelude::*;
     use $crate::ecs::entity::RoomId;
     let mut string = String::new();
+    let room_id = RoomId($room.id());
     if let Some(name) = get_name!($data, $room) {
       string.push_str(format!("<bold>{}<reset>\n", name).as_str());
     }
@@ -23,7 +24,6 @@ macro_rules! format_room {
       string.push_str(format!("{}\n", description.0).as_str());
     }
     {
-      let room_id = RoomId($room.id());
       for (_entities, _is_in_room, _is_an_object, has_brief_description) in (
         &$data.entities,
         &$data.is_in_room,
@@ -37,7 +37,6 @@ macro_rules! format_room {
       }
     }
     {
-      let room_id = RoomId($room.id());
       for (_entities, _is_in_room, _is_an_actor, has_brief_description, _is_a_player) in (
         &$data.entities,
         &$data.is_in_room,
@@ -53,6 +52,13 @@ macro_rules! format_room {
     }
     if let Some(passages) = get_passages!($data, $room) {
       string.push_str(format!("<green>{}<reset>\n", passages).as_str());
+    }
+    let tile_map_resource_option = &mut $data.tile_map_resource.0;
+    if let Some(ref mut tile_map) = tile_map_resource_option {
+      let room_coords = tile_map.room_coords_map.get(&room_id).cloned().unwrap();
+      tile_map.player_coordinates = Some(room_coords);
+      tile_map.mark_visible(room_coords.0, room_coords.1);
+      string.push_str(format!("{}", $data.tile_map_resource.0.as_ref().unwrap()).as_str());
     }
     format!("{}", string)
   }};

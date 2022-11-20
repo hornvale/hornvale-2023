@@ -1,7 +1,8 @@
+use super::super::Actionable;
 use crate::ecs::entity::EntityId;
-use crate::ecs::system::action_processor::Data as ActionProcessorData;
+use crate::ecs::system::action_processor::Data;
 use crate::effect::*;
-use anyhow::Error;
+use anyhow::Error as AnyError;
 
 /// The `Idle` action.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
@@ -9,15 +10,11 @@ pub struct Idle {
   pub entity_id: EntityId,
 }
 
-impl Idle {
-  pub fn execute(&self, data: &mut ActionProcessorData) -> Result<(), Error> {
-    write_effect_event!(
-      data,
-      Effect::EntitySetInitiative(EntitySetInitiative {
-        entity_id: self.entity_id,
-        value: 0,
-      })
-    );
-    Ok(())
+impl Actionable for Idle {
+  fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, AnyError> {
+    Ok(vec![Effect::EntitySetInitiative(EntitySetInitiative {
+      entity_id: self.entity_id,
+      value: 0,
+    })])
   }
 }

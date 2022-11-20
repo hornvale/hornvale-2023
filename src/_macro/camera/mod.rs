@@ -40,3 +40,10 @@ macro_rules! in_camera_room {
     Some(RoomId($room.id())) == get_camera_room_id!($data)
   }};
 }
+
+#[macro_export]
+macro_rules! camera_sees_entity {
+  ($data: expr, $entity: expr) => {{
+    get_current_room_id!($data, $entity) == get_camera_room_id!($data) && !entity_has_camera!($data, $entity)
+  }};
+}

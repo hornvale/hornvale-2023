@@ -33,7 +33,7 @@ impl LooksDirection {
               format_room!(data, destination_room)
             )
           );
-          write_output_3rd!(data, entity, room, format!("{} looks {}.", name, lc_direction));
+          they!(data, entity, format!("{} looks {}.", name, lc_direction));
           set_state!(data, entity, 0);
           reset_state!(data, entity, 1);
         },

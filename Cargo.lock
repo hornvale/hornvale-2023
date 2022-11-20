@@ -2285,6 +2285,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "heck"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d621efb26863f0e9924c6ac577e8275e5e6b77455db64ffa6c65c904e9e132c"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "hermit-abi"
 version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2367,6 +2376,7 @@ dependencies = [
  "unicode-segmentation",
  "unicode-width",
  "uuid 1.2.1",
+ "variation",
 ]
 
 [[package]]
@@ -4532,6 +4542,18 @@ checksum = "2209b78d1249f7e6f3293657c9779fe31ced465df091bbd433a1cf88e916ec55"
 dependencies = [
  "ctor",
  "version_check",
+]
+
+[[package]]
+name = "variation"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd2efea763614629fe6c94b0e5982cad11313ef13e9a7c0f3b616cfef9ed52e4"
+dependencies = [
+ "heck",
+ "proc-macro2 0.4.30",
+ "quote 0.6.13",
+ "syn 0.15.44",
 ]
 
 [[package]]

@@ -1,6 +1,7 @@
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 
+use crate::action::_trait::actionable::Actionable;
 use crate::ecs::component::*;
 use crate::ecs::event::*;
 use crate::resource::*;

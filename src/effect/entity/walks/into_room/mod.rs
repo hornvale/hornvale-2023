@@ -18,13 +18,11 @@ pub struct IntoRoom {
 impl IntoRoom {
   pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
-    let room = get_entity!(data, self.room_id);
     let name = get_name!(data, entity).unwrap();
     is_in_room!(data, entity, self.room_id);
-    write_output_3rd!(
+    they!(
       data,
       entity,
-      room,
       format!("{} walks in from the {}.", name, self.direction.get_lowercase())
     );
     reset_state!(data, entity, 0);
