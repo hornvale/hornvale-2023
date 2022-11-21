@@ -1,5 +1,7 @@
 pub mod d_earth;
 pub use d_earth::*;
+pub mod d_gm_cm3;
+pub use d_gm_cm3::*;
 pub mod d_luna;
 pub use d_luna::*;
 pub mod d_sol;
@@ -16,6 +18,8 @@ pub mod l_m;
 pub use l_m::*;
 pub mod m_earth;
 pub use m_earth::*;
+pub mod m_jupiter;
+pub use m_jupiter::*;
 pub mod m_luna;
 pub use m_luna::*;
 pub mod m_sol;

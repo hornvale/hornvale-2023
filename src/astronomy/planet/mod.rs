@@ -1,11 +1,9 @@
 use crate::astronomy::gas_giant_planet::GasGiantPlanet;
 use crate::astronomy::terrestrial_planet::TerrestrialPlanet;
 
-pub mod constants;
 pub mod constraints;
 pub mod error;
 use error::Error;
-pub mod math;
 
 /// The `Planet` class.  This will get complicated.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

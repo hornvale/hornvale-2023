@@ -1,13 +1,13 @@
 use super::MEarth;
 use crate::astronomy::_constants::*;
 
-/// The `MLuna` newtype.
+/// The `MJupiter` newtype.
 #[derive(Add, Clone, Copy, Debug, Default, Deserialize, Display, Div, Mul, PartialEq, PartialOrd, Serialize, Sub)]
-pub struct MLuna(pub f64);
+pub struct MJupiter(pub f64);
 
-impl From<MEarth> for MLuna {
+impl From<MEarth> for MJupiter {
   fn from(original: MEarth) -> Self {
-    Self(original.0 * LUNA_MASS_PER_EARTH_MASS)
+    Self(original.0 / EARTH_MASS_PER_JUPITER_MASS)
   }
 }
 
@@ -18,9 +18,9 @@ pub mod test {
   use crate::test::*;
 
   #[test]
-  pub fn test_m_earth_to_m_luna() {
+  pub fn test_m_earth_to_m_jupiter() {
     init();
-    let actual: MLuna = MEarth(1.0).into();
-    assert_approx_eq!(actual.0, LUNA_MASS_PER_EARTH_MASS, 0.01);
+    let actual: MJupiter = MEarth(1.0).into();
+    assert_approx_eq!(actual.0, MJupiter(1.0 / EARTH_MASS_PER_JUPITER_MASS).0, 0.01);
   }
 }
