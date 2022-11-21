@@ -1,11 +1,11 @@
-use rand::prelude::*;
-use std::default::Default;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::satellite_system::constraints::Constraints as SatelliteSystemConstraints;
 use crate::astronomy::satellite_systems::constants::*;
 use crate::astronomy::satellite_systems::error::Error;
 use crate::astronomy::satellite_systems::SatelliteSystems;
+use rand::prelude::*;
+use std::default::Default;
 
 /// Constraints for creating satellite systems.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -44,7 +44,7 @@ impl Constraints {
     let mut satellite_systems = Vec::new();
     let orbits = self.generate_orbits(rng, host_star)?;
     for orbit in orbits.into_iter() {
-      let satellite_system = satellite_system_constraints.generate(rng, host_star, orbit)?;
+      let satellite_system = satellite_system_constraints.generate(rng, host_star, LAu(orbit))?;
       satellite_systems.push(satellite_system);
     }
     let result = SatelliteSystems { satellite_systems };

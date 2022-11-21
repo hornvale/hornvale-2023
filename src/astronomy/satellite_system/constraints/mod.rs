@@ -1,10 +1,10 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::moons::constraints::Constraints as MoonsConstraints;
 use crate::astronomy::planet::constraints::Constraints as PlanetConstraints;
 use crate::astronomy::satellite_system::error::Error;
 use crate::astronomy::satellite_system::SatelliteSystem;
+use rand::prelude::*;
 
 /// Constraints for creating a planet and its moons.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -30,11 +30,11 @@ impl Constraints {
     &self,
     rng: &mut R,
     host_star: &HostStar,
-    star_distance: f64,
+    star_distance: LAu,
   ) -> Result<SatelliteSystem, Error> {
     let planet_constraints = self.planet_constraints.unwrap_or_default();
     let moons_constraints = self.moons_constraints.unwrap_or_default();
-    let planet = planet_constraints.generate(rng, host_star, star_distance)?;
+    let planet = planet_constraints.generate(rng, host_star, star_distance.0)?;
     let moons = moons_constraints.generate(rng, host_star, star_distance, &planet)?;
     let result = SatelliteSystem { planet, moons };
     Ok(result)
@@ -68,7 +68,7 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0..habitable_zone.1));
     let satellite_system = &Constraints::default().generate(&mut rng, &host_star, distance)?;
     print_var!(satellite_system);
     Ok(())

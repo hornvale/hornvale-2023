@@ -1,11 +1,11 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::moon::constraints::Constraints as MoonConstraints;
 use crate::astronomy::moons::constants::*;
 use crate::astronomy::moons::error::Error;
 use crate::astronomy::moons::Moons;
 use crate::astronomy::planet::Planet;
+use rand::prelude::*;
 
 /// Constraints for creating a moon.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -20,7 +20,7 @@ impl Constraints {
     &self,
     rng: &mut R,
     host_star: &HostStar,
-    star_distance: f64,
+    star_distance: LAu,
     planet: &Planet,
   ) -> Result<Moons, Error> {
     let minimum_count;
@@ -48,7 +48,7 @@ impl Constraints {
       let count = rng.gen_range(minimum_count..=maximum_count);
       let mut moons = vec![];
       for _ in 1..count {
-        let planet_distance = rng.gen_range(satellite_zone.0..satellite_zone.1);
+        let planet_distance = LKm(rng.gen_range(satellite_zone.0..satellite_zone.1));
         let moon = moon_constraints.generate(rng, host_star, star_distance, planet, planet_distance)?;
         moons.push(moon);
       }
@@ -83,8 +83,8 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
-    let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance)?;
+    let star_distance = LAu(rng.gen_range(habitable_zone.0..habitable_zone.1));
+    let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance.0)?;
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet)?;
     print_var!(moon);
     Ok(())

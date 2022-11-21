@@ -1,18 +1,18 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::moon::constants::*;
 use crate::astronomy::moon::error::Error;
 use crate::astronomy::moon::Moon;
 use crate::astronomy::planet::Planet;
+use rand::prelude::*;
 
 /// Constraints for creating a moon.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
-  /// The minimum mass, in Mmoon.
-  pub minimum_mass: Option<f64>,
-  /// The maximum mass, in Mmoon.
-  pub maximum_mass: Option<f64>,
+  /// The minimum mass, in MLuna.
+  pub minimum_mass: Option<MLuna>,
+  /// The maximum mass, in MLuna.
+  pub maximum_mass: Option<MLuna>,
 }
 
 impl Constraints {
@@ -21,13 +21,13 @@ impl Constraints {
     &self,
     rng: &mut R,
     host_star: &HostStar,
-    star_distance: f64,
+    star_distance: LAu,
     planet: &Planet,
-    planet_distance: f64,
+    planet_distance: LKm,
   ) -> Result<Moon, Error> {
     let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MASS);
     let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
-    let mass = rng.gen_range(minimum_mass..maximum_mass);
+    let mass = MLuna(rng.gen_range(minimum_mass.0..maximum_mass.0));
     let result = Moon::from_environment(mass, host_star, star_distance, planet, planet_distance)?;
     Ok(result)
   }
@@ -63,7 +63,7 @@ pub mod test {
     let habitable_zone = host_star.get_habitable_zone();
     let star_distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
     let planet = &PlanetConstraints::habitable().generate(&mut rng, host_star, star_distance)?;
-    let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet, 400_000.0)?;
+    let moon = &Constraints::default().generate(&mut rng, host_star, LAu(star_distance), planet, LKm(400_000.0))?;
     print_var!(moon);
     Ok(())
   }
