@@ -1,14 +1,15 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::MAXIMUM_MASS as MAXIMUM_STAR_MASS;
 use crate::astronomy::star::constants::MINIMUM_MASS as MINIMUM_STAR_MASS;
 
 /// The minimum separation of binary stars, in AU.
-pub const MINIMUM_SEPARATION: f64 = 0.04;
+pub const MINIMUM_SEPARATION: LAu = LAu(0.04);
 
 /// The minimum average separation of "close" binary stars, in AU.
-pub const MINIMUM_AVERAGE_SEPARATION: f64 = 0.1;
+pub const MINIMUM_AVERAGE_SEPARATION: LAu = LAu(0.1);
 
 /// The maximum average separation of "close" binary stars, in AU.
-pub const MAXIMUM_AVERAGE_SEPARATION: f64 = 6.0;
+pub const MAXIMUM_AVERAGE_SEPARATION: LAu = LAu(6.0);
 
 /// The minimum orbital eccentricity of "close" binary stars (unitless).
 pub const MINIMUM_ORBITAL_ECCENTRICITY: f64 = 0.1;
@@ -19,20 +20,20 @@ pub const MAXIMUM_ORBITAL_ECCENTRICITY: f64 = 0.7;
 /// The minimum combined mass of a binary system.
 /// Set it to 4 * minimum main-sequence star mass.
 /// We don't want it to be too small.
-pub const MINIMUM_COMBINED_MASS: f64 = 4.0 * MINIMUM_STAR_MASS;
+pub const MINIMUM_COMBINED_MASS: MSol = MSol(4.0 * MINIMUM_STAR_MASS.0);
 
 /// The maximum combined mass of a binary system.
 /// Set it to maximum main-sequence star mass.
 /// We don't need binary supergiants.
-pub const MAXIMUM_COMBINED_MASS: f64 = MAXIMUM_STAR_MASS;
+pub const MAXIMUM_COMBINED_MASS: MSol = MAXIMUM_STAR_MASS;
 
 /// The minimum individual mass of a binary system member.
 /// Set it to 1 * minimum main-sequence star mass.
-pub const MINIMUM_INDIVIDUAL_MASS: f64 = MINIMUM_STAR_MASS;
+pub const MINIMUM_INDIVIDUAL_MASS: MSol = MINIMUM_STAR_MASS;
 
 /// The maximum individual mass of a binary system member.
 /// Set it to 1 * maximum main-sequence star mass.
-pub const MAXIMUM_INDIVIDUAL_MASS: f64 = MAXIMUM_STAR_MASS;
+pub const MAXIMUM_INDIVIDUAL_MASS: MSol = MAXIMUM_STAR_MASS;
 
 /// Assume a star has to be at least this old to have interesting life.
 ///
@@ -41,15 +42,15 @@ pub const MAXIMUM_INDIVIDUAL_MASS: f64 = MAXIMUM_STAR_MASS;
 /// interesting parts.
 ///
 /// Measured in Gyr, or billions of years.
-pub const MINIMUM_HABITABLE_AGE: f64 = 4.0;
+pub const MINIMUM_HABITABLE_AGE: TGyr = TGyr(4.0);
 
 /// The minimum habitable average separation of "close" binary stars, in AU.
-pub const MINIMUM_HABITABLE_AVERAGE_SEPARATION: f64 = 0.1;
+pub const MINIMUM_HABITABLE_AVERAGE_SEPARATION: LAu = LAu(0.1);
 
 /// The maximum habitable average separation of "close" habitable binary stars,
 /// in AU.
 /// I dropped this down from ~6AU because this just was not happening.
-pub const MAXIMUM_HABITABLE_AVERAGE_SEPARATION: f64 = 0.4;
+pub const MAXIMUM_HABITABLE_AVERAGE_SEPARATION: LAu = LAu(0.4);
 
 /// The minimum orbital eccentricity of "close" binary stars (unitless).
 pub const MINIMUM_HABITABLE_ORBITAL_ECCENTRICITY: f64 = 0.2;
@@ -59,16 +60,16 @@ pub const MAXIMUM_HABITABLE_ORBITAL_ECCENTRICITY: f64 = 0.6;
 
 /// Below this is probably too low to support conventional life.
 /// Measured in Msol, or solar mass equivalents.
-pub const MINIMUM_HABITABLE_COMBINED_MASS: f64 = 1.0;
+pub const MINIMUM_HABITABLE_COMBINED_MASS: MSol = MSol(1.0);
 
 /// Above this is probably too high to support conventional life.
 /// Measured in Msol, or solar mass equivalents.
-pub const MAXIMUM_HABITABLE_COMBINED_MASS: f64 = 2.0;
+pub const MAXIMUM_HABITABLE_COMBINED_MASS: MSol = MSol(2.0);
 
 /// Below this is probably too low to support conventional life.
 /// Measured in Msol, or solar mass equivalents.
-pub const MINIMUM_HABITABLE_INDIVIDUAL_MASS: f64 = 0.1;
+pub const MINIMUM_HABITABLE_INDIVIDUAL_MASS: MSol = MSol(0.1);
 
 /// Above this is probably too high to support conventional life.
 /// Measured in Msol, or solar mass equivalents.
-pub const MAXIMUM_HABITABLE_INDIVIDUAL_MASS: f64 = 1.25;
+pub const MAXIMUM_HABITABLE_INDIVIDUAL_MASS: MSol = MSol(1.25);

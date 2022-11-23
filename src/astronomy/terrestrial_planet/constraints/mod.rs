@@ -1,35 +1,35 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::terrestrial_planet::constants::*;
 use crate::astronomy::terrestrial_planet::error::Error;
 use crate::astronomy::terrestrial_planet::math::temperature::get_equilibrium_temperature;
 use crate::astronomy::terrestrial_planet::rotation_direction::RotationDirection;
 use crate::astronomy::terrestrial_planet::TerrestrialPlanet;
+use rand::prelude::*;
 
 /// Constraints for creating a planet.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
-  /// The minimum mass.
-  pub minimum_mass: Option<f64>,
-  /// The maximum mass.
-  pub maximum_mass: Option<f64>,
+  /// The minimum mass, in MEarth.
+  pub minimum_mass: Option<MEarth>,
+  /// The maximum mass, in MEarth.
+  pub maximum_mass: Option<MEarth>,
   /// The minimum axial tilt.
   pub minimum_axial_tilt: Option<f64>,
   /// The maximum axial tilt.
   pub maximum_axial_tilt: Option<f64>,
-  /// The minimum rotational period.
-  pub minimum_rotational_period: Option<f64>,
-  /// The maximum rotational period.
-  pub maximum_rotational_period: Option<f64>,
-  /// The minimum orbital eccentricity.
+  /// The minimum rotational period, in TEarthDay.
+  pub minimum_rotational_period: Option<TEarthDay>,
+  /// The maximum rotational period, in TEarthDay.
+  pub maximum_rotational_period: Option<TEarthDay>,
+  /// The minimum orbital eccentricity (unitless).
   pub minimum_orbital_eccentricity: Option<f64>,
-  /// The maximum orbital eccentricity.
+  /// The maximum orbital eccentricity (unitless).
   pub maximum_orbital_eccentricity: Option<f64>,
   /// The distance from the host star, in AU.
-  pub host_star_distance: Option<f64>,
+  pub host_star_distance: Option<LAu>,
   /// The luminosity of the host star, in Lsol.
-  pub host_star_luminosity: Option<f64>,
+  pub host_star_luminosity: Option<LSol>,
 }
 
 impl Constraints {
@@ -57,11 +57,11 @@ impl Constraints {
     &self,
     rng: &mut R,
     host_star: &HostStar,
-    distance: f64,
+    distance: LAu,
   ) -> Result<TerrestrialPlanet, Error> {
     let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MASS);
     let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
-    let mass = rng.gen_range(minimum_mass..maximum_mass);
+    let mass = MEarth(rng.gen_range(minimum_mass.0..maximum_mass.0));
     let mut result = TerrestrialPlanet::from_mass(mass)?;
     let minimum_axial_tilt = self.minimum_axial_tilt.unwrap_or(0.0);
     let maximum_axial_tilt = self.maximum_axial_tilt.unwrap_or(180.0);
@@ -91,11 +91,11 @@ impl Constraints {
       .unwrap_or(MAXIMUM_ORBITAL_ECCENTRICITY);
     let orbital_eccentricity = rng.gen_range(minimum_orbital_eccentricity..maximum_orbital_eccentricity);
     result.orbital_eccentricity = orbital_eccentricity;
-    let perihelion = (1.0 - orbital_eccentricity) * distance;
+    let perihelion = LAu((1.0 - orbital_eccentricity) * distance.0);
     result.perihelion = perihelion;
-    let aphelion = (1.0 + orbital_eccentricity) * distance;
+    let aphelion = LAu((1.0 + orbital_eccentricity) * distance.0);
     result.aphelion = aphelion;
-    let orbital_period = (distance.powf(3.0) / host_star.get_stellar_mass()).sqrt();
+    let orbital_period = TEarthYear((distance.0.powf(3.0) / host_star.get_stellar_mass().0).sqrt());
     result.orbital_period = orbital_period;
     let bond_albedo = result.bond_albedo;
     let greenhouse_effect = result.greenhouse_effect;

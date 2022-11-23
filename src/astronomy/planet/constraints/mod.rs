@@ -1,10 +1,10 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::gas_giant_planet::constraints::Constraints as GasGiantPlanetConstraints;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::planet::error::Error;
 use crate::astronomy::planet::Planet;
 use crate::astronomy::terrestrial_planet::constraints::Constraints as TerrestrialPlanetConstraints;
+use rand::prelude::*;
 
 /// Constraints for creating a planet.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -26,7 +26,7 @@ impl Constraints {
   }
 
   /// Generate.
-  pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar, distance: f64) -> Result<Planet, Error> {
+  pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar, distance: LAu) -> Result<Planet, Error> {
     use Planet::*;
     let result = {
       if distance >= host_star.get_frost_line() {

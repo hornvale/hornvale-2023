@@ -1,3 +1,4 @@
+use crate::astronomy::_type::*;
 pub mod constants;
 use constants::*;
 pub mod constraints;
@@ -17,47 +18,47 @@ use rotation_direction::RotationDirection;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TerrestrialPlanet {
   /// Mass in Mearth.
-  pub mass: f64,
-  /// Core Mass Fraction.
+  pub mass: MEarth,
+  /// Core Mass Fraction (unitless).
   pub core_mass_fraction: f64,
   /// Density, in Dearth.
-  pub density: f64,
+  pub density: DEarth,
   /// Escape velocity, in Vearth.
   pub escape_velocity: f64,
   /// Gravity, in Gearth.
   pub gravity: f64,
   /// Radius, in Rearth.
-  pub radius: f64,
+  pub radius: REarth,
   /// Axial tilt (0-180º).
   pub axial_tilt: f64,
   /// Rotation.
   pub rotation_direction: RotationDirection,
   /// Semi-Major Axis.
-  pub semi_major_axis: f64,
+  pub semi_major_axis: LAu,
   /// Tropic Zone.
   pub tropic_zones: (f64, f64),
   /// Polar Zones.
   pub polar_zones: (f64, f64),
-  /// Orbital eccentricity.
+  /// Orbital eccentricity (units).
   pub orbital_eccentricity: f64,
   /// Perihelion.
-  pub perihelion: f64,
+  pub perihelion: LAu,
   /// Aphelion.
-  pub aphelion: f64,
+  pub aphelion: LAu,
   /// Orbital period, in Earth years.
-  pub orbital_period: f64,
-  /// Bond albedo.
+  pub orbital_period: TEarthYear,
+  /// Bond albedo (unitless).
   pub bond_albedo: f64,
-  /// Greenhouse effect.
+  /// Greenhouse effect (unitless).
   pub greenhouse_effect: f64,
   /// Equilibrium temperature, in Kelvin.
-  pub equilibrium_temperature: f64,
+  pub equilibrium_temperature: TKel,
   /// Whether we can retain the gases necessary for conventional life.
   pub is_atmospherically_stable: bool,
 }
 
 impl TerrestrialPlanet {
-  pub fn from_mass(mass: f64) -> Result<Self, Error> {
+  pub fn from_mass(mass: MEarth) -> Result<Self, Error> {
     let core_mass_fraction: f64 = 0.35;
     let density = get_density(mass, core_mass_fraction);
     let radius = get_radius(mass, density);
@@ -69,13 +70,13 @@ impl TerrestrialPlanet {
     let polar_zones = (90.0 - axial_tilt, 90.0);
     let bond_albedo = 0.29;
     let greenhouse_effect = 1.0;
-    let host_star_luminosity = 1.0;
-    let host_star_distance = 1.0;
-    let semi_major_axis: f64 = host_star_distance;
+    let host_star_luminosity = LSol(1.0);
+    let host_star_distance = LAu(1.0);
+    let semi_major_axis = host_star_distance;
     let orbital_eccentricity = 0.0167;
-    let perihelion = (1.0 - orbital_eccentricity) * semi_major_axis;
-    let aphelion = (1.0 + orbital_eccentricity) * semi_major_axis;
-    let orbital_period = semi_major_axis.powf(3.0).sqrt();
+    let perihelion = LAu((1.0 - orbital_eccentricity) * semi_major_axis.0);
+    let aphelion = LAu((1.0 + orbital_eccentricity) * semi_major_axis.0);
+    let orbital_period = TEarthDay(semi_major_axis.0.powf(3.0).sqrt()).into();
     let equilibrium_temperature =
       get_equilibrium_temperature(bond_albedo, greenhouse_effect, host_star_luminosity, host_star_distance);
     let is_atmospherically_stable = is_atmospherically_stable(equilibrium_temperature, escape_velocity);

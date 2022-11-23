@@ -1,18 +1,18 @@
-use rand::prelude::*;
-use std::default::Default;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
 use crate::astronomy::star::math::mass::*;
 use crate::astronomy::star::Star;
+use rand::prelude::*;
+use std::default::Default;
 
 /// Constraints for creating a main-sequence star.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
   /// Minimum amount of mass.
-  pub minimum_mass: Option<f64>,
+  pub minimum_mass: Option<MSol>,
   /// Maximum amount of mass.
-  pub maximum_mass: Option<f64>,
+  pub maximum_mass: Option<MSol>,
   /// Ensure this star is habitable.
   pub make_habitable: bool,
 }
@@ -39,10 +39,10 @@ impl Constraints {
     let mut result = Star::from_mass(rng, mass)?;
     let minimum_age = match self.make_habitable {
       true => MINIMUM_HABITABLE_AGE,
-      false => 0.1 * result.life_expectancy,
+      false => TGyr(0.1 * result.life_expectancy.0),
     };
-    let maximum_age = 0.9 * result.life_expectancy;
-    result.current_age = rng.gen_range(minimum_age..maximum_age);
+    let maximum_age = TGyr(0.9 * result.life_expectancy.0);
+    result.current_age = TGyr(rng.gen_range(minimum_age.0..maximum_age.0));
     Ok(result)
   }
 }

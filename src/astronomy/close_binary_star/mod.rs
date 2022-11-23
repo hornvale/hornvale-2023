@@ -1,8 +1,7 @@
-use rand::prelude::*;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::star::error::Error as StarError;
 use crate::astronomy::star::Star;
-
+use rand::prelude::*;
 pub mod constants;
 use constants::*;
 pub mod constraints;
@@ -32,29 +31,29 @@ pub struct CloseBinaryStar {
   /// The secondary star has less mass.
   pub secondary: Star,
   /// Average separation of the binary components, in AU.
-  pub average_separation: f64,
-  /// Orbital eccentricity of the components.
+  pub average_separation: LAu,
+  /// Orbital eccentricity of the components (unitless).
   pub orbital_eccentricity: f64,
   /// Average distance from barycenter of the components.
-  pub average_distances_from_barycenter: (f64, f64),
+  pub average_distances_from_barycenter: (LAu, LAu),
   /// Minimum distance from barycenter of the components.
-  pub minimum_distances_from_barycenter: (f64, f64),
+  pub minimum_distances_from_barycenter: (LAu, LAu),
   /// Maximum distance from barycenter of the components.
-  pub maximum_distances_from_barycenter: (f64, f64),
+  pub maximum_distances_from_barycenter: (LAu, LAu),
   /// Minimum separation of the components, in AU.
-  pub minimum_separation: f64,
+  pub minimum_separation: LAu,
   /// Maximum separation of the components, in AU.
-  pub maximum_separation: f64,
+  pub maximum_separation: LAu,
   /// Area in which nothing can exist.
-  pub forbidden_zone: (f64, f64),
+  pub forbidden_zone: (LAu, LAu),
   /// Area in which nothing _habitable_ can exist.
-  pub danger_zone: (f64, f64),
+  pub danger_zone: (LAu, LAu),
   /// Habitable zone.
-  pub habitable_zone: (f64, f64),
+  pub habitable_zone: (LAu, LAu),
   /// Satellite bounds.
-  pub satellite_zone: (f64, f64),
+  pub satellite_zone: (LAu, LAu),
   /// The frost line.
-  pub frost_line: f64,
+  pub frost_line: LAu,
   /// Whether the habitable zone is contained within the forbidden zone.
   pub habitable_zone_is_forbidden: bool,
   /// Whether the habitable zone is contained within the danger zone.
@@ -67,7 +66,7 @@ impl CloseBinaryStar {
     _rng: &mut R,
     primary: Star,
     secondary: Star,
-    average_separation: f64,
+    average_separation: LAu,
     orbital_eccentricity: f64,
   ) -> Result<Self, Error> {
     let average_distances_from_barycenter =
@@ -82,10 +81,10 @@ impl CloseBinaryStar {
       get_maximum_distances_from_barycenter(average_separation, primary.mass, secondary.mass, orbital_eccentricity);
     let maximum_separation = get_maximum_separation(maximum_distances_from_barycenter);
     let forbidden_zone = (minimum_separation / 3.0, maximum_separation * 3.0);
-    let danger_zone = (0.0, maximum_separation * 4.0);
+    let danger_zone = (LAu(0.0), LAu(maximum_separation.0 * 4.0));
     let habitable_zone = get_habitable_zone(&primary, &secondary);
     let combined_mass = primary.mass + secondary.mass;
-    let satellite_zone = (0.1 * combined_mass, 40.0 * combined_mass);
+    let satellite_zone = (LAu(0.1 * combined_mass.0), LAu(40.0 * combined_mass.0));
     let frost_line = get_frost_line(&primary, &secondary);
     let habitable_zone_is_forbidden = habitable_zone.1 <= forbidden_zone.1;
     let habitable_zone_is_dangerous = habitable_zone.1 <= danger_zone.1;
@@ -113,19 +112,19 @@ impl CloseBinaryStar {
   /// Retrieve or calculate the age of the stars.
   ///
   /// Calculated in Gyr.
-  pub fn get_current_age(&self) -> f64 {
+  pub fn get_current_age(&self) -> TGyr {
     self.primary.current_age
   }
 
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     self.primary.mass + self.secondary.mass
   }
 
   /// Measured in Lsol.
-  pub fn get_luminosity(&self) -> f64 {
+  pub fn get_luminosity(&self) -> LSol {
     self.primary.luminosity + self.secondary.luminosity
   }
 

@@ -1,10 +1,10 @@
-use rand::prelude::*;
-use std::default::Default;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::close_binary_star::constants::*;
 use crate::astronomy::close_binary_star::error::Error;
 use crate::astronomy::close_binary_star::CloseBinaryStar;
 use crate::astronomy::star::constraints::Constraints as StarConstraints;
+use rand::prelude::*;
+use std::default::Default;
 
 /// Constraints for creating a binary star.
 ///
@@ -20,25 +20,25 @@ use crate::astronomy::star::constraints::Constraints as StarConstraints;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
   /// The minimum combined mass of the stars, in Msol.
-  pub minimum_combined_mass: Option<f64>,
+  pub minimum_combined_mass: Option<MSol>,
   /// The maximum combined mass of the stars, in Msol.
-  pub maximum_combined_mass: Option<f64>,
+  pub maximum_combined_mass: Option<MSol>,
   /// The minimum individual mass of the stars, in Msol.
-  pub minimum_individual_mass: Option<f64>,
+  pub minimum_individual_mass: Option<MSol>,
   /// The maximum individual mass of the stars, in Msol.
-  pub maximum_individual_mass: Option<f64>,
-  /// The minimum separation between the stars, in Msol.
-  pub minimum_average_separation: Option<f64>,
-  /// The maximum separation between the stars, in Msol.
-  pub maximum_average_separation: Option<f64>,
-  /// The minimum orbital eccentricity.
+  pub maximum_individual_mass: Option<MSol>,
+  /// The minimum separation between the stars, in AU.
+  pub minimum_average_separation: Option<LAu>,
+  /// The maximum separation between the stars, in AU.
+  pub maximum_average_separation: Option<LAu>,
+  /// The minimum orbital eccentricity (unitless).
   pub minimum_orbital_eccentricity: Option<f64>,
-  /// The maximum orbital_eccentricity.
+  /// The maximum orbital_eccentricity (unitless).
   pub maximum_orbital_eccentricity: Option<f64>,
   /// The minimum age of the stars, in Gyr.
-  pub minimum_age: Option<f64>,
+  pub minimum_age: Option<TGyr>,
   /// The maximum age of the stars, in Gyr.
-  pub maximum_age: Option<f64>,
+  pub maximum_age: Option<TGyr>,
   /// Enforce habitability.
   pub enforce_habitability: bool,
   /// Star constraints.
@@ -88,7 +88,7 @@ impl Constraints {
     let minimum_average_separation = self.minimum_average_separation.unwrap_or(MINIMUM_AVERAGE_SEPARATION);
     let maximum_average_separation = self.maximum_average_separation.unwrap_or(MAXIMUM_AVERAGE_SEPARATION);
     let orbital_eccentricity = rng.gen_range(minimum_orbital_eccentricity..maximum_orbital_eccentricity);
-    let average_separation = rng.gen_range(minimum_average_separation..maximum_average_separation);
+    let average_separation = LAu(rng.gen_range(minimum_average_separation.0..maximum_average_separation.0));
     let combined_mass;
     let primary_mass;
     let secondary_mass;
@@ -96,9 +96,9 @@ impl Constraints {
     let mut secondary_constraints;
     if self.enforce_habitability {
       let bare_minimum =
-        (1.1 * (4.0 * maximum_average_separation * (1.0 + orbital_eccentricity)).powf(2.0)).powf(1.0 / 4.0);
+        MSol((1.1 * (4.0 * maximum_average_separation.0 * (1.0 + orbital_eccentricity)).powf(2.0)).powf(1.0 / 4.0));
       if minimum_combined_mass < bare_minimum {
-        minimum_combined_mass = 1.1 * bare_minimum;
+        minimum_combined_mass = MSol(1.1 * bare_minimum.0);
       }
       primary_constraints = self.star_constraints.unwrap_or_else(StarConstraints::habitable);
       secondary_constraints = self.star_constraints.unwrap_or_else(StarConstraints::habitable);
@@ -107,26 +107,26 @@ impl Constraints {
       secondary_constraints = self.star_constraints.unwrap_or_default();
     }
     let (primary, secondary) = {
-      combined_mass = rng.gen_range(minimum_combined_mass..maximum_combined_mass);
+      combined_mass = MSol(rng.gen_range(minimum_combined_mass.0..maximum_combined_mass.0));
       let half = combined_mass / 2.0;
       let mut top = combined_mass - MINIMUM_HABITABLE_INDIVIDUAL_MASS;
       if self.enforce_habitability && top > maximum_individual_mass {
         top = maximum_individual_mass;
       }
-      primary_mass = rng.gen_range(half..top);
+      primary_mass = MSol(rng.gen_range(half.0..top.0));
       secondary_mass = combined_mass - primary_mass;
-      primary_constraints.minimum_mass = Some(0.999 * primary_mass);
-      primary_constraints.maximum_mass = Some(1.001 * primary_mass);
-      secondary_constraints.minimum_mass = Some(0.999 * secondary_mass);
-      secondary_constraints.maximum_mass = Some(1.001 * secondary_mass);
+      primary_constraints.minimum_mass = Some(MSol(0.999 * primary_mass.0));
+      primary_constraints.maximum_mass = Some(MSol(1.001 * primary_mass.0));
+      secondary_constraints.minimum_mass = Some(MSol(0.999 * secondary_mass.0));
+      secondary_constraints.maximum_mass = Some(MSol(1.001 * secondary_mass.0));
       let mut primary = primary_constraints.generate(rng)?;
       let mut secondary = secondary_constraints.generate(rng)?;
       let minimum_age = match self.enforce_habitability {
         true => MINIMUM_HABITABLE_AGE,
-        false => 0.1 * primary.life_expectancy,
+        false => TGyr(0.1 * primary.life_expectancy.0),
       };
-      let maximum_age = 0.9 * primary.life_expectancy;
-      let current_age = rng.gen_range(minimum_age..maximum_age);
+      let maximum_age = TGyr(0.9 * primary.life_expectancy.0);
+      let current_age = TGyr(rng.gen_range(minimum_age.0..maximum_age.0));
       primary.current_age = current_age;
       secondary.current_age = current_age;
       (primary, secondary)

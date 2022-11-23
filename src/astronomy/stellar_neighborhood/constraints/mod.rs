@@ -1,17 +1,17 @@
-use rand::prelude::*;
-use std::f64::consts::PI;
-
+use crate::astronomy::_constants::*;
+use crate::astronomy::_type::*;
 use crate::astronomy::star_system::constraints::Constraints as StarSystemConstraints;
 use crate::astronomy::stellar_neighbor::constraints::Constraints as StellarNeighborConstraints;
-use crate::astronomy::stellar_neighborhood::constants::*;
 use crate::astronomy::stellar_neighborhood::error::*;
 use crate::astronomy::stellar_neighborhood::StellarNeighborhood;
+use rand::prelude::*;
+use std::f64::consts::PI;
 
 /// Constraints for creating a stellar neighborhood.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
   /// The radius of the neighborhood, in light years.
-  pub radius: Option<f64>,
+  pub radius: Option<LLyr>,
   /// The density of the neighborhood, in stars per cubic light year.
   pub density: Option<f64>,
   /// Any constraints placed on the various neighbors.
@@ -34,7 +34,7 @@ impl Constraints {
   pub fn generate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<StellarNeighborhood, Error> {
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
     let density = self.density.unwrap_or(STELLAR_NEIGHBORHOOD_DENSITY);
-    let volume = (4.0 / 3.0) * PI * radius.powf(3.0);
+    let volume = (4.0 / 3.0) * PI * radius.0.powf(3.0);
     let average_stars = density * volume;
     let number_of_stars = rng.gen_range((0.875 * average_stars)..(1.125 * average_stars)) as usize;
     let mut neighbors = vec![];

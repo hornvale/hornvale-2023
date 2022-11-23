@@ -1,6 +1,6 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::distant_binary_star::DistantBinaryStar;
 use crate::astronomy::planetary_system::PlanetarySystem;
-
 pub mod constants;
 pub mod constraints;
 pub mod error;
@@ -38,7 +38,7 @@ impl StarSubsystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     use StarSubsystem::*;
     match &self {
       DistantBinaryStar(distant_binary_star) => distant_binary_star.get_stellar_mass(),

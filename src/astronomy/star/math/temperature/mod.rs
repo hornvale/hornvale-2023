@@ -1,21 +1,22 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
 use crate::astronomy::star::math::luminosity::star_mass_to_luminosity;
 use crate::astronomy::star::math::radius::star_mass_to_radius;
 
 /// Get the temperature of a main-sequence star in Kelvin based on its Msol.
-pub fn star_mass_to_temperature(mass: f64) -> Result<f64, Error> {
+pub fn star_mass_to_temperature(mass: MSol) -> Result<TKel, Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
   if mass >= MAXIMUM_MASS {
     return Err(Error::MassTooHighForMainSequence);
   }
-  let luminosity = star_mass_to_luminosity(mass)?;
-  let radius = star_mass_to_radius(mass)?;
+  let luminosity = star_mass_to_luminosity(mass)?.0;
+  let radius = star_mass_to_radius(mass)?.0;
   let result = (luminosity / radius.powf(2.0)).powf(0.25) * 5776.0;
 
-  Ok(result)
+  Ok(TKel(result))
 }
 
 #[cfg(test)]

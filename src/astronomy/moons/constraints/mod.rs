@@ -37,9 +37,8 @@ impl Constraints {
       },
     }
     let moon_constraints = self.moon_constraints.unwrap_or_default();
-    let rocky_moon_density = 3.35;
     let satellite_zone = {
-      let inner = 2.44 * planet.get_radius() * 6_371.0 * (planet.get_density() / rocky_moon_density).powf(1.0 / 3.0);
+      let inner = 2.44 * planet.get_radius().0 * planet.get_density().0.powf(1.0 / 3.0);
       // @todo: improve this.
       let outer = 20.0 * inner;
       (inner, outer)

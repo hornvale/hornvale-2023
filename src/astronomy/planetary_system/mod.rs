@@ -1,6 +1,6 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::satellite_systems::SatelliteSystems;
-
 pub mod constraints;
 pub mod error;
 use error::Error;
@@ -37,7 +37,7 @@ impl PlanetarySystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     self.host_star.get_stellar_mass()
   }
 

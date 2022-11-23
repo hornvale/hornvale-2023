@@ -1,9 +1,9 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::planetary_system::PlanetarySystem;
-
 pub mod constants;
 pub mod constraints;
 pub mod error;
-use error::Error;
+pub use error::Error;
 
 /// A `DistantBinaryStar` is actually a pair of `PlanetarySystem` objects.
 ///
@@ -43,7 +43,7 @@ impl DistantBinaryStar {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     self.primary.get_stellar_mass() + self.secondary.get_stellar_mass()
   }
 

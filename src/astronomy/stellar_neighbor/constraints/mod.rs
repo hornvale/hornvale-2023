@@ -1,17 +1,17 @@
-use rand::prelude::*;
-use std::default::Default;
-
+use crate::astronomy::_constants::*;
+use crate::astronomy::_type::*;
 use crate::astronomy::star_system::constraints::Constraints as StarSystemConstraints;
 use crate::astronomy::stellar_neighbor::error::Error;
 use crate::astronomy::stellar_neighbor::math::point::get_random_point_in_sphere;
 use crate::astronomy::stellar_neighbor::StellarNeighbor;
-use crate::astronomy::stellar_neighborhood::constants::STELLAR_NEIGHBORHOOD_RADIUS;
+use rand::prelude::*;
+use std::default::Default;
 
 /// Constraints for creating a stellar neighborhood.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
   /// The radius of the neighborhood, in light years.
-  pub radius: Option<f64>,
+  pub radius: Option<LLyr>,
   /// Star system constraints.
   pub system_constraints: Option<StarSystemConstraints>,
 }
@@ -33,11 +33,11 @@ impl Constraints {
     // @todo: move this into stellar neighborhood, probably.
     let radius = self.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
     let raw_coordinates = get_random_point_in_sphere(rng);
-    let x = raw_coordinates.0 * radius;
-    let y = raw_coordinates.1 * radius;
-    let z = raw_coordinates.2 * radius;
+    let x = raw_coordinates.0 * radius.0;
+    let y = raw_coordinates.1 * radius.0;
+    let z = raw_coordinates.2 * radius.0;
     let coordinates = (x, y, z);
-    let distance = (x.powf(2.0) + y.powf(2.0) + z.powf(2.0)).sqrt();
+    let distance = LLyr((x.powf(2.0) + y.powf(2.0) + z.powf(2.0)).sqrt());
     let system_constraints = self.system_constraints.unwrap_or_default();
     let star_system = system_constraints.generate(rng)?;
     let name = star_system.name.clone();

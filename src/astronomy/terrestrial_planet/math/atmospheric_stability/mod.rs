@@ -1,3 +1,5 @@
+use crate::astronomy::_type::*;
+
 pub const OXYGEN_WEIGHT: f64 = 0.032;
 pub const CO2_WEIGHT: f64 = 0.044;
 pub const ARGON_WEIGHT: f64 = 0.04;
@@ -7,8 +9,8 @@ pub const NITROGEN_WEIGHT: f64 = 0.028;
 /// `equilibrium_temperature` - of the body, in Kelvin.
 /// `escape_velocity` - of the body, in Vearth.
 /// `mol_weight` - the weight of the molecule in kg/mol.
-pub fn get_molecule_stability(mol_weight: f64, equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
-  ((3.0 * 8.3145 * (equilibrium_temperature / 288.0) * 1500.0) / mol_weight).sqrt()
+pub fn get_molecule_stability(mol_weight: f64, equilibrium_temperature: TKel, escape_velocity: f64) -> f64 {
+  ((3.0 * 8.3145 * (equilibrium_temperature.0 / 288.0) * 1500.0) / mol_weight).sqrt()
     / ((escape_velocity * 11200.0) / 6.0)
 }
 
@@ -16,61 +18,52 @@ pub fn get_molecule_stability(mol_weight: f64, equilibrium_temperature: f64, esc
 /// `equilibrium_temperature` - of the body, in Kelvin.
 /// `escape_velocity` - of the body, in Vearth.
 /// `mol_weight` - the weight of the molecule in kg/mol.
-pub fn is_molecule_stable(mol_weight: f64, equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_molecule_stable(mol_weight: f64, equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   let stability = get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity);
-
   stability < 1.0
 }
 
-pub fn get_oxygen_stability(equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
+pub fn get_oxygen_stability(equilibrium_temperature: TKel, escape_velocity: f64) -> f64 {
   let mol_weight = OXYGEN_WEIGHT;
-
   get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn get_carbon_dioxide_stability(equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
+pub fn get_carbon_dioxide_stability(equilibrium_temperature: TKel, escape_velocity: f64) -> f64 {
   let mol_weight = CO2_WEIGHT;
-
   get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn get_argon_stability(equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
+pub fn get_argon_stability(equilibrium_temperature: TKel, escape_velocity: f64) -> f64 {
   let mol_weight = ARGON_WEIGHT;
-
   get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn get_nitrogen_stability(equilibrium_temperature: f64, escape_velocity: f64) -> f64 {
+pub fn get_nitrogen_stability(equilibrium_temperature: TKel, escape_velocity: f64) -> f64 {
   let mol_weight = NITROGEN_WEIGHT;
-
   get_molecule_stability(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn is_oxygen_stable(equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_oxygen_stable(equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   let mol_weight = OXYGEN_WEIGHT;
-
   is_molecule_stable(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn is_carbon_dioxide_stable(equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_carbon_dioxide_stable(equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   let mol_weight = CO2_WEIGHT;
-
   is_molecule_stable(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn is_argon_stable(equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_argon_stable(equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   let mol_weight = ARGON_WEIGHT;
-
   is_molecule_stable(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn is_nitrogen_stable(equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_nitrogen_stable(equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   let mol_weight = NITROGEN_WEIGHT;
-
   is_molecule_stable(mol_weight, equilibrium_temperature, escape_velocity)
 }
 
-pub fn is_atmospherically_stable(equilibrium_temperature: f64, escape_velocity: f64) -> bool {
+pub fn is_atmospherically_stable(equilibrium_temperature: TKel, escape_velocity: f64) -> bool {
   is_oxygen_stable(equilibrium_temperature, escape_velocity)
     && is_carbon_dioxide_stable(equilibrium_temperature, escape_velocity)
     && is_argon_stable(equilibrium_temperature, escape_velocity)

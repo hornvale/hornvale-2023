@@ -1,3 +1,4 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
 use crate::astronomy::star::math::temperature::star_mass_to_temperature;
@@ -11,14 +12,14 @@ use crate::astronomy::star::math::temperature::star_mass_to_temperature;
 /// from which we are observing the star.
 ///
 /// This came from StackOverflow: https://stackoverflow.com/q/21977786
-pub fn star_mass_to_rgb(mass: f64) -> Result<(u8, u8, u8), Error> {
+pub fn star_mass_to_rgb(mass: MSol) -> Result<(u8, u8, u8), Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
   if mass >= MAXIMUM_MASS {
     return Err(Error::MassTooHighForMainSequence);
   }
-  let temperature = star_mass_to_temperature(mass)?;
+  let temperature = star_mass_to_temperature(mass)?.0;
   let x = match temperature {
     temperature if (1_667.0..=4_000.0).contains(&temperature) => {
       ((-0.2661239 * (10.0_f64).powf(9.0)) / temperature.powf(3.0))

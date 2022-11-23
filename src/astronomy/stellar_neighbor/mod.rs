@@ -1,5 +1,5 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::star_system::StarSystem;
-
 pub mod constraints;
 pub mod error;
 pub mod math;
@@ -17,7 +17,7 @@ pub struct StellarNeighbor {
   /// The details of this particular star system.
   pub star_system: StarSystem,
   /// The distance from the origin.
-  pub distance: f64,
+  pub distance: LLyr,
   /// The name of the primary star.
   pub name: String,
 }
@@ -26,7 +26,7 @@ impl StellarNeighbor {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     self.star_system.get_stellar_mass()
   }
 

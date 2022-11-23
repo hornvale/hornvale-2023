@@ -1,21 +1,21 @@
-use rand::prelude::*;
-use std::default::Default;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::distant_binary_star::constants::*;
 use crate::astronomy::distant_binary_star::error::Error;
 use crate::astronomy::distant_binary_star::DistantBinaryStar;
 use crate::astronomy::planetary_system::constraints::Constraints as PlanetarySystemConstraints;
+use rand::prelude::*;
+use std::default::Default;
 
 /// Constraints for creating a main-sequence star subsystem.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Constraints {
   /// The minimum average separation, in AU.
-  pub minimum_average_separation: Option<f64>,
+  pub minimum_average_separation: Option<LAu>,
   /// The maximum average separation, in AU.
-  pub maximum_average_separation: Option<f64>,
-  /// The minimum orbital eccentricity.
+  pub maximum_average_separation: Option<LAu>,
+  /// The minimum orbital eccentricity (unitless).
   pub minimum_orbital_eccentricity: Option<f64>,
-  /// The maximum orbital eccentricity.
+  /// The maximum orbital eccentricity (unitless).
   pub maximum_orbital_eccentricity: Option<f64>,
 }
 

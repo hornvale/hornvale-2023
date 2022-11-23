@@ -1,6 +1,5 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::stellar_neighbor::*;
-
-pub mod constants;
 pub mod constraints;
 pub mod error;
 
@@ -16,7 +15,7 @@ pub mod error;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StellarNeighborhood {
   /// The radius of this neighborhood, measured in light years.
-  pub radius: f64,
+  pub radius: LLyr,
   /// The stellar density of this neighborhood, measured in stars per cubic
   /// light year.  This is not terribly useful once the neighborhood has
   /// been generated, but we keep it around for posterity.

@@ -1,5 +1,5 @@
+use crate::astronomy::_type::*;
 use rand::prelude::*;
-
 pub mod constants;
 use constants::*;
 pub mod constraints;
@@ -28,27 +28,27 @@ pub struct Star {
   /// Type, Decile, Luminosity class.
   pub class: String,
   /// Measured in Msol.
-  pub mass: f64,
+  pub mass: MSol,
   /// Measured in Kelvin.
-  pub temperature: f64,
+  pub temperature: TKel,
   /// Measured in Rsol.
-  pub radius: f64,
+  pub radius: RSol,
   /// Measured in Lsol.
-  pub luminosity: f64,
+  pub luminosity: LSol,
   /// Measured in Gyr.
-  pub life_expectancy: f64,
+  pub life_expectancy: TGyr,
   /// Measured in Gyr.
-  pub current_age: f64,
+  pub current_age: TGyr,
   /// Measured in Dsol.
-  pub density: f64,
+  pub density: DSol,
   /// Habitable zone, measured in AU.
-  pub habitable_zone: (f64, f64),
+  pub habitable_zone: (LAu, LAu),
   /// Minimum and maximum sustainable distance for satellites, measured in AU.
   /// This is inferior to computing the Roche limit and Hill sphere, but we
   /// don't have enough information for that yet.
-  pub satellite_zone: (f64, f64),
+  pub satellite_zone: (LAu, LAu),
   /// The frost line, measured in AU.
-  pub frost_line: f64,
+  pub frost_line: LAu,
   /// The absolute color of this star in SRGB.
   pub absolute_rgb: (u8, u8, u8),
   /// A generated name for this star.
@@ -58,16 +58,16 @@ pub struct Star {
 /// Implementation of Star.
 impl Star {
   /// Generate a random main-sequence star from a given mass.
-  pub fn from_mass<R: Rng + ?Sized>(rng: &mut R, mass: f64) -> Result<Star, Error> {
+  pub fn from_mass<R: Rng + ?Sized>(rng: &mut R, mass: MSol) -> Result<Star, Error> {
     let temperature = star_mass_to_temperature(mass)?;
     let luminosity = star_mass_to_luminosity(mass)?;
     let radius = star_mass_to_radius(mass)?;
     let class = star_mass_to_spectral_class(mass)?;
-    let life_expectancy = mass / luminosity * 10.0;
-    let lower_bound_age = 0.1 * life_expectancy;
-    let upper_bound_age = 0.9 * life_expectancy;
-    let current_age = rng.gen_range(lower_bound_age..upper_bound_age);
-    let density = mass / radius.powf(3.0);
+    let life_expectancy = TGyr(mass.0 / luminosity.0 * 10.0);
+    let lower_bound_age = 0.1 * life_expectancy.0;
+    let upper_bound_age = 0.9 * life_expectancy.0;
+    let current_age = TGyr(rng.gen_range(lower_bound_age..upper_bound_age));
+    let density = DSol(mass.0 / radius.0.powf(3.0));
     let habitable_zone = star_luminosity_to_habitable_zone(luminosity);
     let satellite_inner_bound = get_approximate_innermost_orbit(mass);
     let satellite_outer_bound = get_approximate_outermost_orbit(mass);

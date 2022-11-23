@@ -1,5 +1,5 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::star_subsystem::StarSubsystem;
-
 pub mod constraints;
 pub mod error;
 use error::*;
@@ -28,7 +28,7 @@ impl StarSystem {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     self.star_subsystem.get_stellar_mass()
   }
 

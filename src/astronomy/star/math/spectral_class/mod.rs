@@ -1,10 +1,10 @@
-use rand::distributions::WeightedIndex;
-use rand::prelude::*;
-use std::ops::Range;
-
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
 use crate::astronomy::star::math::temperature::star_mass_to_temperature;
+use rand::distributions::WeightedIndex;
+use rand::prelude::*;
+use std::ops::Range;
 
 /// Get a (weighted) random spectral class.
 pub fn get_random_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char {
@@ -35,13 +35,13 @@ pub fn get_random_habitable_spectral_class<R: Rng + ?Sized>(rng: &mut R) -> char
 /// Get a mass range from a specified spectral class.
 pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
   match char {
-    'o' | 'O' => 16.0..MAXIMUM_MASS,
+    'o' | 'O' => 16.0..MAXIMUM_MASS.0,
     'b' | 'B' => 2.1..16.0,
     'a' | 'A' => 1.4..2.1,
     'f' | 'F' => 1.04..1.4,
     'g' | 'G' => 0.8..1.04,
     'k' | 'K' => 0.45..0.8,
-    'm' | 'M' => MINIMUM_MASS..0.45,
+    'm' | 'M' => MINIMUM_MASS.0..0.45,
     _ => unreachable!(),
   }
 }
@@ -49,22 +49,22 @@ pub fn spectral_class_to_mass_range(char: char) -> Range<f64> {
 /// Get a mass range from a specified spectral class.
 pub fn spectral_class_to_habitable_mass_range(char: char) -> Range<f64> {
   match char {
-    'f' | 'F' => 1.04..MAXIMUM_HABITABLE_MASS,
+    'f' | 'F' => 1.04..MAXIMUM_HABITABLE_MASS.0,
     'g' | 'G' => 0.8..1.04,
-    'k' | 'K' => MINIMUM_HABITABLE_MASS..0.8,
+    'k' | 'K' => MINIMUM_HABITABLE_MASS.0..0.8,
     _ => unreachable!(),
   }
 }
 
 /// Get the spectral class of a main-sequence star in Kelvin based on its Msol.
-pub fn star_mass_to_spectral_class(mass: f64) -> Result<String, Error> {
+pub fn star_mass_to_spectral_class(mass: MSol) -> Result<String, Error> {
   if mass <= MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
   if mass >= MAXIMUM_MASS {
     return Err(Error::MassTooHighForMainSequence);
   }
-  let temperature = star_mass_to_temperature(mass)?;
+  let temperature = star_mass_to_temperature(mass)?.0;
   let spectral_type = match temperature {
     temperature if temperature < 3_700.0 => 'M',
     temperature if temperature < 5_200.0 => 'K',

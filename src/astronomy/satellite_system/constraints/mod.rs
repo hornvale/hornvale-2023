@@ -34,7 +34,7 @@ impl Constraints {
   ) -> Result<SatelliteSystem, Error> {
     let planet_constraints = self.planet_constraints.unwrap_or_default();
     let moons_constraints = self.moons_constraints.unwrap_or_default();
-    let planet = planet_constraints.generate(rng, host_star, star_distance.0)?;
+    let planet = planet_constraints.generate(rng, host_star, star_distance)?;
     let moons = moons_constraints.generate(rng, host_star, star_distance, &planet)?;
     let result = SatelliteSystem { planet, moons };
     Ok(result)

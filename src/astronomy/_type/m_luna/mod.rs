@@ -1,4 +1,5 @@
 use super::MEarth;
+use super::MKg;
 use crate::astronomy::_constants::*;
 
 /// The `MLuna` newtype.
@@ -7,7 +8,13 @@ pub struct MLuna(pub f64);
 
 impl From<MEarth> for MLuna {
   fn from(original: MEarth) -> Self {
-    Self(original.0 * LUNA_MASS_PER_EARTH_MASS)
+    Self(original.0 * LUNA_MASS_PER_EARTH_MASS.0)
+  }
+}
+
+impl From<MKg> for MLuna {
+  fn from(original: MKg) -> Self {
+    Self(original.0 / KG_PER_LUNAR_MASS.0)
   }
 }
 

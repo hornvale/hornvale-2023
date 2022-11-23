@@ -1,8 +1,7 @@
+use crate::astronomy::_constants::*;
+use crate::astronomy::_type::*;
 use crate::astronomy::star::constants::*;
 use crate::astronomy::star::error::Error;
-
-pub const ERGS_PER_SEC_PER_LSOL: f64 = 3.846E33;
-pub const JOULES_PER_SEC_PER_LSOL: f64 = 3.846E26;
 
 /// ergs/sec -> Lsol
 pub fn ergs_to_lsol(ergs: f64) -> f64 {
@@ -35,7 +34,7 @@ pub fn lsol_to_watts(lsol: f64) -> f64 {
 }
 
 /// Get the luminosity of a main-sequence star in Lsol based on its Msol.
-pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
+pub fn star_mass_to_luminosity(mass: MSol) -> Result<LSol, Error> {
   if mass < MINIMUM_MASS {
     return Err(Error::MassTooLowForMainSequence);
   }
@@ -43,14 +42,14 @@ pub fn star_mass_to_luminosity(mass: f64) -> Result<f64, Error> {
     return Err(Error::MassTooHighForMainSequence);
   }
   let result = match mass {
-    mass if mass < 0.43 => 0.23 * mass.powf(2.3),
-    mass if mass < 2.0 => mass.powf(4.0),
-    mass if mass < 55.0 => 1.4 * mass.powf(3.5),
-    mass if mass <= MAXIMUM_MASS => 32_000.0 * mass,
+    mass if mass.0 < 0.43 => 0.23 * mass.0.powf(2.3),
+    mass if mass.0 < 2.0 => mass.0.powf(4.0),
+    mass if mass.0 < 55.0 => 1.4 * mass.0.powf(3.5),
+    mass if mass <= MAXIMUM_MASS => 32_000.0 * mass.0,
     _ => unreachable!(),
   };
 
-  Ok(result)
+  Ok(LSol(result))
 }
 
 #[cfg(test)]

@@ -1,6 +1,6 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::close_binary_star::CloseBinaryStar;
 use crate::astronomy::star::Star;
-
 pub mod constants;
 pub mod constraints;
 pub mod error;
@@ -26,7 +26,7 @@ impl HostStar {
   /// Retrieve or calculate the age of the stars.
   ///
   /// Calculated in Gyr.
-  pub fn get_current_age(&self) -> f64 {
+  pub fn get_current_age(&self) -> TGyr {
     use HostStar::*;
     match &self {
       Star(star) => star.current_age,
@@ -37,7 +37,7 @@ impl HostStar {
   /// Retrieve or calculate the total mass of the stars.
   ///
   /// Calculated in Msol.
-  pub fn get_stellar_mass(&self) -> f64 {
+  pub fn get_stellar_mass(&self) -> MSol {
     use HostStar::*;
     match &self {
       Star(star) => star.mass,
@@ -55,7 +55,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the frost line.
-  pub fn get_frost_line(&self) -> f64 {
+  pub fn get_frost_line(&self) -> LAu {
     use HostStar::*;
     match &self {
       Star(star) => star.frost_line,
@@ -64,7 +64,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the habitable zone.
-  pub fn get_habitable_zone(&self) -> (f64, f64) {
+  pub fn get_habitable_zone(&self) -> (LAu, LAu) {
     use HostStar::*;
     match &self {
       Star(star) => star.habitable_zone,
@@ -73,7 +73,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the satellite zone.
-  pub fn get_satellite_zone(&self) -> (f64, f64) {
+  pub fn get_satellite_zone(&self) -> (LAu, LAu) {
     use HostStar::*;
     match &self {
       Star(star) => star.satellite_zone,
@@ -82,7 +82,7 @@ impl HostStar {
   }
 
   /// Retrieve or calculate the luminosity.
-  pub fn get_luminosity(&self) -> f64 {
+  pub fn get_luminosity(&self) -> LSol {
     use HostStar::*;
     match &self {
       Star(star) => star.luminosity,

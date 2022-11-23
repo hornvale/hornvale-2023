@@ -44,7 +44,7 @@ impl Constraints {
     let mut satellite_systems = Vec::new();
     let orbits = self.generate_orbits(rng, host_star)?;
     for orbit in orbits.into_iter() {
-      let satellite_system = satellite_system_constraints.generate(rng, host_star, LAu(orbit))?;
+      let satellite_system = satellite_system_constraints.generate(rng, host_star, orbit)?;
       satellite_systems.push(satellite_system);
     }
     let result = SatelliteSystems { satellite_systems };
@@ -52,38 +52,38 @@ impl Constraints {
   }
 
   /// Generate orbits.
-  pub fn generate_orbits<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar) -> Result<Vec<f64>, Error> {
+  pub fn generate_orbits<R: Rng + ?Sized>(&self, rng: &mut R, host_star: &HostStar) -> Result<Vec<LAu>, Error> {
     let mut result = Vec::new();
     if self.generate_primary_gas_giant {
-      let orbit = rng.gen_range(1.0..1.25) + host_star.get_frost_line();
+      let orbit = LAu(rng.gen_range(1.0..1.25)) + host_star.get_frost_line();
       result.push(orbit);
     }
     if self.generate_habitable {
       let habitable_zone = host_star.get_habitable_zone();
-      let orbit = rng.gen_range(habitable_zone.0..habitable_zone.1);
+      let orbit = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
       result.push(orbit);
     }
     let satellite_zone = host_star.get_satellite_zone();
     let innermost_orbit = satellite_zone.0;
     let outermost_orbit = satellite_zone.1;
-    let minimum = 40.0 * innermost_orbit;
+    let minimum = 40.0 * innermost_orbit.0;
     let distance_limit = outermost_orbit;
     let growth_factor = 0.3;
     let mut orbital_distance = minimum;
     let mut index = 0;
     loop {
-      let min_unwrapped = 0.80 * orbital_distance;
-      let max_unwrapped = 1.25 * orbital_distance;
+      let min_unwrapped = LAu(0.80 * orbital_distance);
+      let max_unwrapped = LAu(1.25 * orbital_distance);
       if !result
         .iter()
         .any(|&orbit| orbit > min_unwrapped && orbit < max_unwrapped)
       {
-        let orbit = rng.gen_range(min_unwrapped..max_unwrapped);
+        let orbit = LAu(rng.gen_range(min_unwrapped.0..max_unwrapped.0));
         result.push(orbit);
       }
       orbital_distance = minimum + growth_factor * (2.0_f64).powf(index as f64);
       index += 1;
-      if orbital_distance > distance_limit {
+      if orbital_distance > distance_limit.0 {
         break;
       }
     }

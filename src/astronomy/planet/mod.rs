@@ -1,6 +1,6 @@
+use crate::astronomy::_type::*;
 use crate::astronomy::gas_giant_planet::GasGiantPlanet;
 use crate::astronomy::terrestrial_planet::TerrestrialPlanet;
-
 pub mod constraints;
 pub mod error;
 use error::Error;
@@ -16,34 +16,34 @@ pub enum Planet {
 
 impl Planet {
   /// Get density of the planet.
-  pub fn get_density(&self) -> f64 {
+  pub fn get_density(&self) -> DGmCm3 {
     use Planet::*;
     match &self {
-      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.density,
-      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.density,
+      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.density.into(),
+      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.density.into(),
     }
   }
 
   /// Get mass of the planet.
-  pub fn get_mass(&self) -> f64 {
+  pub fn get_mass(&self) -> MKg {
     use Planet::*;
     match &self {
-      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.mass,
-      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.mass,
+      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.mass.into(),
+      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.mass.into(),
     }
   }
 
   /// Get radius of the planet.
-  pub fn get_radius(&self) -> f64 {
+  pub fn get_radius(&self) -> LKm {
     use Planet::*;
     match &self {
-      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.radius,
-      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.radius,
+      TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.radius.into(),
+      GasGiantPlanet(gas_giant_planet) => gas_giant_planet.radius.into(),
     }
   }
 
   /// Get the orbital period of the planet.
-  pub fn get_orbital_period(&self) -> f64 {
+  pub fn get_orbital_period(&self) -> TEarthYear {
     use Planet::*;
     match &self {
       TerrestrialPlanet(terrestrial_planet) => terrestrial_planet.orbital_period,
