@@ -1,5 +1,10 @@
 use crate::astronomy::_type::*;
 
+/// The probability that a given star subsystem will be binary.
+///
+/// This probability might be slightly lower than actual.
+pub const BINARY_STAR_PROBABILITY: f64 = 0.25;
+
 /// Kilograms per solar mass.
 pub const KG_PER_SOLAR_MASS: MKg = MKg(1.989E30);
 
@@ -17,6 +22,24 @@ pub const KM_PER_JUPITER_RADIUS: LKm = LKm(69_911.0);
 
 /// Kilometers in REarth.
 pub const KM_PER_EARTH_RADIUS: LKm = LKm(6371.0);
+
+/// Diameter of the Earth in Kilometers.
+pub const KM_PER_EARTH_DIAMETER: LKm = LKm(2.0 * KM_PER_EARTH_RADIUS.0);
+
+/// Minimum mass, in Mluna.
+pub const MINIMUM_MOON_MASS: MLuna = MLuna(0.05);
+
+/// Maximum mass, in Mluna.
+pub const MAXIMUM_MOON_MASS: MLuna = MLuna(1.00);
+
+/// Minimum albedo (unitless).
+pub const MINIMUM_MOON_ALBEDO: f64 = 0.25;
+
+/// Maximum albedo (unitless).
+pub const MAXIMUM_MOON_ALBEDO: f64 = 1.00;
+
+/// Ratio of Luna's share of the Earth-Luna gravitational parameter.
+pub const LUNA_GRAVITATIONAL_PARAMETER_SHARE: f64 = 0.0123;
 
 /// Ratio of Earth mass to solar mass.
 pub const EARTH_MASS_PER_SOLAR_MASS: MEarth = MEarth(333_000.0);
@@ -69,3 +92,21 @@ pub const STELLAR_NEIGHBORHOOD_RADIUS: LLyr = LLyr(10.0);
 ///
 /// Measured in s/ly^3, or stars per cubic light year.
 pub const STELLAR_NEIGHBORHOOD_DENSITY: f64 = 0.004;
+
+/// The minimum number of moons we'll generate for a terrestrial planet.
+pub const MINIMUM_TERRESTRIAL_MOONS: usize = 0;
+
+/// The maximum number of moons we'll generate for a terrestrial planet.
+pub const MAXIMUM_TERRESTRIAL_MOONS: usize = 2;
+
+/// The minimum number of moons we'll generate for a gas giant plant.
+pub const MINIMUM_GAS_GIANT_MOONS: usize = 8;
+
+/// The maximum number of moons we'll generate for a gas giant plant.
+pub const MAXIMUM_GAS_GIANT_MOONS: usize = 20;
+
+/// Minimum number of satellite systems to generate.
+pub const MINIMUM_SATELLITE_SYSTEMS: usize = 0;
+
+/// Maximum number of satellite systems to generate.
+pub const MAXIMUM_SATELLITE_SYSTEMS: usize = 12;

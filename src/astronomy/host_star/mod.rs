@@ -1,7 +1,6 @@
 use crate::astronomy::_type::*;
 use crate::astronomy::close_binary_star::CloseBinaryStar;
 use crate::astronomy::star::Star;
-pub mod constants;
 pub mod constraints;
 pub mod error;
 use error::Error;

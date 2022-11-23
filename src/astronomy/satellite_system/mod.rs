@@ -1,7 +1,6 @@
 use crate::astronomy::moons::Moons;
 use crate::astronomy::planet::Planet;
 
-pub mod constants;
 pub mod constraints;
 pub mod error;
 use error::Error;

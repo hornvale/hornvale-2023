@@ -1,6 +1,6 @@
+use crate::astronomy::_constants::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
-use crate::astronomy::moon::constants::*;
 use crate::astronomy::moon::error::Error;
 use crate::astronomy::moon::Moon;
 use crate::astronomy::planet::Planet;
@@ -25,8 +25,8 @@ impl Constraints {
     planet: &Planet,
     planet_distance: LKm,
   ) -> Result<Moon, Error> {
-    let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MASS);
-    let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MASS);
+    let minimum_mass = self.minimum_mass.unwrap_or(MINIMUM_MOON_MASS);
+    let maximum_mass = self.maximum_mass.unwrap_or(MAXIMUM_MOON_MASS);
     let mass = MLuna(rng.gen_range(minimum_mass.0..maximum_mass.0));
     let result = Moon::from_environment(mass, host_star, star_distance, planet, planet_distance)?;
     Ok(result)

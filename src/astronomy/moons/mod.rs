@@ -1,6 +1,5 @@
 use crate::astronomy::moon::Moon;
 
-pub mod constants;
 pub mod constraints;
 pub mod error;
 

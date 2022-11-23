@@ -1,5 +1,5 @@
+use crate::astronomy::_constants::*;
 use crate::astronomy::_type::*;
-use crate::astronomy::moon::constants::*;
 
 /// Calculate the magnitude of the lunar tide.
 /// `lunar_mass` - mass of the moon, in MLuna.
@@ -10,7 +10,7 @@ use crate::astronomy::moon::constants::*;
 pub fn get_lunar_tide(lunar_mass: MLuna, planet_radius: REarth, semi_major_axis: LKm) -> Lm {
   let corrected_lunar_mass = 2_230_000.0 * lunar_mass.0 * LUNA_GRAVITATIONAL_PARAMETER_SHARE;
 
-  Lm((corrected_lunar_mass * planet_radius.0) / (semi_major_axis.0 / DIAMETER_EARTH_KM).powf(3.0))
+  Lm((corrected_lunar_mass * planet_radius.0) / (semi_major_axis.0 / KM_PER_EARTH_DIAMETER.0).powf(3.0))
 }
 
 /// Calculate the magnitude of the solar tide.
@@ -30,7 +30,7 @@ pub fn get_solar_tide(star_mass: MSol, planet_radius: REarth, semi_major_axis: L
 ///
 /// Returns a magnitude in meters.
 pub fn get_planetary_tide(moon_mass: MLuna, moon_radius: RLuna, semi_major_axis: LKm) -> Lm {
-  Lm((2_230_000.0 * moon_mass.0 * moon_radius.0 * 0.027264) / (semi_major_axis.0 / DIAMETER_EARTH_KM).powf(3.0))
+  Lm((2_230_000.0 * moon_mass.0 * moon_radius.0 * 0.027264) / (semi_major_axis.0 / KM_PER_EARTH_DIAMETER.0).powf(3.0))
 }
 
 /// Calculate the magnitude of the spring tides.

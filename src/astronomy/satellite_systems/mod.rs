@@ -1,6 +1,5 @@
 use crate::astronomy::satellite_system::SatelliteSystem;
 
-pub mod constants;
 pub mod constraints;
 pub mod error;
 use error::Error;

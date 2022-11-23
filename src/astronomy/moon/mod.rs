@@ -2,7 +2,6 @@ use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::planet::Planet;
 
-pub mod constants;
 pub mod constraints;
 pub mod error;
 use error::Error;

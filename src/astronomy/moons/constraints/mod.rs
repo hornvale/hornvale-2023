@@ -1,7 +1,7 @@
+use crate::astronomy::_constants::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::moon::constraints::Constraints as MoonConstraints;
-use crate::astronomy::moons::constants::*;
 use crate::astronomy::moons::error::Error;
 use crate::astronomy::moons::Moons;
 use crate::astronomy::planet::Planet;

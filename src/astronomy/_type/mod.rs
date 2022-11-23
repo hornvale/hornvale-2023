@@ -50,5 +50,7 @@ pub mod t_gyr;
 pub use t_gyr::*;
 pub mod t_kel;
 pub use t_kel::*;
+pub mod v_earth_escape;
+pub use v_earth_escape::*;
 pub mod v_km_sec;
 pub use v_km_sec::*;

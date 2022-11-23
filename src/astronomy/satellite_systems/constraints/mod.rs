@@ -1,7 +1,7 @@
+use crate::astronomy::_constants::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::satellite_system::constraints::Constraints as SatelliteSystemConstraints;
-use crate::astronomy::satellite_systems::constants::*;
 use crate::astronomy::satellite_systems::error::Error;
 use crate::astronomy::satellite_systems::SatelliteSystems;
 use rand::prelude::*;
