@@ -82,8 +82,8 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let star_distance = LAu(rng.gen_range(habitable_zone.0..habitable_zone.1));
-    let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance.0)?;
+    let star_distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
+    let planet = &PlanetConstraints::default().generate(&mut rng, host_star, star_distance)?;
     let moon = &Constraints::default().generate(&mut rng, host_star, star_distance, planet)?;
     print_var!(moon);
     Ok(())

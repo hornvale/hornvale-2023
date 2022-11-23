@@ -1,5 +1,6 @@
 use crate::astronomy::MEarth;
 use crate::astronomy::MJupiter;
+use crate::astronomy::MKg;
 use crate::astronomy::_constants::*;
 
 /// The `MSol` newtype.
@@ -18,23 +19,30 @@ impl From<MEarth> for MSol {
   }
 }
 
+impl From<MKg> for MSol {
+  fn from(original: MKg) -> Self {
+    Self(original.0 / KG_PER_SOLAR_MASS.0)
+  }
+}
+
 #[cfg(test)]
 pub mod test {
 
   use super::*;
+  use crate::astronomy::_type::*;
   use crate::test::*;
 
   #[test]
   pub fn test_m_earth_to_m_sol() {
     init();
     let actual: MSol = MEarth(1.0).into();
-    assert_approx_eq!(actual.0, EARTH_MASS_PER_SOLAR_MASS, 0.01);
+    assert_approx_eq!(actual.0, 1.0 / EARTH_MASS_PER_SOLAR_MASS.0, 0.01);
   }
 
   #[test]
   pub fn test_m_kg_to_m_sol() {
     init();
     let actual: MSol = MKg(1.0).into();
-    assert_approx_eq!(actual.0, 1.0 / KG_PER_SOLAR_MASS, 0.01);
+    assert_approx_eq!(actual.0, 1.0 / KG_PER_SOLAR_MASS.0, 0.01);
   }
 }

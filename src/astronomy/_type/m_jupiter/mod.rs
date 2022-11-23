@@ -35,6 +35,6 @@ pub mod test {
   pub fn test_m_earth_to_m_jupiter() {
     init();
     let actual: MJupiter = MEarth(1.0).into();
-    assert_approx_eq!(actual.0, MJupiter(1.0 / EARTH_MASS_PER_JUPITER_MASS).0, 0.01);
+    assert_approx_eq!(actual.0, 1.0 / EARTH_MASS_PER_JUPITER_MASS.0, 0.01);
   }
 }

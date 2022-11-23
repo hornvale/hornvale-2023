@@ -40,13 +40,13 @@ pub mod test {
   pub fn test_m_sol_to_m_kg() {
     init();
     let actual: MKg = MSol(1.0).into();
-    assert_approx_eq!(actual.0, KG_PER_SOLAR_MASS, 0.01);
+    assert_approx_eq!(actual.0, KG_PER_SOLAR_MASS.0, 0.01);
   }
 
   #[test]
   pub fn test_m_earth_to_m_kg() {
     init();
     let actual: MKg = MEarth(1.0).into();
-    assert_approx_eq!(actual.0, KG_PER_EARTH_MASS, 0.01);
+    assert_approx_eq!(actual.0, KG_PER_EARTH_MASS.0, 0.01);
   }
 }

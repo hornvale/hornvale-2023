@@ -29,45 +29,45 @@ pub mod test {
   pub fn test_ms_star_mass_to_temperature() -> Result<(), Error> {
     init();
     // Jolly ol' Sol
-    let mut mass = 1.0;
-    let mut expected = 5776.0;
+    let mut mass = MSol(1.0);
+    let mut expected = TKel(5776.0);
     let mut actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // M1V
-    mass = 0.40;
-    expected = 3407.0;
+    mass = MSol(0.40);
+    expected = TKel(3407.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // K9V
-    mass = 0.50;
-    expected = 3811.0;
+    mass = MSol(0.50);
+    expected = TKel(3811.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // G7V
-    mass = 0.90;
-    expected = 5422.0;
+    mass = MSol(0.90);
+    expected = TKel(5422.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // F6V
-    mass = 1.20;
-    expected = 6580.0;
+    mass = MSol(1.20);
+    expected = TKel(6580.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // A6V
-    mass = 1.70;
-    expected = 8441.0;
+    mass = MSol(1.70);
+    expected = TKel(8441.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // B5V
-    mass = 8.0;
-    expected = 21428.0;
+    mass = MSol(8.0);
+    expected = TKel(21428.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // O8V
-    mass = 25.0;
-    expected = 41970.0;
+    mass = MSol(25.0);
+    expected = TKel(41970.0);
     actual = star_mass_to_temperature(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     Ok(())
   }
 }

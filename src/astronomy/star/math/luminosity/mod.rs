@@ -83,14 +83,14 @@ pub mod test {
   #[should_panic]
   pub fn test_star_mass_to_luminosity1() {
     init();
-    star_mass_to_luminosity(0.0000001).unwrap();
+    star_mass_to_luminosity(MSol(0.0000001)).unwrap();
   }
 
   #[test]
   #[should_panic]
   pub fn test_star_mass_to_luminosity2() {
     init();
-    star_mass_to_luminosity(350.0).unwrap();
+    star_mass_to_luminosity(MSol(350.0)).unwrap();
   }
 
   #[test]
@@ -103,50 +103,50 @@ pub mod test {
   pub fn test_ms_star_mass_to_luminosity() -> Result<(), Error> {
     init();
     // Jolly ol' Sol
-    let mut mass = 1.0;
-    let mut expected = 1.0;
+    let mut mass = MSol(1.0);
+    let mut expected = LSol(1.0);
     let mut actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual);
+    assert_approx_eq!(expected.0, actual.0);
     // M1V
-    mass = 0.40;
-    expected = 0.028;
+    mass = MSol(0.40);
+    expected = LSol(0.028);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // K9V
-    mass = 0.50;
-    expected = 0.063;
+    mass = MSol(0.50);
+    expected = LSol(0.063);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // G7V
-    mass = 0.90;
-    expected = 0.656;
+    mass = MSol(0.90);
+    expected = LSol(0.656);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // F6V
-    mass = 1.20;
-    expected = 2.073;
+    mass = MSol(1.20);
+    expected = LSol(2.073);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // A6V
-    mass = 1.70;
-    expected = 8.352;
+    mass = MSol(1.70);
+    expected = LSol(8.352);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // A6V
-    mass = 1.70;
-    expected = 8.352;
+    mass = MSol(1.70);
+    expected = LSol(8.352);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1e-3f64);
+    assert_approx_eq!(expected.0, actual.0, 1e-3f64);
     // B5V
-    mass = 8.0;
-    expected = 2027.4;
+    mass = MSol(8.0);
+    expected = LSol(2027.4);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     // O8V
-    mass = 25.0;
-    expected = 109375.0;
+    mass = MSol(25.0);
+    expected = LSol(109375.0);
     actual = star_mass_to_luminosity(mass)?;
-    assert_approx_eq!(expected, actual, 1f64);
+    assert_approx_eq!(expected.0, actual.0, 1f64);
     Ok(())
   }
 }

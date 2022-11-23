@@ -4,5 +4,5 @@ use crate::astronomy::_type::*;
 ///
 /// Units are Mearth, Dearth, and Rearth.
 pub fn get_radius(mass: MEarth, density: DEarth) -> REarth {
-  REarth((mass.0 / (density.0 / 5.51)).powf(1.0 / 3.0))
+  REarth((mass.0 / density.0).powf(1.0 / 3.0))
 }

@@ -155,13 +155,13 @@ pub mod test {
   #[test]
   pub fn test_from_mass() -> Result<(), Error> {
     init();
-    let planet = TerrestrialPlanet::from_mass(1.0)?;
-    assert_approx_eq!(planet.mass, 1.0);
+    let planet = TerrestrialPlanet::from_mass(MEarth(1.0))?;
+    assert_approx_eq!(planet.mass.0, 1.0);
     assert_approx_eq!(planet.core_mass_fraction, 0.35);
-    assert_approx_eq!(planet.density, 5.56, 0.01);
+    assert_approx_eq!(planet.density.0, 1.0105, 0.01);
     assert_approx_eq!(planet.escape_velocity, 1.00, 0.01);
     assert_approx_eq!(planet.gravity, 1.00, 0.01);
-    assert_approx_eq!(planet.radius, 1.00, 0.01);
+    assert_approx_eq!(planet.radius.0, 1.00, 0.01);
     print_var!(planet);
     Ok(())
   }

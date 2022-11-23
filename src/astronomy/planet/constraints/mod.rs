@@ -68,7 +68,7 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::default().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let planet = &Constraints::default().generate(&mut rng, host_star, distance)?;
     print_var!(planet);
     Ok(())
@@ -80,7 +80,7 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = &HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let planet = &Constraints::habitable().generate(&mut rng, host_star, distance)?;
     print_var!(planet);
     planet.is_habitable();

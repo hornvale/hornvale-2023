@@ -28,6 +28,6 @@ pub mod test {
   pub fn test_m_earth_to_m_luna() {
     init();
     let actual: MLuna = MEarth(1.0).into();
-    assert_approx_eq!(actual.0, LUNA_MASS_PER_EARTH_MASS, 0.01);
+    assert_approx_eq!(actual.0, LUNA_MASS_PER_EARTH_MASS.0, 0.01);
   }
 }

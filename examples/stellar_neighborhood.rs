@@ -1,9 +1,7 @@
 use plotters::prelude::*;
 const OUT_FILE_NAME: &str = "examples/output-stellar-neighborhood.svg";
 
-extern crate function_name;
-
-use hornvale::astronomy::stellar_neighborhood::constants::STELLAR_NEIGHBORHOOD_RADIUS;
+use hornvale::astronomy::_constants::*;
 use hornvale::astronomy::stellar_neighborhood::constraints::Constraints as StellarNeighborhoodConstraints;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -12,9 +10,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   area.fill(&WHITE)?;
   let constraints = StellarNeighborhoodConstraints::habitable();
   let radius = constraints.radius.unwrap_or(STELLAR_NEIGHBORHOOD_RADIUS);
-  let x_axis = (-radius..radius).step(1.0);
-  let y_axis = (-radius..radius).step(1.0);
-  let z_axis = (-radius..radius).step(1.0);
+  let x_axis = (-radius.0..radius.0).step(1.0);
+  let y_axis = (-radius.0..radius.0).step(1.0);
+  let z_axis = (-radius.0..radius.0).step(1.0);
   let mut rng = rand::thread_rng();
   let stellar_neighborhood = constraints.generate(&mut rng).unwrap();
   let points = stellar_neighborhood

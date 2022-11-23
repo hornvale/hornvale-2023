@@ -35,20 +35,20 @@ pub mod test {
   pub fn test_m_jupiter_to_m_earth() {
     init();
     let actual: MEarth = MJupiter(1.0).into();
-    assert_approx_eq!(actual.0, EARTH_MASS_PER_JUPITER_MASS, 0.01);
+    assert_approx_eq!(actual.0, EARTH_MASS_PER_JUPITER_MASS.0, 0.01);
   }
 
   #[test]
   pub fn test_m_luna_to_m_earth() {
     init();
     let actual: MEarth = MLuna(1.0).into();
-    assert_approx_eq!(actual.0, 1.0 / LUNA_MASS_PER_EARTH_MASS, 0.01);
+    assert_approx_eq!(actual.0, 1.0 / LUNA_MASS_PER_EARTH_MASS.0, 0.01);
   }
 
   #[test]
   pub fn test_m_kg_to_m_earth() {
     init();
     let actual: MEarth = MKg(1.0).into();
-    assert_approx_eq!(actual.0, 1.0 / KG_PER_EARTH_MASS, 0.01);
+    assert_approx_eq!(actual.0, 1.0 / KG_PER_EARTH_MASS.0, 0.01);
   }
 }

@@ -83,42 +83,42 @@ pub mod test {
   pub fn test_ms_star_mass_to_rgb() -> Result<(), Error> {
     init();
     // Jolly ol' Sol
-    let mut mass = 1.0;
+    let mut mass = MSol(1.0);
     let mut expected = (255, 252, 245);
     let mut actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // M1V
-    mass = 0.40;
+    mass = MSol(0.40);
     expected = (255, 241, 165);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // K9V
-    mass = 0.50;
+    mass = MSol(0.50);
     expected = (255, 245, 185);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // G7V
-    mass = 0.90;
+    mass = MSol(0.90);
     expected = (255, 251, 237);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // F6V
-    mass = 1.20;
+    mass = MSol(1.20);
     expected = (255, 253, 255);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // A6V
-    mass = 1.70;
+    mass = MSol(1.70);
     expected = (246, 254, 255);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // B5V
-    mass = 8.0;
+    mass = MSol(8.0);
     expected = (223, 253, 255);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);
     // O8V
-    mass = 25.0;
+    mass = MSol(25.0);
     expected = (217, 253, 255);
     actual = star_mass_to_rgb(mass)?;
     assert_eq!(expected, actual);

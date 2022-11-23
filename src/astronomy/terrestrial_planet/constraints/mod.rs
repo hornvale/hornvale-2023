@@ -158,7 +158,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let planet = &Constraints::default().generate(&mut rng, &host_star, distance)?;
     print_var!(planet);
     Ok(())
@@ -178,7 +178,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let planet = &Constraints::habitable().generate(&mut rng, &host_star, distance)?;
     print_var!(planet);
     planet.is_habitable();
@@ -199,7 +199,7 @@ pub mod test {
       counter += 1;
     }
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = rng.gen_range(habitable_zone.0..habitable_zone.1);
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let mut planet = Constraints::habitable().generate(&mut rng, &host_star, distance)?;
     print_var!(planet);
     planet.is_habitable();
@@ -210,7 +210,7 @@ pub mod test {
     planet.is_habitable();
     planet.gravity = old_gravity;
     planet.escape_velocity = 1.0;
-    planet.equilibrium_temperature = 288.0;
+    planet.equilibrium_temperature = TKel(288.0);
     // Check carbon dioxide stability.
     planet.escape_velocity = (20_000.0 / NITROGEN_WEIGHT).sqrt() / 1866.67;
     trace_var!(get_nitrogen_stability(

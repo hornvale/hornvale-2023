@@ -68,7 +68,7 @@ pub mod test {
     let mut rng = thread_rng();
     let host_star = HostStarConstraints::habitable().generate(&mut rng)?;
     let habitable_zone = host_star.get_habitable_zone();
-    let distance = LAu(rng.gen_range(habitable_zone.0..habitable_zone.1));
+    let distance = LAu(rng.gen_range(habitable_zone.0 .0..habitable_zone.1 .0));
     let satellite_system = &Constraints::default().generate(&mut rng, &host_star, distance)?;
     print_var!(satellite_system);
     Ok(())
