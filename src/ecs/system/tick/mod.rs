@@ -1,6 +1,6 @@
 use specs::prelude::*;
 
-use crate::resource::*;
+use crate::ecs::resource::*;
 
 pub struct Tick {}
 

@@ -1,7 +1,7 @@
 use crate::ecs::component::*;
 use crate::ecs::entity::*;
 use crate::ecs::event::*;
-use crate::resource::*;
+use crate::ecs::resource::*;
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
 

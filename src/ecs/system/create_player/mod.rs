@@ -2,7 +2,7 @@ use specs::prelude::*;
 
 use crate::ecs::component::*;
 use crate::ecs::entity::*;
-use crate::resource::*;
+use crate::ecs::resource::*;
 
 pub struct CreatePlayer {}
 

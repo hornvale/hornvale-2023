@@ -3,8 +3,8 @@ use specs::shrev::EventChannel;
 
 use crate::ecs::component::*;
 use crate::ecs::event::*;
+use crate::ecs::resource::*;
 use crate::map::builder::*;
-use crate::resource::*;
 
 pub struct CreateMap {}
 
