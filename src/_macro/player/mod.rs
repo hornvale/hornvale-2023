@@ -17,3 +17,10 @@ macro_rules! create_player {
     player
   }};
 }
+
+#[macro_export]
+macro_rules! get_player_id {
+  ($data: expr) => {{
+    $data.player_resource.0.unwrap()
+  }};
+}

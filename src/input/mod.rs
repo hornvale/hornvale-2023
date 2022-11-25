@@ -1,14 +1,25 @@
+use crate::command::Command;
 use anyhow::Error;
+pub mod _trait;
+pub use _trait::parser_data::ParserData;
+pub mod parser;
+pub use parser::Parser;
+pub mod scanner;
+pub use scanner::Scanner;
+pub mod token;
+pub use token::{Token, TokenType};
 
-/// The `Input` object.
+/// The `Input` type.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Display, Eq, Hash, PartialEq, Serialize)]
-pub struct Input {
-  pub had_error: bool,
-}
+pub struct Input {}
 
 impl Input {
-  pub fn interpret(&mut self, _input: &str) -> Result<Option<String>, Error> {
-    Ok(Some("OK".to_string()))
+  pub fn interpret(&self, input: &str, data: &impl ParserData) -> Result<(Command, Option<String>), Error> {
+    let mut scanner = Scanner::new(input);
+    scanner.scan_tokens()?;
+    let mut parser = Parser::new(scanner.tokens, input);
+    let command = parser.parse(data)?;
+    Ok((command, Some("OK".to_string())))
   }
 }
 
@@ -18,8 +29,10 @@ pub mod test {
   use super::Input as InputSystem;
   use super::*;
   use crate::ecs::component::*;
+  use crate::ecs::entity::{EntityId, PlayerId};
   use crate::ecs::resource::*;
   use crate::test::*;
+  use anyhow::Error as AnyError;
   use rand_seeder::SipHasher;
   use specs::prelude::*;
 
@@ -42,13 +55,32 @@ pub mod test {
     pub is_in_room: ReadStorage<'a, IsInRoom>,
   }
 
+  impl<'a> ParserData for Data<'a> {
+    /// Retrieve the player ID.
+    fn get_player_id(&self) -> Result<PlayerId, AnyError> {
+      Ok(PlayerId(3))
+    }
+    /// Retrieve a list of nouns.
+    fn get_nouns(&self) -> Result<Vec<(String, EntityId)>, AnyError> {
+      Ok(vec![])
+    }
+    /// Retrieve a list of genitives.
+    fn get_genitives(&self) -> Result<Vec<String>, AnyError> {
+      Ok(vec![])
+    }
+    /// Retrieve a list of adjectives.
+    fn get_adjectives(&self) -> Result<Vec<String>, AnyError> {
+      Ok(vec![])
+    }
+  }
+
   impl<'a> System<'a> for InputProcessor {
     type SystemData = Data<'a>;
 
     /// Run system.
-    fn run(&mut self, mut _data: Self::SystemData) {
+    fn run(&mut self, data: Self::SystemData) {
       let input = self.input.as_ref().unwrap().clone();
-      self.output = self.input_system.interpret(&input).unwrap();
+      self.output = self.input_system.interpret(&input, &data).unwrap().1;
     }
   }
 

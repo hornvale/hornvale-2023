@@ -2,8 +2,10 @@ extern crate anyhow;
 
 use anyhow::Error;
 use hornvale::ecs::component::*;
+use hornvale::ecs::entity::{EntityId, PlayerId};
 use hornvale::ecs::resource::*;
 use hornvale::input::Input as InputSystem;
+use hornvale::input::ParserData;
 use rand_seeder::SipHasher;
 use specs::prelude::*;
 use std::env::args;
@@ -29,13 +31,46 @@ pub struct Data<'a> {
   pub is_in_room: ReadStorage<'a, IsInRoom>,
 }
 
+impl<'a> ParserData for Data<'a> {
+  /// Retrieve the player ID.
+  fn get_player_id(&self) -> Result<PlayerId, Error> {
+    Ok(PlayerId(3))
+  }
+  /// Retrieve a list of nouns.
+  fn get_nouns(&self) -> Result<Vec<(String, EntityId)>, Error> {
+    Ok(vec![
+      ("cow".to_string(), EntityId(1)),
+      ("echo".to_string(), EntityId(2)),
+      ("priest".to_string(), EntityId(3)),
+      ("rock".to_string(), EntityId(4)),
+    ])
+  }
+  /// Retrieve a list of adjectives.
+  fn get_adjectives(&self) -> Result<Vec<String>, Error> {
+    Ok(vec![
+      "brown".to_string(),
+      "green".to_string(),
+      "pale".to_string(),
+      "arrogant".to_string(),
+      "granite".to_string(),
+    ])
+  }
+  /// Retrieve a list of genitives.
+  fn get_genitives(&self) -> Result<Vec<String>, Error> {
+    Ok(vec!["priest's".to_string(), "cow's".to_string()])
+  }
+}
+
 impl<'a> System<'a> for InputProcessor {
   type SystemData = Data<'a>;
 
   /// Run system.
-  fn run(&mut self, _data: Self::SystemData) {
+  fn run(&mut self, data: Self::SystemData) {
     let input = self.input.as_ref().unwrap().clone();
-    self.output = self.input_system.interpret(&input).unwrap();
+    self.output = match self.input_system.interpret(&input, &data) {
+      Ok((_command, string_opt)) => Some(string_opt.unwrap_or_else(|| "OK".to_string())),
+      Err(error) => Some(error.to_string()),
+    };
   }
 }
 
@@ -67,7 +102,7 @@ where
     if line.is_empty() {
       break;
     }
-    ip.input = Some(line);
+    ip.input = Some(line.trim().to_string());
     ip.run_now(&ecs);
     ecs.maintain();
     ip.input = None;
