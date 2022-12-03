@@ -1,7 +1,7 @@
 use super::MJupiter;
 use super::MKg;
 use super::MLuna;
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 
 /// The `MEarth` newtype.
 #[derive(Add, Clone, Copy, Debug, Default, Deserialize, Display, Div, Mul, PartialEq, PartialOrd, Serialize, Sub)]

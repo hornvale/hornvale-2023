@@ -1,6 +1,6 @@
 use super::MEarth;
 use super::MKg;
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::_type::*;
 
 /// The `MJupiter` newtype.

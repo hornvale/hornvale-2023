@@ -1,6 +1,6 @@
 use super::MEarth;
 use super::MKg;
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 
 /// The `MLuna` newtype.
 #[derive(Add, Clone, Copy, Debug, Default, Deserialize, Display, Div, Mul, PartialEq, PartialOrd, Serialize, Sub)]

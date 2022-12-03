@@ -1,4 +1,4 @@
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::host_star::HostStar;
 use crate::astronomy::satellite_system::constraints::Constraints as SatelliteSystemConstraints;

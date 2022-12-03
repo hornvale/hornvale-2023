@@ -1,6 +1,6 @@
 use super::TEarthDay;
 use super::TEarthYear;
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 
 /// The `TEarthHour` newtype.
 #[derive(Add, Clone, Copy, Debug, Default, Deserialize, Display, Div, Mul, PartialEq, PartialOrd, Serialize, Sub)]

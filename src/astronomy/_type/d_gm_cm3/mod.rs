@@ -2,7 +2,7 @@ use super::DEarth;
 use super::DJupiter;
 use super::DLuna;
 use super::DSol;
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 
 /// The `DGmCm3` newtype.
 #[derive(Add, Clone, Copy, Debug, Default, Deserialize, Display, Div, Mul, PartialEq, PartialOrd, Serialize, Sub)]

@@ -1,4 +1,4 @@
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::star_system::constraints::Constraints as StarSystemConstraints;
 use crate::astronomy::stellar_neighbor::constraints::Constraints as StellarNeighborConstraints;

@@ -1,4 +1,4 @@
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::close_binary_star::constraints::Constraints as CloseBinaryStarConstraints;
 use crate::astronomy::host_star::error::Error;
 use crate::astronomy::host_star::HostStar;

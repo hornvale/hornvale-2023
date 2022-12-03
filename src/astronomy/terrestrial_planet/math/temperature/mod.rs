@@ -1,4 +1,4 @@
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::_type::*;
 use crate::astronomy::star::math::distance::METERS_PER_AU;
 use crate::astronomy::terrestrial_planet::constants::*;

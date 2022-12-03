@@ -1,7 +1,7 @@
 use plotters::prelude::*;
 const OUT_FILE_NAME: &str = "examples/output-stellar-neighborhood.svg";
 
-use hornvale::astronomy::_constants::*;
+use hornvale::astronomy::_constant::*;
 use hornvale::astronomy::stellar_neighborhood::constraints::Constraints as StellarNeighborhoodConstraints;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

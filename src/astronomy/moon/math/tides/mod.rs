@@ -1,4 +1,4 @@
-use crate::astronomy::_constants::*;
+use crate::astronomy::_constant::*;
 use crate::astronomy::_type::*;
 
 /// Calculate the magnitude of the lunar tide.

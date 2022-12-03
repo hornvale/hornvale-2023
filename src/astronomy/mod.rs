@@ -21,8 +21,8 @@
 /// STELLAR_NEIGHBORHOOD = [STELLAR_NEIGHBOR]
 /// GALAXY = (STELLAR_NEIGHBORHOOD)
 /// ```
-pub mod _constants;
-pub use _constants::*;
+pub mod _constant;
+pub use _constant::*;
 pub mod _type;
 pub use _type::*;
 pub mod close_binary_star;
