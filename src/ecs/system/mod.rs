@@ -33,7 +33,14 @@ pub fn run_initial_systems(ecs: &mut World) {
   (CreateMapSystem {}).run_now(ecs);
 }
 
-pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
+pub fn get_tick_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
+  let tick_system = TickSystem {};
+  let dispatcher = DispatcherBuilder::new().with(tick_system, "tick", &[]).build();
+  dispatcher
+}
+
+/// Every ten ticks.
+pub fn get_deca_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
   let output_processor_system = {
     let reader_id = ecs.fetch_mut::<EventChannel<OutputEvent>>().register_reader();
     OutputProcessorSystem { reader_id }
@@ -58,7 +65,6 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
   let intent_processor_system = IntentProcessorSystem {};
   let experiment_system = ExperimentSystem {};
   let initiative_dispenser_system = InitiativeDispenserSystem {};
-  let tick_system = TickSystem {};
   let dispatcher = DispatcherBuilder::new()
     .with(experiment_system, "experiment", &[])
     .with(initiative_dispenser_system, "initiative_dispenser", &[])
@@ -69,14 +75,7 @@ pub fn get_tick_dispatcher(ecs: &mut World) -> Dispatcher<'static, 'static> {
     .with(action_processor_system, "action_processor", &[])
     .with(effect_processor_system, "effect_processor", &[])
     .with(output_processor_system, "output_processor", &[])
-    .with(tick_system, "tick", &[])
     .build();
-  dispatcher
-}
-
-/// Every ten ticks.
-pub fn get_deca_tick_dispatcher(_ecs: &mut World) -> Dispatcher<'static, 'static> {
-  let dispatcher = DispatcherBuilder::new().build();
   dispatcher
 }
 
