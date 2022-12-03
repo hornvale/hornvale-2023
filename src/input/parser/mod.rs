@@ -200,5 +200,4 @@ impl<'input> Parser<'input> {
     }
     bail!("{}", message);
   }
-
 }
