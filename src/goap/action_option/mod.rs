@@ -2,7 +2,7 @@ use crate::action::Action;
 use crate::goap::state::State;
 
 /// An action option.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub struct ActionOption {
   /// The represented action.
   pub action: Action,

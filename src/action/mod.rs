@@ -1,10 +1,8 @@
 use crate::ecs::system::action_processor::Data;
 use crate::effect::Effect;
 use anyhow::Error as AnyError;
+use std::sync::Arc;
 
-#[macro_use]
-pub mod _macro;
-pub use _macro::*;
 pub mod _trait;
 pub use _trait::actionable::Actionable;
 pub mod actions;
@@ -31,34 +29,22 @@ pub use actions::*;
 /// - actions may need to be reported to observers.
 /// - actions' effects can be divided over their duration, discretely or con-
 ///   tinuously.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
-pub enum Action {
-  /// Go in a specific direction.  This should respect current movement method
-  /// (e.g. walking, flying, etc).
-  GoDirection(GoDirectionAction),
-  /// Idle.  This does nothing.  NOTHING!
-  Idle(IdleAction),
-  /// Look at the current room.  This should provide a snapshot the sensory
-  /// data of the room.
-  LookAround(LookAroundAction),
-  /// Look at a specific object, either on the actor or in their environment.
-  LookAtEntity(LookAtEntityAction),
-  /// Look through the passage in the specified direction.  Will not work with
-  /// closed doors.  Certain other passageways may prevent the action as well.
-  LookDirection(LookDirectionAction),
-}
+#[derive(Clone, Debug)]
+pub struct Action(pub Arc<dyn Actionable>);
 
 impl Actionable for Action {
+  /// Get the predicted effects of this action.
   fn get_effects(&self, data: &mut Data) -> Result<Vec<Effect>, AnyError> {
-    on_variants!(self, Action, get_effects, data)
+    (*self.0).get_effects(data)
   }
 
+  /// Can this action be executed?
   fn can_execute(&self, data: &mut Data) -> Result<(), AnyError> {
-    on_variants!(self, Action, can_execute, data)
+    (*self.0).can_execute(data)
   }
 
   /// Execute the action.
   fn execute(&self, data: &mut Data) -> Result<(), AnyError> {
-    on_variants!(self, Action, execute, data)
+    (*self.0).execute(data)
   }
 }

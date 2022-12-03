@@ -4,7 +4,7 @@ use crate::goap::state::State;
 /// The `Plan` type.
 ///
 /// This includes a list of actions to undertake.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub struct Plan {
   /// The start state.
   pub start: State,

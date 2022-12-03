@@ -5,7 +5,7 @@ use crate::goap::state::State;
 /// The `Nodes` type.
 ///
 /// This wraps a list of `Node` objects.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default)]
 pub struct Nodes {
   /// The list of nodes.
   pub nodes: Vec<Node>,

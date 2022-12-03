@@ -1,4 +1,6 @@
 #[macro_use]
+pub mod action;
+#[macro_use]
 pub mod action_event;
 #[macro_use]
 pub mod actor;

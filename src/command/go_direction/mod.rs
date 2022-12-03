@@ -17,7 +17,7 @@ pub struct GoDirection {
 
 impl GoDirection {
   pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
-    Ok(Some(Action::GoDirection(GoDirectionAction {
+    Ok(Some(create_action!(GoDirectionAction {
       entity_id: self.player_id.into(),
       direction: self.direction,
     })))

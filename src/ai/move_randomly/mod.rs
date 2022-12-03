@@ -24,19 +24,19 @@ impl MoveRandomly {
       let mask = 3;
       let action_options = vec![
         ActionOption {
-          action: Action::LookDirection(LookDirectionAction { entity_id, direction }),
+          action: create_action!(LookDirectionAction { entity_id, direction }),
           cost: 1,
           preconditions: State { values: 0b00, mask },
           postconditions: State { values: 0b01, mask },
         },
         ActionOption {
-          action: Action::GoDirection(GoDirectionAction { entity_id, direction }),
+          action: create_action!(GoDirectionAction { entity_id, direction }),
           cost: 1,
           preconditions: State { values: 0b01, mask },
           postconditions: State { values: 0b10, mask },
         },
         ActionOption {
-          action: Action::LookAround(LookAroundAction { entity_id }),
+          action: create_action!(LookAroundAction { entity_id }),
           cost: 1,
           preconditions: State { values: 0b10, mask },
           postconditions: State { values: 0b00, mask },

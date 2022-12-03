@@ -12,7 +12,7 @@ pub struct Idle {
 
 impl Idle {
   pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    Ok(Some(Action::Idle(IdleAction {
+    Ok(Some(create_action!(IdleAction {
       entity_id: self.player_id.into(),
     })))
   }

@@ -15,7 +15,7 @@ pub struct LookAtEntity {
 
 impl LookAtEntity {
   pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    Ok(Some(Action::LookAtEntity(LookAtEntityAction {
+    Ok(Some(create_action!(LookAtEntityAction {
       entity_id: self.player_id.into(),
       target_entity_id: self.target_entity_id,
     })))

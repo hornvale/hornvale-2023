@@ -1,5 +1,4 @@
 use super::super::{Direction, Tile, TileMap};
-use crate::action::Action;
 use crate::action::LookAroundAction;
 use crate::ecs::entity::RoomId;
 use crate::ecs::system::create_map::CreateMapData as Data;
@@ -27,7 +26,7 @@ impl<'a> TrivialMaze {
       is_in_room!(data, get_entity!(data, player_id), RoomId(rooms[0].id()));
       write_action_event!(
         data,
-        Action::LookAround(LookAroundAction {
+        create_action!(LookAroundAction {
           entity_id: player_id.into(),
         })
       );

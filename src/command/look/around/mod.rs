@@ -13,7 +13,7 @@ pub struct LookAround {
 
 impl LookAround {
   pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    Ok(Some(Action::LookAround(LookAroundAction {
+    Ok(Some(create_action!(LookAroundAction {
       entity_id: self.player_id.into(),
     })))
   }

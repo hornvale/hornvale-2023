@@ -5,7 +5,7 @@ use crate::priority::Priority;
 ///
 /// This indicates the actor is currently determined to perform a specific
 /// action.  It includes the action, its priority, and its initiative cost.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[derive(Clone, Debug)]
 pub struct Intent {
   /// The action to perform.
   pub action: Action,

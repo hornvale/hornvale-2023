@@ -14,7 +14,7 @@ pub struct LookDirection {
 
 impl LookDirection {
   pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
-    Ok(Some(Action::LookDirection(LookDirectionAction {
+    Ok(Some(create_action!(LookDirectionAction {
       entity_id: self.player_id.into(),
       direction: self.direction,
     })))

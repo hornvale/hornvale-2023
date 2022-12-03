@@ -2,7 +2,7 @@ use crate::action::Action;
 use crate::goap::state::State;
 
 /// An individual A* node.
-#[derive(Clone, Debug, Eq, Hash, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub struct Node {
   /// The state represented by this node.
   pub state: State,

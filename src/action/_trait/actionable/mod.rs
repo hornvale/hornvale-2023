@@ -1,9 +1,10 @@
 use crate::ecs::system::action_processor::Data;
 use crate::effect::Effect;
 use anyhow::Error as AnyError;
+use std::fmt::Debug;
 
 /// The `Actionable` trait.
-pub trait Actionable {
+pub trait Actionable: Debug + Send + Sync {
   /// Returns a list of effects to which this action can be expected to lead.
   ///
   /// These will be created on an individual basis based on the data available.
