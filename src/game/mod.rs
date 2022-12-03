@@ -12,8 +12,8 @@ use crate::ecs::event::InputEvent;
 use crate::ecs::resource::*;
 use crate::ecs::system::*;
 
-pub mod constants;
-use constants::*;
+pub mod _constant;
+use _constant::*;
 pub mod error;
 use error::Error;
 pub use error::Error as GameError;
@@ -75,12 +75,8 @@ impl Game {
     // It'd be interesting to store this in a resource and possibly modify it
     // on the fly.  Very FRP.  Much signal.
     let mut tick_timer = stream::interval(Duration::from_millis(TICK_INTERVAL));
-    // The deca tick timer.
-    let mut deca_tick_timer = stream::interval(Duration::from_millis(10 * TICK_INTERVAL));
-    // The hecto tick timer.
-    let mut hecto_tick_timer = stream::interval(Duration::from_millis(100 * TICK_INTERVAL));
-    // The kilo tick timer.
-    let mut kilo_tick_timer = stream::interval(Duration::from_millis(1000 * TICK_INTERVAL));
+    // A local tick counter; just for performing less frequent operations.
+    let mut tick: u64 = 0;
     // Main game loop, such as it is.
     loop {
       // Maintain after every tick.  This enables the use of the lazy systems,
@@ -97,18 +93,16 @@ impl Game {
           // dispatchers, each running a subset of the systems, and scheduled
           // differently.
           self.tick_dispatcher.dispatch(&self.ecs);
-        }
-        _ = deca_tick_timer.next().fuse() => {
-          // Each ten ticks.
-          self.deca_tick_dispatcher.dispatch(&self.ecs);
-        }
-        _ = hecto_tick_timer.next().fuse() => {
-          // Each hundred ticks.
-          self.hecto_tick_dispatcher.dispatch(&self.ecs);
-        }
-        _ = kilo_tick_timer.next().fuse() => {
-          // Each thousand ticks.
-          self.kilo_tick_dispatcher.dispatch(&self.ecs);
+          tick += 1;
+          if tick % 10 == 0 {
+            self.deca_tick_dispatcher.dispatch(&self.ecs);
+            if tick % 100 == 0 {
+              self.hecto_tick_dispatcher.dispatch(&self.ecs);
+              if tick % 1000 == 0 {
+                self.kilo_tick_dispatcher.dispatch(&self.ecs);
+              }
+            }
+          }
         }
         command = stdin.readline().fuse() => match command {
           Ok(line) => {
