@@ -3,7 +3,10 @@ use crate::ecs::system::command_processor::Data as CommandProcessorData;
 use crate::input::ParserData;
 use crate::input::{Token, TokenType};
 use anyhow::Error as AnyError;
+use std::sync::Arc;
 
+pub mod _trait;
+pub use _trait::*;
 pub mod echo;
 pub use echo::Echo as EchoCommand;
 pub mod eval;
@@ -39,20 +42,55 @@ pub use quit::Quit as QuitCommand;
 /// something like that.  E.g. moving from room to room may take a long time
 /// in the wilderness, and we can simulate that by delaying the return of the
 /// input prompt.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
-pub enum Command {
-  Order(OrderCommand),
-  Echo(EchoCommand),
-  Eval(EvalCommand),
-  Idle(IdleCommand),
-  GoDirection(GoDirectionCommand),
-  LookAround(LookAroundCommand),
-  LookAtEntity(LookAtEntityCommand),
-  LookDirection(LookDirectionCommand),
-  Quit(QuitCommand),
-}
+#[derive(Clone, Debug)]
+pub struct Command(pub Arc<dyn Commandable>);
 
 impl Command {
+  /// Create a command based on the parser tokens and the passed data.
+  pub fn from_data(
+    original_input: String,
+    string: String,
+    tokens: Vec<Token<'_>>,
+    data: &impl ParserData,
+  ) -> Result<Command, AnyError> {
+    let player_id = data.get_player_id()?;
+    if let Some(first) = tokens.first() {
+      match first.r#type {
+        TokenType::Echo => Ok(create_command!(EchoCommand {
+          player_id,
+          string,
+          original_input,
+        })),
+        TokenType::Eval => Ok(create_command!(EvalCommand {
+          player_id,
+          string,
+          original_input,
+        })),
+        TokenType::Go => Ok(create_command!(GoDirectionCommand::from_data(
+          original_input,
+          string,
+          tokens,
+          data
+        )?)),
+        TokenType::Look => Ok(create_command!(LookCommandFactory::from_data(
+          original_input,
+          string,
+          tokens,
+          data
+        )?)),
+        TokenType::Quit => Ok(create_command!(QuitCommand {
+          player_id,
+          original_input,
+        })),
+        _ => Err(anyhow!("Couldn't match first token: {:#?}", tokens)),
+      }
+    } else {
+      bail!("Couldn't get first token.")
+    }
+  }
+}
+
+impl Commandable for Command {
   /// Retrieve an action for this command, or evaluate it.
   ///
   /// Commands come in two forms: extradiegetic and intradiegetic.
@@ -66,52 +104,7 @@ impl Command {
   ///
   /// Thus extradiegetic commands will return None here, and intradiegetic
   /// commands will return Some(action).
-  pub fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
-    use Command::*;
-    match self {
-      Order(command) => Ok(command.get_action(data)?),
-      Echo(command) => Ok(command.get_action(data)?),
-      Eval(command) => Ok(command.get_action(data)?),
-      GoDirection(command) => Ok(command.get_action(data)?),
-      Idle(command) => Ok(command.get_action(data)?),
-      LookAround(command) => Ok(command.get_action(data)?),
-      LookAtEntity(command) => Ok(command.get_action(data)?),
-      LookDirection(command) => Ok(command.get_action(data)?),
-      Quit(command) => Ok(command.get_action(data)?),
-    }
-  }
-
-  /// Create a command based on the parser tokens and the passed data.
-  pub fn from_data(
-    original_input: String,
-    string: String,
-    tokens: Vec<Token<'_>>,
-    data: &impl ParserData,
-  ) -> Result<Command, AnyError> {
-    use Command::*;
-    let player_id = data.get_player_id()?;
-    if let Some(first) = tokens.first() {
-      match first.r#type {
-        TokenType::Echo => Ok(Echo(EchoCommand {
-          player_id,
-          string,
-          original_input,
-        })),
-        TokenType::Eval => Ok(Eval(EvalCommand {
-          player_id,
-          string,
-          original_input,
-        })),
-        TokenType::Go => Ok(GoDirectionCommand::from_data(original_input, string, tokens, data)?),
-        TokenType::Look => Ok(LookCommandFactory::from_data(original_input, string, tokens, data)?),
-        TokenType::Quit => Ok(Quit(QuitCommand {
-          player_id,
-          original_input,
-        })),
-        _ => Err(anyhow!("Couldn't match first token: {:#?}", tokens)),
-      }
-    } else {
-      bail!("Couldn't get first token.")
-    }
+  fn get_action(&self, data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
+    (*self.0).get_action(data)
   }
 }

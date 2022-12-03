@@ -1,5 +1,6 @@
 use crate::action::Action;
 use crate::action::LookAtEntityAction;
+use crate::command::Commandable;
 use crate::ecs::entity::EntityId;
 use crate::ecs::entity::PlayerId;
 use crate::ecs::system::command_processor::Data as CommandProcessorData;
@@ -13,8 +14,8 @@ pub struct LookAtEntity {
   pub original_input: String,
 }
 
-impl LookAtEntity {
-  pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
+impl Commandable for LookAtEntity {
+  fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
     Ok(Some(create_action!(LookAtEntityAction {
       entity_id: self.player_id.into(),
       target_entity_id: self.target_entity_id,

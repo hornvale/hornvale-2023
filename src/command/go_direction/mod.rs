@@ -1,7 +1,7 @@
 use crate::action::*;
-use crate::command::Command;
+use crate::command::{Command, Commandable};
 use crate::ecs::entity::PlayerId;
-use crate::ecs::system::command_processor::Data as CommandProcessorData;
+use crate::ecs::system::command_processor::Data;
 use crate::input::{ParserData, Token, TokenType};
 use crate::map::Direction;
 use anyhow::Error as AnyError;
@@ -16,13 +16,6 @@ pub struct GoDirection {
 }
 
 impl GoDirection {
-  pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, AnyError> {
-    Ok(Some(create_action!(GoDirectionAction {
-      entity_id: self.player_id.into(),
-      direction: self.direction,
-    })))
-  }
-
   /// Create a command based on the parser tokens and the passed data.
   pub fn from_data(
     original_input: String,
@@ -32,10 +25,9 @@ impl GoDirection {
   ) -> Result<Command, AnyError> {
     let second = tokens.get(1);
     let player_id = data.get_player_id()?;
-    use Command::*;
     match second {
       Some(second) => match second.r#type {
-        TokenType::Direction => Ok(GoDirection(Self {
+        TokenType::Direction => Ok(create_command!(Self {
           player_id,
           direction: Direction::from_str(second.lexeme).unwrap(),
           original_input,
@@ -50,5 +42,14 @@ impl GoDirection {
         tokens
       )),
     }
+  }
+}
+
+impl Commandable for GoDirection {
+  fn get_action(&self, _data: &mut Data) -> Result<Option<Action>, AnyError> {
+    Ok(Some(create_action!(GoDirectionAction {
+      entity_id: self.player_id.into(),
+      direction: self.direction,
+    })))
   }
 }

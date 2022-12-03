@@ -24,10 +24,9 @@ impl LookCommandFactory {
   ) -> Result<Command, AnyError> {
     let second = tokens.get(1);
     let player_id = data.get_player_id()?;
-    use Command::*;
     match second {
       Some(second) => match second.r#type {
-        TokenType::Direction => Ok(LookDirection(LookDirectionCommand {
+        TokenType::Direction => Ok(create_command!(LookDirectionCommand {
           player_id,
           direction: Direction::from_str(second.lexeme).unwrap(),
           original_input,
@@ -36,20 +35,20 @@ impl LookCommandFactory {
           println!("Second: {:#?}", second);
           if second.entity_id.is_some() {
             let target_entity_id = second.entity_id.unwrap();
-            Ok(LookAtEntity(LookAtEntityCommand {
+            Ok(create_command!(LookAtEntityCommand {
               player_id,
               target_entity_id,
               original_input,
             }))
           } else {
-            Ok(LookAround(LookAroundCommand {
+            Ok(create_command!(LookAroundCommand {
               player_id,
               original_input,
             }))
           }
         },
       },
-      None => Ok(LookAround(LookAroundCommand {
+      None => Ok(create_command!(LookAroundCommand {
         player_id,
         original_input,
       })),

@@ -1,4 +1,5 @@
 use crate::action::Action;
+use crate::command::Commandable;
 use crate::ecs::entity::PlayerId;
 use crate::ecs::system::command_processor::Data as CommandProcessorData;
 use anyhow::Error;
@@ -10,8 +11,8 @@ pub struct Quit {
   pub original_input: String,
 }
 
-impl Quit {
-  pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
+impl Commandable for Quit {
+  fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
     panic!("WTF");
     // Ok(None)
   }

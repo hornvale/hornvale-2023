@@ -1,7 +1,7 @@
+use crate::command::Commandable;
+use crate::ecs::event::*;
 use specs::prelude::*;
 use specs::shrev::{EventChannel, ReaderId};
-
-use crate::ecs::event::*;
 
 pub struct CommandProcessor {
   pub reader_id: ReaderId<CommandEvent>,

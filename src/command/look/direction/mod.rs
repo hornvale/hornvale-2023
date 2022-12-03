@@ -1,4 +1,5 @@
 use crate::action::*;
+use crate::command::Commandable;
 use crate::ecs::entity::PlayerId;
 use crate::ecs::system::command_processor::Data as CommandProcessorData;
 use crate::map::Direction;
@@ -12,8 +13,8 @@ pub struct LookDirection {
   pub original_input: String,
 }
 
-impl LookDirection {
-  pub fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
+impl Commandable for LookDirection {
+  fn get_action(&self, _data: &mut CommandProcessorData) -> Result<Option<Action>, Error> {
     Ok(Some(create_action!(LookDirectionAction {
       entity_id: self.player_id.into(),
       direction: self.direction,

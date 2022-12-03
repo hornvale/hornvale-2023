@@ -7,6 +7,8 @@ pub mod actor;
 #[macro_use]
 pub mod camera;
 #[macro_use]
+pub mod command;
+#[macro_use]
 pub mod command_event;
 #[macro_use]
 pub mod component;
