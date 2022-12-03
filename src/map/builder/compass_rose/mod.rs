@@ -13,7 +13,7 @@ impl<'a> CompassRose {
       is_in_room!(data, get_entity!(data, player_id), RoomId(spawn_room.id()));
       write_effect_event!(
         data,
-        Effect::EntityLooksAround(EntityLooksAround {
+        create_effect!(EntityLooksAround {
           entity_id: player_id.into(),
         })
       );

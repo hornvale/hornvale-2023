@@ -1,5 +1,6 @@
 use crate::ecs::entity::EntityId;
 use crate::ecs::system::effect_processor::Data as EffectProcessorData;
+use crate::effect::Effectable;
 use anyhow::Error;
 
 /// `EntitySetInitiative`.
@@ -11,8 +12,8 @@ pub struct SetInitiative {
   pub value: usize,
 }
 
-impl SetInitiative {
-  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
+impl Effectable for SetInitiative {
+  fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
     let initiative = get_has_initiative!(data, entity).unwrap();
     has_initiative!(data, entity, self.value, initiative.increment);

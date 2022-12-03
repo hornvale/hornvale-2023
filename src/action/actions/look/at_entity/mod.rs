@@ -14,11 +14,11 @@ pub struct LookAtEntity {
 impl Actionable for LookAtEntity {
   fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, Error> {
     Ok(vec![
-      Effect::EntityLooksAtEntity(EntityLooksAtEntity {
+      create_effect!(EntityLooksAtEntity {
         entity_id: self.entity_id,
         target_entity_id: self.target_entity_id,
       }),
-      Effect::EntitySetInitiative(EntitySetInitiative {
+      create_effect!(EntitySetInitiative {
         entity_id: self.entity_id,
         value: 0,
       }),

@@ -1,6 +1,9 @@
-use crate::ecs::system::effect_processor::Data as EffectProcessorData;
+use crate::ecs::system::effect_processor::Data;
 use anyhow::Error;
+use std::sync::Arc;
 
+pub mod _trait;
+pub use _trait::*;
 pub mod entity;
 pub use entity::*;
 
@@ -45,34 +48,12 @@ pub use entity::*;
 /// A heuristic for this might be that `Action` is about game rules, whereas
 /// `Effect` is about physical laws.  Don't do weird stuff, and be very fine-
 /// grained with creating `Effect`s.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
-pub enum Effect {
-  /// An entity looks around.
-  EntityLooksAround(EntityLooksAround),
-  /// An entity looks at another entity.
-  EntityLooksAtEntity(EntityLooksAtEntity),
-  /// An entity looks in a specific direction.
-  EntityLooksDirection(EntityLooksDirection),
-  /// An entity walks into a room.
-  EntityWalksIntoRoom(EntityWalksIntoRoom),
-  /// An entity walks out of a room.
-  EntityWalksOutOfRoom(EntityWalksOutOfRoom),
-  /// An entity's initiative is set to a value.
-  EntitySetInitiative(EntitySetInitiative),
-}
+#[derive(Clone, Debug)]
+pub struct Effect(pub Arc<dyn Effectable>);
 
-impl Effect {
+impl Effectable for Effect {
   /// Process the effect.
-  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
-    use Effect::*;
-    match &self {
-      EntityLooksAround(effect) => effect.process(data)?,
-      EntityLooksAtEntity(effect) => effect.process(data)?,
-      EntityLooksDirection(effect) => effect.process(data)?,
-      EntityWalksIntoRoom(effect) => effect.process(data)?,
-      EntityWalksOutOfRoom(effect) => effect.process(data)?,
-      EntitySetInitiative(effect) => effect.process(data)?,
-    }
-    Ok(())
+  fn process(&self, data: &mut Data) -> Result<(), Error> {
+    (*self.0).process(data)
   }
 }

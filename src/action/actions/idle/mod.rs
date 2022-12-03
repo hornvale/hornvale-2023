@@ -12,7 +12,7 @@ pub struct Idle {
 
 impl Actionable for Idle {
   fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, AnyError> {
-    Ok(vec![Effect::EntitySetInitiative(EntitySetInitiative {
+    Ok(vec![create_effect!(EntitySetInitiative {
       entity_id: self.entity_id,
       value: 0,
     })])

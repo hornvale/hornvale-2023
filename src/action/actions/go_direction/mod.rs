@@ -50,20 +50,20 @@ impl Actionable for GoDirection {
     let room_id = self.get_room_id(data)?;
     let destination_id = self.get_destination_id(data)?;
     Ok(vec![
-      Effect::EntityWalksOutOfRoom(EntityWalksOutOfRoom {
+      create_effect!(EntityWalksOutOfRoom {
         entity_id: self.entity_id,
         direction: self.direction,
         room_id,
       }),
-      Effect::EntityWalksIntoRoom(EntityWalksIntoRoom {
+      create_effect!(EntityWalksIntoRoom {
         entity_id: self.entity_id,
         direction: self.direction.get_inverse(),
         room_id: destination_id,
       }),
-      Effect::EntityLooksAround(EntityLooksAround {
+      create_effect!(EntityLooksAround {
         entity_id: self.entity_id,
       }),
-      Effect::EntitySetInitiative(EntitySetInitiative {
+      create_effect!(EntitySetInitiative {
         entity_id: self.entity_id,
         value: 0,
       }),

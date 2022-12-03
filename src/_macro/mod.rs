@@ -9,6 +9,8 @@ pub mod command_event;
 #[macro_use]
 pub mod component;
 #[macro_use]
+pub mod effect;
+#[macro_use]
 pub mod effect_event;
 #[macro_use]
 pub mod entity;

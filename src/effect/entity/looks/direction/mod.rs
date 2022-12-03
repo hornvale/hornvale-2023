@@ -1,5 +1,6 @@
 use crate::ecs::entity::EntityId;
 use crate::ecs::system::effect_processor::Data as EffectProcessorData;
+use crate::effect::Effectable;
 use crate::map::{Direction, PassageDestination};
 use anyhow::Error;
 
@@ -12,8 +13,8 @@ pub struct LooksDirection {
   pub direction: Direction,
 }
 
-impl LooksDirection {
-  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
+impl Effectable for LooksDirection {
+  fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
     let room_id = get_current_room_id!(data, entity).unwrap();
     let room = get_entity!(data, room_id);

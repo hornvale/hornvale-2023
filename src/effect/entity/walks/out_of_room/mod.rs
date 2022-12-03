@@ -1,6 +1,7 @@
 use crate::ecs::entity::EntityId;
 use crate::ecs::entity::RoomId;
 use crate::ecs::system::effect_processor::Data as EffectProcessorData;
+use crate::effect::Effectable;
 use crate::map::Direction;
 use anyhow::Error;
 
@@ -15,8 +16,8 @@ pub struct OutOfRoom {
   pub direction: Direction,
 }
 
-impl OutOfRoom {
-  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
+impl Effectable for OutOfRoom {
+  fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
     let name = get_name!(data, entity).unwrap();
     they!(

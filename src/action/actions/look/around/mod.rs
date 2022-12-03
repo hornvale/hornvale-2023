@@ -13,10 +13,10 @@ pub struct LookAround {
 impl Actionable for LookAround {
   fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, AnyError> {
     Ok(vec![
-      Effect::EntityLooksAround(EntityLooksAround {
+      create_effect!(EntityLooksAround {
         entity_id: self.entity_id,
       }),
-      Effect::EntitySetInitiative(EntitySetInitiative {
+      create_effect!(EntitySetInitiative {
         entity_id: self.entity_id,
         value: 0,
       }),

@@ -1,5 +1,6 @@
 use crate::ecs::entity::EntityId;
-use crate::ecs::system::effect_processor::Data as EffectProcessorData;
+use crate::ecs::system::effect_processor::Data;
+use crate::effect::Effectable;
 use anyhow::Error;
 
 /// `EntityLooksAround`.
@@ -9,8 +10,8 @@ pub struct LooksAround {
   pub entity_id: EntityId,
 }
 
-impl LooksAround {
-  pub fn process(&self, data: &mut EffectProcessorData) -> Result<(), Error> {
+impl Effectable for LooksAround {
+  fn process(&self, data: &mut Data) -> Result<(), Error> {
     let entity = get_entity!(data, self.entity_id);
     let room_id = get_current_room_id!(data, entity).unwrap();
     let room = get_entity!(data, room_id);
