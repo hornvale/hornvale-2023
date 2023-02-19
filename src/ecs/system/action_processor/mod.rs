@@ -1,10 +1,8 @@
-use specs::prelude::*;
-use specs::shrev::{EventChannel, ReaderId};
-
 use crate::action::_trait::actionable::Actionable;
-use crate::ecs::component::*;
 use crate::ecs::event::*;
-use crate::ecs::resource::*;
+use crate::ecs::AllData;
+use specs::prelude::*;
+use specs::shrev::ReaderId;
 
 pub struct ActionProcessor {
   pub reader_id: ReaderId<ActionEvent>,
@@ -12,28 +10,8 @@ pub struct ActionProcessor {
 
 impl ActionProcessor {}
 
-#[derive(SystemData)]
-pub struct Data<'a> {
-  pub entities: Entities<'a>,
-  pub camera_resource: Read<'a, CameraResource>,
-  pub player_resource: Read<'a, PlayerResource>,
-  pub random_resource: Read<'a, RandomResource>,
-  pub tile_map_resource: Write<'a, TileMapResource>,
-  pub action_event_channel: Write<'a, EventChannel<ActionEvent>>,
-  pub effect_event_channel: Write<'a, EventChannel<EffectEvent>>,
-  pub output_event_channel: Write<'a, EventChannel<OutputEvent>>,
-  pub has_brief_description: ReadStorage<'a, HasBriefDescription>,
-  pub has_gender: ReadStorage<'a, HasGender>,
-  pub has_name: ReadStorage<'a, HasName>,
-  pub has_passages: ReadStorage<'a, HasPassages>,
-  pub is_a_player: ReadStorage<'a, IsAPlayer>,
-  pub is_an_actor: ReadStorage<'a, IsAnActor>,
-  pub is_an_object: ReadStorage<'a, IsAnObject>,
-  pub is_in_room: WriteStorage<'a, IsInRoom>,
-}
-
 impl<'a> System<'a> for ActionProcessor {
-  type SystemData = Data<'a>;
+  type SystemData = AllData<'a>;
 
   /// Run the system.
   fn run(&mut self, mut data: Self::SystemData) {
@@ -52,7 +30,7 @@ impl<'a> System<'a> for ActionProcessor {
       let ActionEvent { action } = event;
       match action.execute(&mut data) {
         Ok(()) => {},
-        Err(error) => error!("{:#?}", error),
+        Err(error) => action_error!(data, action, error),
       }
     }
   }

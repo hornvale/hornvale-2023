@@ -1,6 +1,6 @@
 use crate::action::Actionable;
 use crate::ecs::entity::{EntityId, RoomId};
-use crate::ecs::system::action_processor::Data;
+use crate::ecs::AllData;
 use crate::effect::*;
 use crate::map::Direction;
 use crate::map::PassageDestination;
@@ -14,7 +14,7 @@ pub struct LookDirection {
 }
 
 impl LookDirection {
-  pub fn get_room_id(&self, data: &mut Data) -> Result<RoomId, AnyError> {
+  pub fn get_room_id(&self, data: &mut AllData) -> Result<RoomId, AnyError> {
     let entity = get_entity!(data, self.entity_id);
     let room_id_option = get_current_room_id!(data, entity);
     if room_id_option.is_none() {
@@ -24,7 +24,7 @@ impl LookDirection {
     Ok(room_id)
   }
 
-  pub fn get_destination_id(&self, data: &mut Data) -> Result<RoomId, AnyError> {
+  pub fn get_destination_id(&self, data: &mut AllData) -> Result<RoomId, AnyError> {
     let room_id = self.get_room_id(data)?;
     let room = get_entity!(data, room_id);
     let passage_option = get_passage_to!(data, room, &self.direction);
@@ -45,12 +45,16 @@ impl LookDirection {
 }
 
 impl Actionable for LookDirection {
-  fn can_execute(&self, data: &mut Data) -> Result<(), AnyError> {
+  fn get_actor_entity_id(&self) -> EntityId {
+    self.entity_id
+  }
+
+  fn can_execute(&self, data: &mut AllData) -> Result<(), AnyError> {
     self.get_destination_id(data)?;
     Ok(())
   }
 
-  fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, AnyError> {
+  fn get_effects(&self, _data: &mut AllData) -> Result<Vec<Effect>, AnyError> {
     Ok(vec![
       create_effect!(EntityLooksDirection {
         entity_id: self.entity_id,

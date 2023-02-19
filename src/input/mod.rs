@@ -19,7 +19,7 @@ impl Input {
     scanner.scan_tokens()?;
     let mut parser = Parser::new(scanner.tokens, input);
     let command = parser.parse(data)?;
-    Ok((command, Some("OK".to_string())))
+    Ok((command, None))
   }
 }
 

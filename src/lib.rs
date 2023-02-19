@@ -43,6 +43,7 @@ pub mod ai;
 pub mod ailment;
 pub mod anatomy;
 pub mod astronomy;
+pub mod behavior_tree;
 pub mod biology;
 pub mod combat;
 pub mod command;

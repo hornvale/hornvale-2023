@@ -1,7 +1,7 @@
 use specs::prelude::*;
 
-pub mod constants;
-pub use constants::*;
+pub mod _constant;
+pub use _constant::*;
 
 /// The `Initiative` object.
 ///

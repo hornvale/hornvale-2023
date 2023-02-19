@@ -1,6 +1,6 @@
 use crate::action::Actionable;
 use crate::ecs::entity::EntityId;
-use crate::ecs::system::action_processor::Data;
+use crate::ecs::AllData;
 use crate::effect::*;
 use anyhow::Error;
 
@@ -12,7 +12,11 @@ pub struct LookAtEntity {
 }
 
 impl Actionable for LookAtEntity {
-  fn get_effects(&self, _data: &mut Data) -> Result<Vec<Effect>, Error> {
+  fn get_actor_entity_id(&self) -> EntityId {
+    self.entity_id
+  }
+
+  fn get_effects(&self, _data: &mut AllData) -> Result<Vec<Effect>, Error> {
     Ok(vec![
       create_effect!(EntityLooksAtEntity {
         entity_id: self.entity_id,

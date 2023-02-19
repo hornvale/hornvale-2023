@@ -22,6 +22,21 @@ impl<'a> TrivialMaze {
       );
       rooms.push(room_id);
     }
+    let _mushroom = create_object!(
+      data,
+      "Mushroom",
+      "A speckled mushroom grows out of the sodden earth, on a long stalk.",
+      RoomId(rooms[0].id())
+    );
+    for room in rooms.iter().take(5) {
+      create_actor!(
+        data,
+        "Goblin",
+        "The goblin is short, stout, and ugly.",
+        Gender::Male,
+        RoomId(room.id())
+      );
+    }
     if let Some(player_id) = data.player_resource.0 {
       is_in_room!(data, get_entity!(data, player_id), RoomId(rooms[0].id()));
       write_action_event!(

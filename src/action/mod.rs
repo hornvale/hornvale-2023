@@ -1,4 +1,5 @@
-use crate::ecs::system::action_processor::Data;
+use crate::ecs::entity::EntityId;
+use crate::ecs::AllData;
 use crate::effect::Effect;
 use anyhow::Error as AnyError;
 use std::sync::Arc;
@@ -33,18 +34,24 @@ pub use actions::*;
 pub struct Action(pub Arc<dyn Actionable>);
 
 impl Actionable for Action {
+  /// Get the actor entity ID.
+  fn get_actor_entity_id(&self) -> EntityId {
+    (*self.0).get_actor_entity_id()
+  }
+
   /// Get the predicted effects of this action.
-  fn get_effects(&self, data: &mut Data) -> Result<Vec<Effect>, AnyError> {
+  fn get_effects(&self, data: &mut AllData) -> Result<Vec<Effect>, AnyError> {
     (*self.0).get_effects(data)
   }
 
   /// Can this action be executed?
-  fn can_execute(&self, data: &mut Data) -> Result<(), AnyError> {
+  fn can_execute(&self, data: &mut AllData) -> Result<(), AnyError> {
     (*self.0).can_execute(data)
   }
 
   /// Execute the action.
-  fn execute(&self, data: &mut Data) -> Result<(), AnyError> {
+  fn execute(&self, data: &mut AllData) -> Result<(), AnyError> {
+    (*self.0).can_execute(data)?;
     (*self.0).execute(data)
   }
 }

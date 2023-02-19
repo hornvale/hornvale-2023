@@ -38,7 +38,7 @@ impl<'a> System<'a> for CommandProcessor {
       match command.get_action(&mut data) {
         Ok(Some(action)) => {
           info!(
-            "Calculated intradigetic action {:?} for command {:?}...",
+            "Calculated intradiegetic action {:?} for command {:?}...",
             action, command
           );
           write_action_event!(data, action);

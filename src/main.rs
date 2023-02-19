@@ -7,7 +7,7 @@ use hornvale::game::GameError;
 
 #[async_std::main]
 async fn main() -> Result<(), GameError> {
-  let mut game = Game::new("goat boy2");
+  let mut game = Game::new("goat boy");
   let stdout = game.output.clone();
   WriteLogger::init(LevelFilter::Off, Config::default(), stdout).unwrap();
   game.run().await?;
